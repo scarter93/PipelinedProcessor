@@ -14,7 +14,7 @@ port(	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	branch_taken	: out std_logic;
 	alu_result	: out unsigned(DATA_WIDTH-1 downto 0);
 	op2_out	: out unsigned(DATA_WIDTH-1 downto 0);
-	IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
+	IR_out	: out unsigned(DATA_WIDTH-1 downto 0)
 	);
 
 end entity;
