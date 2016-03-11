@@ -18,9 +18,12 @@ end entity;
 architecture disc of INSTRUCTION_FETCH is
 
 -- signals
-signal PC : unsigned(DATA_WIDTH-1 downto 0);
+signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, 32);
 
 begin
+
+PC_out <= PC;
+
 
 -- determine next value of PC
 update_pc : process (clk)

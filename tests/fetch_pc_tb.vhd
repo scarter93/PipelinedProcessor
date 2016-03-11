@@ -18,7 +18,7 @@ signal branch_pc	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, 32);
 signal IR		: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, 32);
 signal PC_out		: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, 32);
 
-component fetch_tb is
+component INSTRUCTION_FETCH is
 	generic ( DATA_WIDTH : integer := 32
 		);
 	port(	clk	: in std_logic;
@@ -31,7 +31,7 @@ end component;
 
 begin 
 -- entity declaration
-dut: fetch_tb
+dut: INSTRUCTION_FETCH
 port map(clk, branch_taken, branch_pc, IR, PC_out);
 
 -- clock process

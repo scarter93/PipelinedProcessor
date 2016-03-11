@@ -7,6 +7,8 @@ proc AddWaves {} {
     add wave -position end sim:/fetch_pc_tb/PC_out
 }
 
+vlib work
+
 ;# Compile components if any
 vcom Fetch.vhd
 vcom -check_synthesis tests/fetch_pc_tb.vhd
