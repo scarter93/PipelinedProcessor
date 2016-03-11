@@ -46,11 +46,48 @@ end process;
 -- test process
 tb_process : process
 begin
-	REPORT "let the program counter increment 10 times (to 40)";
-	for i in 0 to 9 loop
-		wait for 1 * clk_period;
-	end loop;
-	ASSERT (PC_out = 40) REPORT "program counter not incrementing";
+--------------------------------------------------------------------------------
+-----------------------Increment Program Counter--------------------------------
+--------------------------------------------------------------------------------
+	REPORT "Incrementing PC";
+	wait for 10 * clk_period;		-- run 10 cycles
+	ASSERT (PC_out = 40) REPORT "program counter incrementing improperly (1)";
+	wait for 1 * clk_period;
+	ASSERT (PC_out = 44) REPORT "program counter incrementing improperly (2)";
+--------------------------------------------------------------------------------
+-----------------------------Taking Branch--------------------------------------
+--------------------------------------------------------------------------------
+	REPORT "Taking Branch";
+	branch_taken <= '1';
+	branch_pc <= to_unsigned(8880, 32);	-- branch to 8880
+	wait for 1 * clk_period;
+	ASSERT (PC_out = 8880) REPORT "branch not taken (1)";
+	branch_taken <= '0';
+--------------------------------------------------------------------------------
+-------------------------Increment After Branch---------------------------------
+--------------------------------------------------------------------------------
+	REPORT "Continuing After Branch";
+	wait for 10 * clk_period;		-- run 10 cycles
+	ASSERT (PC_out = 8920) REPORT "program counter incrementing improperly (3)";
+--------------------------------------------------------------------------------
+-----------------------------Taking Branch--------------------------------------
+--------------------------------------------------------------------------------
+	REPORT "Taking Another Branch";
+	branch_taken <= '1';
+	branch_pc <= to_unsigned(192, 32);	-- branch to 8880
+	wait for 1 * clk_period;
+	ASSERT (PC_out = 192) REPORT "branch not taken (1)";
+	branch_taken <= '0';
+--------------------------------------------------------------------------------
+-------------------------Increment After Branch---------------------------------
+--------------------------------------------------------------------------------
+	REPORT "Continuing After Another Branch";
+	wait for 10 * clk_period;		-- run 10 cycles
+	ASSERT (PC_out = 232) REPORT "program counter incrementing improperly (3)";
+--------------------------------------------------------------------------------
+----------------------------------END-------------------------------------------
+--------------------------------------------------------------------------------
+	wait;
 end process;
 
 end;
