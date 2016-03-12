@@ -8,6 +8,6 @@ PACKAGE memory_arbiter_lib IS
   --Memory configuration constants (do not modify)
 	CONSTANT NUM_BYTES_IN_WORD 	: INTEGER := 4;
 	CONSTANT NUM_BITS_IN_BYTE 	: INTEGER := 8;
-	CONSTANT MEM_DATA_WIDTH 		: INTEGER := NUM_BYTES_IN_WORD * NUM_BITS_IN_BYTE;
+	CONSTANT DATA_WIDTH 		: INTEGER := NUM_BYTES_IN_WORD * NUM_BITS_IN_BYTE;
 
 END memory_arbiter_lib;

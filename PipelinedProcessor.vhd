@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.memory_arbiter_lib.all;
 
 entity PIPELINED_PROCESSOR is
 
@@ -11,11 +12,15 @@ architecture disc of PIPELINED_PROCESSOR is
 -------------------------
 -- constant definition --
 -------------------------
-constant DATA_WIDTH : integer := 32;
 
--------------------------
--- constant definition --
--------------------------
+-----------------------
+-- signal definition --
+-----------------------
+
+-- Universal
+signal clk	: std_logic;
+signal reset	: std_logic;
+
 -- STAGE 1 IN
 -- inputs from stage 4
 -- branch_taken
@@ -52,6 +57,22 @@ signal op2_2, op2_3	: unsigned(DATA_WIDTH-1 downto 0);
 
 signal alu_result_3, alu_result_4, alu_result_5 : unsigned(DATA_WIDTH-1 downto 0);
 signal branch_taken_3, branch_taken_4	: std_logic;
+
+-- MEMORY ARBITER
+-- Memory Port #1
+signal addr1	: natural;
+signal data1	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal re1	: std_logic;
+signal we1	: std_logic;
+signal busy1	: std_logic;
+
+-- Memory Port #2
+signal addr2	: natural;
+signal data2	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal re2	: std_logic;
+signal we2	: std_logic;
+signal busy2	: std_logic;
+
 --------------------------
 -- component definition --
 --------------------------
@@ -139,7 +160,29 @@ end component;
 
 -- MISC --
 -- Memory Arbiter --
--- TODO
+component memory_arbiter is
+
+	port(
+		clk	: in std_logic;
+		reset	: in std_logic;
+	      
+		--Memory port #1
+		addr1	: in natural;
+		data1	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
+		re1	: in std_logic;
+		we1	: in std_logic;
+		busy1 : out std_logic;
+	
+		--Memory port #2
+		addr2	: in natural;
+		data2	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
+		re2	: in std_logic;
+		we2	: in std_logic;
+		busy2	: out std_logic
+
+	  );
+
+end component;
 
 
 begin
@@ -203,4 +246,21 @@ write_back_t : WRITE_BACK
 		WB => WB_IR
 	);
 
+memory_arbiter_t : memory_arbiter
+	port map (
+		clk => clk,
+		reset => reset,
+		--Memory port #1
+		addr1 => addr1,
+		data1 => data1,
+		re1 => re1,
+		we1 => we1,
+		busy1 => busy1,
+		--Memory port #2
+		addr2 => addr2,
+		data2 => data2,
+		re2 => re2,
+		we2 => we2,
+		busy2 => busy2
+	);
 end disc;
