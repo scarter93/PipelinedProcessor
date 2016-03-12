@@ -18,27 +18,32 @@ constant DATA_WIDTH : integer := 32;
 -------------------------
 -- STAGE 1 IN
 -- inputs from stage 4
-signal branch_taken	: std_logic;
+-- branch_taken
 signal branch_pc	: unsigned(DATA_WIDTH-1 downto 0);
 
 -- STAGE 2 IN
 -- inputs from stage 1
--- IR_1, PC_1
+-- IR, PC
 -- inputs from stage 5
 signal MEM	: unsigned(DATA_WIDTH-1 downto 0);	-- location to write back
 signal WB_IR	: unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
 
 -- STAGE 3 IN
 -- inputs from stage 2
+-- IR, PC
 signal IMM	: unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
 -- op1_2, op2_2
 
 -- STAGE 4 IN
+-- IR, PC
 -- alu_result_3
+-- branch_taken_3
+-- op2
 
 -- STAGE 5 IN
 signal data_memory	: unsigned(DATA_WIDTH-1 downto 0);
--- multistage io
+
+-- MULTISTAGE IO
 signal IR_1, IR_2, IR_3, IR_4, IR_5 : unsigned(DATA_WIDTH-1 downto 0);
 signal PC_1, PC_2, PC_3 : unsigned(DATA_WIDTH-1 downto 0);
 
@@ -46,7 +51,7 @@ signal op1_2	: unsigned(DATA_WIDTH-1 downto 0);
 signal op2_2, op2_3	: unsigned(DATA_WIDTH-1 downto 0);
 
 signal alu_result_3, alu_result_4, alu_result_5 : unsigned(DATA_WIDTH-1 downto 0);
-
+signal branch_taken_3, branch_taken_4	: std_logic;
 --------------------------
 -- component definition --
 --------------------------
@@ -136,6 +141,7 @@ end component;
 -- Memory Arbiter --
 -- TODO
 
+
 begin
 
 ------------------------------
@@ -143,7 +149,8 @@ begin
 ------------------------------
 fetch : INSTRUCTION_FETCH 
 	port map (
-		branch_taken => branch_taken,
+		branch_taken => branch_taken_4,
+		-- TODO: setup branch_taken_4
 		branch_pc => branch_pc,
 		IR => IR_1,
 		PC => PC_1
@@ -169,7 +176,7 @@ execute_t : EXECUTE
 		IMM_in => IMM,
 		op1 => op1_2,
 		op2 => op2_2,
-		branch_taken => branch_taken,
+		branch_taken => branch_taken_3,
 		alu_result => alu_result_3,
 		op2_out => op2_3,
 		IR_out => IR_3
@@ -177,11 +184,12 @@ execute_t : EXECUTE
 
 memory_t : MEMORY
 	port map (
-		branch_taken => branch_taken,
+		branch_taken => branch_taken_3,
 		alu_result_in => alu_result_3,
 		op2_in => op2_3,
 		IR_in => IR_3,
 		memory => data_memory,
+		-- TODO branch_taken_out => branch_taken_4
 		alu_result_out => alu_result_4,
 		IR_out => IR_4
 	);
