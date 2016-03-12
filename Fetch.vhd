@@ -10,7 +10,12 @@ port(	clk	: in std_logic;
 	branch_taken	: in std_logic;
 	branch_pc	: in unsigned(DATA_WIDTH-1 downto 0);
 	IR	: out unsigned(DATA_WIDTH-1 downto 0);
-	PC_out	: out unsigned(DATA_WIDTH-1 downto 0)
+	PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
+	-- memory access
+	IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
+	IR_re	: out std_logic;
+	IR_data	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
+	IR_busy : out STD_LOGIC
 	);
 
 end entity;

@@ -59,19 +59,21 @@ signal alu_result_3, alu_result_4, alu_result_5 : unsigned(DATA_WIDTH-1 downto 0
 signal branch_taken_3, branch_taken_4	: std_logic;
 
 -- MEMORY ARBITER
+-- conversions
+signal IR_addr_to_natural : natural; 
 -- Memory Port #1
-signal addr1	: natural;
-signal data1	: std_logic_vector(DATA_WIDTH-1 downto 0);
-signal re1	: std_logic;
-signal we1	: std_logic;
-signal busy1	: std_logic;
+signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
+signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal IR_re	: std_logic := '0';
+signal IR_we	: std_logic := '0';
+signal IR_busy	: std_logic;
 
 -- Memory Port #2
-signal addr2	: natural;
-signal data2	: std_logic_vector(DATA_WIDTH-1 downto 0);
-signal re2	: std_logic;
-signal we2	: std_logic;
-signal busy2	: std_logic;
+signal ID_addr	: natural;
+signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal ID_re	: std_logic;
+signal ID_we	: std_logic;
+signal ID_busy	: std_logic;
 
 --------------------------
 -- component definition --
@@ -83,10 +85,16 @@ component INSTRUCTION_FETCH is
 
 	generic ( DATA_WIDTH : integer := 32
 		);
-	port(	branch_taken	: in std_logic;
+	port(	clk	: in std_logic;
+		branch_taken	: in std_logic;
 		branch_pc	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR	: out unsigned(DATA_WIDTH-1 downto 0);
-		PC	: out unsigned(DATA_WIDTH-1 downto 0)
+		PC	: out unsigned(DATA_WIDTH-1 downto 0);
+		-- memory access
+		IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
+		IR_re	: out std_logic;
+		IR_data	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
+		IR_busy : out STD_LOGIC
 		);
 
 end component;
@@ -186,17 +194,25 @@ end component;
 
 
 begin
-
+-----------------------
+-- hardwired signals --
+-----------------------
+IR_addr_to_natural <= to_integer(IR_addr);
 ------------------------------
 -- component initialization --
 ------------------------------
 fetch : INSTRUCTION_FETCH 
 	port map (
+		clk => clk,
 		branch_taken => branch_taken_4,
 		-- TODO: setup branch_taken_4
 		branch_pc => branch_pc,
 		IR => IR_1,
-		PC => PC_1
+		PC => PC_1,
+		IR_pc => IR_addr,
+		IR_re => IR_re,
+		IR_data => IR_data,
+		IR_busy => IR_busy	
 	);
 
 decode : INSTRUCTION_DECODE
@@ -251,16 +267,16 @@ memory_arbiter_t : memory_arbiter
 		clk => clk,
 		reset => reset,
 		--Memory port #1
-		addr1 => addr1,
-		data1 => data1,
-		re1 => re1,
-		we1 => we1,
-		busy1 => busy1,
+		addr1 => IR_addr_to_natural,
+		data1 => IR_data,
+		re1 => IR_re,
+		we1 => IR_we,
+		busy1 => IR_busy,
 		--Memory port #2
-		addr2 => addr2,
-		data2 => data2,
-		re2 => re2,
-		we2 => we2,
-		busy2 => busy2
+		addr2 => ID_addr,
+		data2 => ID_data,
+		re2 => ID_re,
+		we2 => ID_we,
+		busy2 => ID_busy
 	);
 end disc;
