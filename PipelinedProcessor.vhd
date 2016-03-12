@@ -3,11 +3,14 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use work.memory_arbiter_lib.all;
 
-entity PIPELINED_PROCESSOR is
+entity PipelinedProcessor is
+
+	port(clk 	: in std_logic
+	);
 
 end entity;
 
-architecture disc of PIPELINED_PROCESSOR is
+architecture disc of PipelinedProcessor is
 
 -------------------------
 -- constant definition --
@@ -18,7 +21,6 @@ architecture disc of PIPELINED_PROCESSOR is
 -----------------------
 
 -- Universal
-signal clk	: std_logic;
 signal reset	: std_logic;
 
 -- STAGE 1 IN
@@ -89,7 +91,7 @@ component INSTRUCTION_FETCH is
 		branch_taken	: in std_logic;
 		branch_pc	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR	: out unsigned(DATA_WIDTH-1 downto 0);
-		PC	: out unsigned(DATA_WIDTH-1 downto 0);
+		PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		-- memory access
 		IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_re	: out std_logic;
@@ -208,7 +210,7 @@ fetch : INSTRUCTION_FETCH
 		-- TODO: setup branch_taken_4
 		branch_pc => branch_pc,
 		IR => IR_1,
-		PC => PC_1,
+		PC_out => PC_1,
 		IR_pc => IR_addr,
 		IR_re => IR_re,
 		IR_data => IR_data,
