@@ -12,10 +12,11 @@ port(	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	PC_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	IMM_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	op0	: in unsigned(4 downto 0);
-	op1	: in unsigned(DATA_WIDTH-1 downto 0);
-	op2	: in unsigned(DATA_WIDTH-1 downto 0);
+	op1	: in signed(DATA_WIDTH-1 downto 0);
+	op2	: in signed(DATA_WIDTH-1 downto 0);
+	clk	: in std_logic;
 	branch_taken	: out std_logic;
-	alu_result	: out unsigned(DATA_WIDTH-1 downto 0);
+	alu_result	: out signed(DATA_WIDTH-1 downto 0);
 	op2_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0)
 	);
@@ -23,6 +24,8 @@ port(	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 end entity;
 
 architecture disc of EXECUTE is
+
+signal status_check : unsigned(3 downto 0) := (others => '0');
 
 component alu
 generic(DATA_WIDTH : integer := 32
@@ -85,7 +88,9 @@ begin
 
 	case op0 is
 		when "00000" => --add
+			alu : port(OPCODE => op0, DATA0 => op1, DATA1 => op2, CLOCK => clk, RESET => '0', DATA_OUT => alu_result, STATUS => status_check);
 		when "00001" => --sub
+			alu : port(OPCODE => op0, DATA0 => op1, DATA1 => op2, CLOCK => clk, RESET => '0', DATA_OUT => alu_result, STATUS => status_check);
 		when "00010" => --addi
 		when "00011" => --mult
 		when "00100" => --div
