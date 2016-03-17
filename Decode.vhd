@@ -14,7 +14,6 @@ port( 	clk	: in std_logic;
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	IMM	: out unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
-	op0	: out unsigned(4 downto 0);
 	op1	: out unsigned(DATA_WIDTH-1 downto 0);
 	op2	: out unsigned(DATA_WIDTH-1 downto 0)
 	);
@@ -25,22 +24,25 @@ architecture disc of INSTRUCTION_DECODE is
 
 type REGISTERS is array (0 to 31) of unsigned(DATA_WIDTH-1 downto 0);
 signal reg :  REGISTERS;
+signal addr1, addr2, addr3 : unsigned(4 downto 0);
 
 begin
 
-process clk
+process (clk)
 begin
 	if rising_edge(clk) then
-		op0 <= IR_in(31 downto 26);
-		op1 <= reg(IR_in(25 downto 21));
-		op2 <= reg(IR_in(20 downto 16));
-		IMM <= "0000000000000000" & IR_in(15 downto 0);
-		reg(WB_IR(15 downto 11)) <= MEM;
+        addr1 <= IR_in(25 downto 21);
+		addr2 <= IR_in(20 downto 16);
+        addr3 <= WB_IR(15 downto 11);
+        op1 <= reg(to_integer(addr1));
+		op2 <= reg(to_integer(addr2));
+		IMM <= "1111111111111111" & IR_in(15 downto 0);
+		reg(to_integer(addr3)) <= MEM;
 		reg(0) <= (others => '0'); --ensure $R0 is always 0
 	end if;
 end process;
 
-process clk
+process (clk)
 begin
 	if rising_edge(clk) then
 		IR_out <= IR_in;
