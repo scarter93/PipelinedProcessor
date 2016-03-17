@@ -37,22 +37,24 @@ architecture behavioral of memory_arbiter is
   SIGNAL mm_data          : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0)   := (others => 'Z');
   SIGNAL mm_initialize    : STD_LOGIC                                     := '0';
 
-  type ports is (NONE, PORT_1, PORT_2);
-  SIGNAL who : ports := NONE;
-  SIGNAL busy : STD_LOGIC := '0';
-  SIGNAL port2_busy : ports := NONE;
+  type arbiter_state is (idle, start_reading, reading, start_writing, writing);
+  type active_port is (none, p1, p2);
+
+  signal state : arbiter_state;
+  signal current_port : active_port;
+
 begin
 
 	--Instantiation of the main memory component (DO NOT MODIFY)
-      main_memory : ENTITY work.Main_Memory
+	main_memory : ENTITY work.Main_Memory
       GENERIC MAP (
-	Num_Bytes_in_Word	=> NUM_BYTES_IN_WORD,
-	Num_Bits_in_Byte 	=> NUM_BITS_IN_BYTE,
+				Num_Bytes_in_Word	=> NUM_BYTES_IN_WORD,
+				Num_Bits_in_Byte 	=> NUM_BITS_IN_BYTE,
         Read_Delay        => 3, 
         Write_Delay       => 3
       )
       PORT MAP (
-        clk	    => clk,
+        clk					=> clk,
         address     => mm_address,
         Word_Byte   => '1',
         we          => mm_we,
@@ -64,69 +66,97 @@ begin
         dump        => '0'
       );
 
--- determine priority between ports 1 and 2
-process (clk, reset)
-begin
-	if (reset = '1') then
-		-- default values
-		who <= NONE;
-	elsif (rising_edge(clk)) then
-		-- give port 1 priority over port 2, but make sure we don't
-		-- interrupt an operation on port 2
-		if (port2_busy = NONE and (re1 = '1' or we1 = '1')) then
-			-- Port 1 Operation
-			mm_address	<= addr1;
-			mm_we		<= we1;
-			mm_re		<= re1;
-			mm_data		<= data1;
-			who		<= PORT_1;
-		elsif (re2 = '1' or we2 = '1') then
-			-- Port 2 Operation
-			mm_address	<= addr2;
-			mm_we		<= we2;
-			mm_re		<= re2;
-			mm_data		<= data2;
-			who		<= PORT_2;
-		end if;
-	end if;
-end process;
+  process (clk, reset)
+  begin
+    if reset = '1' then
+      state <= idle;
+      current_port <= none;
+      busy1 <= '0';
+      busy2 <= '0';
+    elsif rising_edge(clk) then
 
--- determine whether PORT 1 or PORT_2 is busy 
-process (clk, re1, re2, mm_wr_done, mm_rd_ready)
-begin
-	if ((re1 = '1' or we1 = '1') and (mm_wr_done = '0' and mm_rd_ready ='0')) then
-		-- set port 1 as busy until mm_wr_done or mm_rd_ready goes off
-		busy1 <= '1';
-	elsif (who = PORT_1) then
-		-- signal port 1 off when write or read has finished
-		busy1 <= '0';
-	end if;
+      --state independent busy bit set
+      if re1 = '1' or we1 = '1' then
+        busy1 <= '1';
+      end if;
+      if re2 = '1' or we2 = '1' then
+        busy2 <= '1';
+      end if;
 
-	if ((re2 = '1' or we2 = '1') and (mm_wr_done = '0' and mm_rd_ready ='0')) then
-		-- set port 1 as busy until mm_wr_done or mm_rd_ready goes off
-		busy2 <= '1';
-	elsif (who = PORT_2) then
-		-- signal port 2 off when write or read has finished
-		busy2 <= '0';
-	end if;
+      case state is
+        when idle =>
+          --wait for user command
+          if re1 = '1' then
+            current_port <= p1;
+            state <= start_reading;
+          elsif we1 = '1' then
+            current_port <= p1;
+            state <= start_writing;
+          elsif re2 = '1' then
+            current_port <= p2;
+            state <= start_reading;
+          elsif we2 = '1' then
+            current_port <= p2;
+            state <= start_writing;
+          end if;
+        
+        when start_reading =>
+        --pass reading address and set data port to high impedance
+          if current_port = p1 then
+            mm_address <= addr1;
+          else
+            mm_address <= addr2;
+          end if;
+          mm_data <= "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+          state <= reading;
 
-	if (reset = '1') then
-		busy1 <= '0';
-		busy1 <= '0';
-	end if;
-end process;
+        when reading =>
+        --wait for data to be put on data bus
+        --when ready, put data on requesting port data bus
+        --then turn off busy signal and return to idle state
+          if mm_rd_ready = '1' then
+            if current_port = p1 then
+              data1 <= mm_data;
+              busy1 <= '0';
+            else
+              data2 <= mm_data;
+              busy2 <= '0';
+            end if;
+            current_port <= none;
+            state <= idle;
+          end if;
 
--- makes sure port 1 doesn't write when port 2 is up to something
-process (clk, re1, re2, mm_wr_done, mm_rd_ready)
-begin
-	if (reset = '1') then
-		port2_busy <= NONE;
-	-- case in which port 2 is busy
-	elsif ((re2 = '1' or we2 = '1') and who = PORT_2) then
-		port2_busy <= PORT_2;
-	else
-		port2_busy <= NONE;
-	end if;
-end process;
+        when start_writing =>
+        --pass writing address and put data on memory data bus
+          if current_port = p1 then
+            mm_address <= addr1;
+            mm_data <= data1;
+          else
+            mm_address <= addr2;
+            mm_data <= data2;
+          end if;
+          state <= writing;
+
+        when writing =>
+        --wait for memory to complete write
+        --then turn off requesting port busy signal and return to idle state
+          if mm_wr_done = '1' then
+            if current_port = p1 then
+              busy1 <= '0';
+            else
+              busy2 <= '0';
+            end if;
+            current_port <= none;
+            state <= idle;
+          end if;
+
+        when others =>
+          state <= idle;
+      end case;
+    end if;
+  end process;
+
+  mm_re <= '1' when state = start_reading or state = reading else '0';
+  mm_we <= '1' when state = start_writing or state = writing else '0';
 
 end behavioral;
