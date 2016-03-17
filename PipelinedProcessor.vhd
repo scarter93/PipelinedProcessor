@@ -58,11 +58,11 @@ signal op1_2	: unsigned(DATA_WIDTH-1 downto 0);
 signal op2_2, op2_3	: unsigned(DATA_WIDTH-1 downto 0);
 
 signal alu_result_3, alu_result_4, alu_result_5 : unsigned(DATA_WIDTH-1 downto 0);
-signal branch_taken_3, branch_taken_4	: std_logic;
+signal branch_taken_3, branch_taken_4	: std_logic := '0';
 
 -- MEMORY ARBITER
 -- conversions
-signal IR_addr_to_natural : natural; 
+signal addr_to_natural : natural; 
 -- Memory Port #1
 signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
 signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -199,7 +199,7 @@ begin
 -----------------------
 -- hardwired signals --
 -----------------------
-IR_addr_to_natural <= to_integer(IR_addr);
+addr_to_natural <= to_integer(PC_1);
 ------------------------------
 -- component initialization --
 ------------------------------
@@ -269,7 +269,7 @@ memory_arbiter_t : memory_arbiter
 		clk => clk,
 		reset => reset,
 		--Memory port #1
-		addr1 => IR_addr_to_natural,
+		addr1 => addr_to_natural,
 		data1 => IR_data,
 		re1 => IR_re,
 		we1 => IR_we,
