@@ -95,8 +95,8 @@ component INSTRUCTION_FETCH is
 		-- memory access
 		IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_re	: out std_logic;
-		IR_data	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
-		IR_busy : out STD_LOGIC
+		IR_data	: in std_logic_vector(DATA_WIDTH-1 downto 0);
+		IR_busy : in STD_LOGIC
 		);
 
 end component;

@@ -43,10 +43,12 @@ architecture behavioral of memory_arbiter is
   signal state : arbiter_state;
   signal current_port : active_port;
 
+  SIGNAL test          : STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0)   := (others => 'Z');
+
 begin
 
 	--Instantiation of the main memory component (DO NOT MODIFY)
-	main_memory : ENTITY work.Main_Memory
+main_memory : ENTITY work.Main_Memory
       GENERIC MAP (
 				Num_Bytes_in_Word	=> NUM_BYTES_IN_WORD,
 				Num_Bits_in_Byte 	=> NUM_BITS_IN_BYTE,
@@ -71,7 +73,7 @@ begin
     if reset = '1' then
       state <= idle;
       current_port <= none;
-      busy1 <= '0';
+      busy1 <= '1';
       busy2 <= '0';
     elsif rising_edge(clk) then
 

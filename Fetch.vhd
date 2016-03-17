@@ -14,8 +14,8 @@ port(	clk	: in std_logic;
 	-- memory access
 	IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
 	IR_re	: out std_logic;
-	IR_data	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
-	IR_busy : out STD_LOGIC
+	IR_data	: in std_logic_vector(DATA_WIDTH-1 downto 0);
+	IR_busy : in STD_LOGIC
 	);
 
 end entity;
@@ -43,5 +43,15 @@ begin
 end process;
 
 -- get instruction
+--update_pc : process (clk)
+--begin
+--	if (falling_edge(IR_re)) then
+--		case branch_taken is
+--			when '0' => PC <= PC + 4;
+--			when '1' => PC <= branch_pc;
+--			when others => report "unreachable" severity failure;
+--		end case;
+--	end if;
+--end process;
 
 end disc;
