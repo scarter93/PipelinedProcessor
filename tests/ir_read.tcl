@@ -7,6 +7,8 @@ proc AddWaves {} {
                                   -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block3/Memory
 
     add wave -group "Memory Arbiter" -position end sim:/pipelinedprocessor/memory_arbiter_t/*
+
+    add wave -group "Fetch" -position end sim:/pipelinedprocessor/fetch/*
 }
   ;#Create the work library, which is the default library used by ModelSim
   vlib work

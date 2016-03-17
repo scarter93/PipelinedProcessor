@@ -25,14 +25,24 @@ component INSTRUCTION_FETCH is
 		branch_taken	: in std_logic;
 		branch_pc	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR	: out unsigned(DATA_WIDTH-1 downto 0);
-		PC_out	: out unsigned(DATA_WIDTH-1 downto 0)
+		PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
+		-- memory access
+		IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
+		IR_re	: out std_logic;
+		IR_data	: in std_logic_vector(DATA_WIDTH-1 downto 0);
+		IR_busy : in STD_LOGIC
 		);
 end component;
+
+signal IR_pc	: unsigned(DATA_WIDTH-1 downto 0);
+signal IR_re	: std_logic;
+signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal IR_busy	: std_logic; 
 
 begin 
 -- entity declaration
 dut: INSTRUCTION_FETCH
-port map(clk, branch_taken, branch_pc, IR, PC_out);
+port map(clk, branch_taken, branch_pc, IR, PC_out, IR_pc, IR_re, IR_data, IR_busy);
 
 -- clock process
 clk_process : process

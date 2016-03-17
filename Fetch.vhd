@@ -28,7 +28,7 @@ signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, 32);
 begin
 
 PC_out <= PC;
-
+IR_pc <= PC;
 
 -- determine next value of PC
 update_pc : process (clk)
