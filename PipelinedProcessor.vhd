@@ -62,7 +62,7 @@ signal branch_taken_3, branch_taken_4	: std_logic := '0';
 
 -- MEMORY ARBITER
 -- conversions
-signal addr_to_natural : natural; 
+signal IR_addr_nat, ID_addr_nat : natural; 
 -- Memory Port #1
 signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
 signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -206,7 +206,8 @@ begin
 -----------------------
 -- hardwired signals --
 -----------------------
-addr_to_natural <= to_integer(IR_addr);
+IR_addr_nat <= to_integer(IR_addr);
+--ID_addr_nat <= to_integer(ID_addr);
 ------------------------------
 -- component initialization --
 ------------------------------
@@ -281,16 +282,16 @@ memory_arbiter_t : memory_arbiter
 		clk => clk,
 		reset => reset,
 		--Memory port #1
-		addr1 => addr_to_natural,
-		data1 => IR_data,
-		re1 => IR_re,
-		we1 => IR_we,
-		busy1 => IR_busy,
+		addr1 => ID_addr,
+		data1 => ID_data,
+		re1 => ID_re,
+		we1 => ID_we,
+		busy1 => ID_busy,
 		--Memory port #2
-		addr2 => ID_addr,
-		data2 => ID_data,
-		re2 => ID_re,
-		we2 => ID_we,
-		busy2 => ID_busy
+		addr2 => IR_addr_nat,
+		data2 => IR_data,
+		re2 => IR_re,
+		we2 => IR_we,
+		busy2 => IR_busy
 	);
 end disc;

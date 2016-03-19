@@ -31,7 +31,12 @@ begin
 update_values : process(clk)
 begin
 	if (rising_edge(clk)) then
-		
+		if (ID_busy = '0') then
+			ID_re <= '0';
+		else
+			ID_re <= '1' after 10 ns;
+			ID_addr <= 0;
+		end if;
 	end if;
 end process;
 
