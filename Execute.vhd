@@ -28,8 +28,9 @@ signal status_check : unsigned(3 downto 0) := (others => '0');
 signal op0	: unsigned(3 downto 0);
 signal operation : unsigned(5 downto 0);
 
-signal data1 		: signed(DATA_WIDTH-1 downto 0) := (others => '0');
-signal data2 		: signed(DATA_WIDTH-1 downto 0) := (others => '0');
+constant zeros		: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
+constant ones		: unsigned(DATA_WIDTH-1 downto 0) := (others => '1');
+constant four		: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(integer(4), DATA_WIDTH);
 
 signal data_rslt 	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 signal data_rslt_mult 	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
@@ -40,78 +41,23 @@ signal mult	: std_logic := '0';
 signal div	: std_logic := '0';
 signal alu_op	: std_logic := '0';
 
-signal HI	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
-signal LO	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
-signal HILO	: std_logic_vector((2*DATA_WIDTH)-1 downto 0) := (others => '0');
+signal HI	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
+signal LO	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
+signal HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
 
 signal multdivalu 	: std_logic_vector(2 downto 0) := "000";
 signal shamt 	: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
-
-component alu
-generic(DATA_WIDTH : integer := 32
-	);
-port(	OPCODE	:	in unsigned(3 downto 0);
-	DATA0	:	in signed(DATA_WIDTH-1 downto 0);
-	DATA1	:	in signed(DATA_WIDTH-1 downto 0);
-		
-	CLOCK	:	in std_logic;
-	RESET	:	in std_logic;
-
-	DATA_OUT :	out signed(DATA_WIDTH-1 downto 0);
-	STATUS	:	out unsigned(3 downto 0)
-	);
-end component;
-
-component LPM_MULT
-generic(LPM_WIDTHA : natural := DATA_WIDTH; 
-        LPM_WIDTHB : natural := DATA_WIDTH;
-        LPM_WIDTHS : natural := 1;
-        LPM_WIDTHP : natural := 2*DATA_WIDTH;
-	LPM_REPRESENTATION : string := "SIGNED";
-	LPM_PIPELINE : natural := 0;
-	LPM_TYPE: string := L_MULT;
-	LPM_HINT : string := "UNUSED"
-	);
-port( 	DATAA : in std_logic_vector(LPM_WIDTHA-1 downto 0);
-	DATAB : in std_logic_vector(LPM_WIDTHB-1 downto 0);
-	ACLR : in std_logic := '0';
-	CLOCK : in std_logic := '0';
-	CLKEN : in std_logic := '1';
-	SUM : in std_logic_vector(LPM_WIDTHS-1 downto 0) := (OTHERS => '0');
-	RESULT : out std_logic_vector(LPM_WIDTHP-1 downto 0)
-	);
-end component;
-
-
-component LPM_DIVIDE
-generic(LPM_WIDTHN : natural := DATA_WIDTH;
-        LPM_WIDTHD : natural := DATA_WIDTH;
-	LPM_NREPRESENTATION : string := "SIGNED";
-	LPM_DREPRESENTATION : string := "SIGNED";
-	LPM_PIPELINE : natural := 0;
-	LPM_TYPE : string := L_DIVIDE;
-	LPM_HINT : string := "UNUSED"
-	);
-port (	NUMER : in std_logic_vector(LPM_WIDTHN-1 downto 0);
-	DENOM : in std_logic_vector(LPM_WIDTHD-1 downto 0);
-	ACLR : in std_logic := '0';
-	CLOCK : in std_logic := '0';
-	CLKEN : in std_logic := '1';
-	QUOTIENT : out std_logic_vector(LPM_WIDTHN-1 downto 0);
-	REMAIN : out std_logic_vector(LPM_WIDTHD-1 downto 0)
-	);
-end component;
+signal imm	: unsigned(15 downto 0);
+signal jaddr	: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
+signal PC_temp 	: unsigned(DATA_WIDTH-1 downto 0) := PC_in;
 begin
 
 shamt(4 downto 0) <=  IR_in(10 downto 6);
 operation <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
 multdivalu <= mult & div & alu_op;
-
-
-
-ALU_inst :  alu port map(OPCODE => op0, DATA0 => data1, DATA1 => data2, CLOCK => clk, RESET => '0', DATA_OUT => data_rslt, STATUS => status_check);
-multiplier : LPM_MULT  port map( DATAA => std_logic_vector(data1),DATAB => std_logic_vector(data2), ACLR => '0', CLOCK => clk, CLKEN => mult, RESULT => HILO);
-divider : LPM_DIVIDE  port map( NUMER => std_logic_vector(data1),DENOM => std_logic_vector(data2), ACLR => '0', CLOCK => clk, CLKEN => div, QUOTIENT => LO, REMAIN => LO );
+imm <= IR_in(15 downto 0);
+PC_temp <= PC_in + four;
+jaddr <= PC_temp(DATA_WIDTH-1 downto 28) & IR_in(25 downto 0) & "00";
 
 with multdivalu select HI <=
 	HILO(2*DATA_WIDTH-1 downto DATA_WIDTH) when "100",
@@ -121,155 +67,227 @@ with multdivalu select LO <=
 	HILO(DATA_WIDTH-1 downto 0) when "100",
 	LO when others;	
 
-with multdivalu select alu_result <=
-	unsigned(data_rslt) when "001",
-	(others => '0') when "100",
-	(others => '0') when "010",
-	data_rslt_other when others;
+IR_out <= IR_in;
 
-alu_result <= unsigned(data_rslt);
 process(IR_in)
 begin
 
 	case operation is
 		when "000000" => --add
-			op0 <= "0000";
-			data1 <= signed(op1);
-			data2 <= signed(op2);
+			alu_result <= unsigned(signed(op1) + signed(op2));
+			op2_out <= op2;
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "000001" => --sub
-			op0 <= "0001";
-			data1 <= signed(op1);
-			data2 <= signed(op2);
+			alu_result <= unsigned(signed(op1) - signed(op2));
+			op2_out <= op2;
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "000010" => --addi
-			op0 <= "0000";
-			data1 <= signed(op1);
-			data2 <= signed(IMM_in);
+			op2_out <= unsigned(signed(op1) + signed(IMM_in));
+			alu_result <= (others => 'Z');
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "000011" => --mult
-			data1 <= signed(op1);
-			data2 <= signed(op2);
+			HILO <= signed(op1) * signed(op2);
+			op2_out <= op2;
 			mult <= '1';
 			div <= '0';			
 			alu_op <= '0';
 		when "000100" => --div
-			data1 <= signed(op1);
-			data2 <= signed(op2);
+			LO <= signed(op1) / signed(op2);
+			HI <= signed(op1) MOD signed(op2);
+			op2_out <= op2;
 			mult <= '0';
 			div <= '1';
 			alu_op <= '0';
 		when "000101" => --slt
 			if op1 < op2 then
-				data_rslt_other <= (others => '1');
+				alu_result <= (others => '1');
 			else
-				data_rslt_other <= (others => '0');
+				alu_result <= (others => '0');
 			end if;
+			op2_out <= op2;
+			mult <= '0';
+			div <= '0';
+			alu_op <= '0';
 		when "000110" => --slti
 			if op1 < IMM_in then
-				data_rslt_other <= (others => '1');
+				op2_out <= (others => '1');
 			else
-				data_rslt_other <= (others => '0');
+				op2_out <= (others => '0');
 			end if;
+			alu_result <= (others => 'Z');
+			mult <= '0';
+			div <= '0';
+			alu_op <= '0';
 		when "000111" => --and
-			op0 <= "0011";
-			data1 <= signed(op1);
-			data2 <= signed(op2);
+			alu_result <= op1 AND op2;
+			op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001000" => --or
-			op0 <= "0101";
-			data1 <= signed(op1);
-			data2 <= signed(op2);
+			alu_result <= op1 OR op2;
+			op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001001" => --nor
-			op0 <= "0110";
-			data1 <= signed(op1);
-			data2 <= signed(op2);
+			alu_result <= op1 NOR op2;
+			op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001010" => --xor
-			op0 <= "0111";
-			data1 <= signed(op1);
-			data2 <= signed(op2);
+			alu_result <= op1 XOR op2;
+			op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001011" => --andi
-			op0 <= "0011";
-			data1 <= signed(op1);
-			data2 <= signed(IMM_in);
+			op2_out <= op1 AND IMM_in;
+			alu_result <= (others => 'Z');
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001100" => --ori
-			op0 <= "0101";
-			data1 <= signed(op1);
-			data2 <= signed(IMM_in);
+			op2_out <= op1 OR IMM_in;
+			alu_result <= (others => 'Z');
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001101" => --xori
-			op0 <= "0111";
-			data1 <= signed(op1);
-			data2 <= signed(IMM_in);
+			op2_out <= op1 XOR IMM_in;
+			alu_result <= (others => 'Z');
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001110" => --mfhi
-			data_rslt_other <= unsigned(HI);
+			alu_result <= unsigned(HI);
+			op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '0';
 		when "001111" => --mflo
-			data_rslt_other <= unsigned(LO);
+			alu_result <= unsigned(LO);
+			op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '0';
 		when "010000" => --lui
+			op2_out <= IMM_in(DATA_WIDTH-1 downto DATA_WIDTH/2) & zeros((DATA_WIDTH/2)-1 downto 0);
+			alu_result <= (others => 'Z');
+			branch_taken <= '0';
+			mult <= '0';
+			div <= '0';
+			alu_op <= '0';
 		when "010001" => --sll
-			op0 <= "1011";
-			data1 <= signed(op1);
-			data2 <= signed(shamt);
+			alu_result <= unsigned(shift_left(op2, to_integer(shamt)));
+			op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "010010" => --srl
-			op0 <= "1100";
-			data1 <= signed(op1);
-			data2 <= signed(shamt);
+			alu_result <= unsigned(shift_right(op2, to_integer(shamt)));
+			op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "010011" => --sra
-			op0 <= "1010";
-			data1 <= signed(op1);
-			data2 <= signed(shamt);
+			alu_result <= unsigned(shift_right(signed(op2), to_integer(shamt)));
+						op2_out <= op2;
+			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "010100" => --lw
+			op2_out <= op1 + IMM_in;
+			branch_taken <= '0';
+			mult <= '0';
+			div <= '0';
+			alu_op <= '1';
 		when "010101" => --lb
+			op2_out <= zeros(DATA_WIDTH-1 downto 8) & (op1(7 downto 0) + IMM_in(7 downto 0));
+			branch_taken <= '0';
+			mult <= '0';
+			div <= '0';
+			alu_op <= '1';
 		when "010110" => --sw
+			alu_result <= op1 + IMM_in;
+			op2_out <= op2;
+			branch_taken <= '0';
+			mult <= '0';
+			div <= '0';
+			alu_op <= '1';
 		when "010111" => --sb
+			alu_result <= zeros(DATA_WIDTH-1 downto 8) & (op1(7 downto 0) + IMM_in(7 downto 0));
+			op2_out <= op2;
+			branch_taken <= '0';
+			mult <= '0';
+			div <= '0';
+			alu_op <= '1';
 		when "011000" => --beq
+			if(op1 = op2) then
+				branch_taken <= '1';
+				if(imm(15) = '1') then
+					alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+				end if;
+			end if;
+			op2_out <= op2;
+			mult <= '0';
+			div <= '0';
+			alu_op <= '0';
 		when "011001" => --bne
+			if(op1 /= op2) then
+				branch_taken <= '1';
+				if(imm(15) = '0') then
+					alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
+				end if;
+			end if;
+			op2_out <= op2;
+			mult <= '0';
+			div <= '0';
+			alu_op <= '0';
 		when "011010" => --j
+			branch_taken <= '1';
+			alu_result <= jaddr;
+			op2_out <= op2;
+			mult <= '0';
+			div <= '0';
+			alu_op <= '0';
 		when "011011" => --jr
+			branch_taken <= '1';
+			alu_result <=  op1;
+			op2_out <= op2;
+			mult <= '0';
+			div <= '0';
+			alu_op <= '0';
 		when "011100" => --jal
+			branch_taken <= '1';
+			alu_result <= jaddr;
+			op2_out <= op2;
+			mult <= '0';
+			div <= '0';
+			alu_op <= '0';
 		when others =>
-			data1 <= (others => '0');
-			data2 <= (others => '0');
+			branch_taken <= '0';
+			alu_result <= (others => 'Z');
+			op2_out <= op2;
 			mult <= '0';
 			div <= '0';
 			alu_op <= '0';

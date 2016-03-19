@@ -50,7 +50,7 @@ R12
 R13
 R14
 Eexecute
-Z15 w1458241917
+Z15 w1458414919
 Z16 DPx3 lpm 14 lpm_components 0 22 4J@JVnz0@^T1iA`f^fRg21
 R2
 R3
@@ -60,30 +60,30 @@ Z17 8C:/Users/scarte9/PipelinedProcessor/Execute.vhd
 Z18 FC:/Users/scarte9/PipelinedProcessor/Execute.vhd
 l0
 L7
-VQNYAK6dVddhkHBGk;4Wz20
+VgJ8j<Zm0WnkjHK=B22@830
 !s100 Bf`F[Xk1dijc^bZ<<XojH1
 R8
-32
-Z19 !s110 1458241918
+33
+Z19 !s110 1458414922
 !i10b 1
-Z20 !s108 1458241918.873000
+Z20 !s108 1458414922.908000
 Z21 !s90 -reportprogress|300|-work|work|C:/Users/scarte9/PipelinedProcessor/Execute.vhd|
 Z22 !s107 C:/Users/scarte9/PipelinedProcessor/Execute.vhd|
 !i113 1
 R13
-Z23 tExplicit 1
+R14
 Adisc
 R16
 R2
 R3
 R4
-Z24 DEx4 work 7 execute 0 22 QNYAK6dVddhkHBGk;4Wz20
-l104
+Z23 DEx4 work 7 execute 0 22 gJ8j<Zm0WnkjHK=B22@830
+l53
 L25
-Va2`ghf>X[mHKIPEgEN<aj3
-!s100 =4oC_5e6hlH?`21;?EKzK0
+V;>=;@ozdQ<UZ8IdEK0G_N3
+!s100 23UIz>oBRg;Ca4A[z6Q]N3
 R8
-32
+33
 R19
 !i10b 1
 R20
@@ -91,29 +91,29 @@ R21
 R22
 !i113 1
 R13
-R23
+R14
 Einstruction_decode
-Z25 w1457809514
+Z24 w1457809514
 R2
 R3
 R4
 R0
-Z26 8C:/Users/skanet1/PipelinedProcessor/Decode.vhd
-Z27 FC:/Users/skanet1/PipelinedProcessor/Decode.vhd
+Z25 8C:/Users/skanet1/PipelinedProcessor/Decode.vhd
+Z26 FC:/Users/skanet1/PipelinedProcessor/Decode.vhd
 l0
 L5
 V9;Xn>j0Nf9IJ`a6R3EBki2
 !s100 TV`@P>Qa2;^=A@K@0L:WA0
 R8
 32
-Z28 !s110 1457810602
+Z27 !s110 1457810602
 !i10b 1
-Z29 !s108 1457810602.387000
-Z30 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/skanet1/PipelinedProcessor/Decode.vhd|
-Z31 !s107 C:/Users/skanet1/PipelinedProcessor/Decode.vhd|
+Z28 !s108 1457810602.387000
+Z29 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/skanet1/PipelinedProcessor/Decode.vhd|
+Z30 !s107 C:/Users/skanet1/PipelinedProcessor/Decode.vhd|
 !i113 1
-Z32 o-work work -2002 -explicit
-R23
+Z31 o-work work -2002 -explicit
+Z32 tExplicit 1
 Adisc
 R2
 R3
@@ -125,14 +125,14 @@ VNbDPHBdV;;oQzdVdN2lY13
 !s100 3J;JlzH_;^l6FcBZ8U:0E0
 R8
 32
-R28
+R27
 !i10b 1
+R28
 R29
 R30
-R31
 !i113 1
+R31
 R32
-R23
 Einstruction_fetch
 Z33 w1457810560
 R2
@@ -153,8 +153,8 @@ Z37 !s108 1457810601.807000
 Z38 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/skanet1/PipelinedProcessor/Fetch.vhd|
 Z39 !s107 C:/Users/skanet1/PipelinedProcessor/Fetch.vhd|
 !i113 1
+R31
 R32
-R23
 Adisc
 R2
 R3
@@ -172,10 +172,10 @@ R37
 R38
 R39
 !i113 1
+R31
 R32
-R23
 Ememory
-R25
+R24
 R2
 R3
 R4
@@ -194,8 +194,8 @@ Z43 !s108 1457810603.357000
 Z44 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/skanet1/PipelinedProcessor/Memory.vhd|
 Z45 !s107 C:/Users/skanet1/PipelinedProcessor/Memory.vhd|
 !i113 1
+R31
 R32
-R23
 Adisc
 R2
 R3
@@ -213,8 +213,8 @@ R43
 R44
 R45
 !i113 1
+R31
 R32
-R23
 Epipelined_processor
 w1457810165
 R2
@@ -235,10 +235,10 @@ R8
 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/skanet1/PipelinedProcessor/PipelinedProcessor.vhd|
 !s107 C:/Users/skanet1/PipelinedProcessor/PipelinedProcessor.vhd|
 !i113 1
+R31
 R32
-R23
 Ewrite_back
-R25
+R24
 R2
 R3
 R4
@@ -257,8 +257,8 @@ Z48 !s108 1457810603.857000
 Z49 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/skanet1/PipelinedProcessor/WriteBack.vhd|
 Z50 !s107 C:/Users/skanet1/PipelinedProcessor/WriteBack.vhd|
 !i113 1
+R31
 R32
-R23
 Adisc
 R2
 R3
@@ -276,5 +276,5 @@ R48
 R49
 R50
 !i113 1
+R31
 R32
-R23
