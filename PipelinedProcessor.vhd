@@ -142,13 +142,20 @@ component MEMORY is
 
 	generic ( DATA_WIDTH : integer := 32
 		);
-	port(	branch_taken	: in std_logic;
+	port(	clk	: in std_logic;
+		branch_taken	: in std_logic;
 		alu_result_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		op2_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		memory	: out unsigned(DATA_WIDTH-1 downto 0);
+		branch_taken_out : out std_logic;
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
-		IR_out	: out unsigned(DATA_WIDTH-1 downto 0)
+		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
+		ID_addr	: out NATURAL;
+		ID_data	: in STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+		ID_re	: out STD_LOGIC;
+		ID_we	: out STD_LOGIC;
+		ID_busy	: in STD_LOGIC
 		);
 
 end component;
@@ -207,7 +214,6 @@ fetch : INSTRUCTION_FETCH
 	port map (
 		clk => clk,
 		branch_taken => branch_taken_4,
-		-- TODO: setup branch_taken_4
 		branch_pc => branch_pc,
 		IR => IR_1,
 		PC_out => PC_1,
@@ -245,14 +251,20 @@ execute_t : EXECUTE
 
 memory_t : MEMORY
 	port map (
+		clk => clk,
 		branch_taken => branch_taken_3,
 		alu_result_in => alu_result_3,
 		op2_in => op2_3,
 		IR_in => IR_3,
 		memory => data_memory,
-		-- TODO branch_taken_out => branch_taken_4
+		branch_taken_out => branch_taken_4,
 		alu_result_out => alu_result_4,
-		IR_out => IR_4
+		IR_out => IR_4,
+		ID_addr => ID_addr,
+		ID_data => ID_data,
+		ID_re => ID_re,
+		ID_we => ID_we,
+		ID_busy => ID_busy
 	);
 
 write_back_t : WRITE_BACK

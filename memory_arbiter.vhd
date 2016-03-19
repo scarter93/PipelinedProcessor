@@ -10,7 +10,7 @@ port (	clk 	: in STD_LOGIC;
 	reset	: in STD_LOGIC;
 	--Memory port #1
 	addr1	: in NATURAL;
-	data1	:	inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+	data1	: inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 	re1	: in STD_LOGIC;
 	we1	: in STD_LOGIC;
 	busy1	: out STD_LOGIC;
@@ -54,7 +54,7 @@ main_memory : ENTITY work.Main_Memory
         Write_Delay       => 3
       )
       PORT MAP (
-        clk					=> clk,
+        clk         => clk,
         address     => mm_address,
         Word_Byte   => '1',
         we          => mm_we,
