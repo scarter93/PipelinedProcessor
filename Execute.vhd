@@ -69,7 +69,7 @@ with multdivalu select LO <=
 
 IR_out <= IR_in;
 
-process(IR_in)
+process(clk)
 begin
 
 	case operation is
