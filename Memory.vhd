@@ -41,6 +41,7 @@ begin
 			reading <= '0';
 		elsif (op = "010100" or op = "010101") then
 			reading <= '1';
+			ID_addr <= to_integer(op2_in);
 		end if;
 	end if;
 end process;
