@@ -26,16 +26,21 @@ port(	clk	: in std_logic;
 end entity;
 
 architecture disc of MEMORY is
+
+signal op : unsigned(5 downto 0);
+signal reading : std_logic;
 begin
+
+op <= alu_result_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
+ID_re <= reading;
 
 update_values : process(clk)
 begin
 	if (rising_edge(clk)) then
-		if (ID_busy = '0') then
-			ID_re <= '0';
-		else
-			ID_re <= '1' after 10 ns;
-			ID_addr <= 0;
+		if ((ID_busy = '0' and reading = '1')) then
+			reading <= '0';
+		elsif (op = "010100" or op = "010101") then
+			reading <= '1';
 		end if;
 	end if;
 end process;
