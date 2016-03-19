@@ -6,22 +6,20 @@ use work.memory_arbiter_lib.all;
 
 -- Do not modify the port map of this structure
 entity memory_arbiter is
-port (clk 	: in STD_LOGIC;
-      reset : in STD_LOGIC;
-      
-			--Memory port #1
-			addr1	: in NATURAL;
-			data1	:	inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
-			re1		: in STD_LOGIC;
-			we1		: in STD_LOGIC;
-			busy1 : out STD_LOGIC;
-			
-			--Memory port #2
-			addr2	: in NATURAL;
-			data2	:	inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
-			re2		: in STD_LOGIC;
-			we2		: in STD_LOGIC;
-			busy2 : out STD_LOGIC
+port (	clk 	: in STD_LOGIC;
+	reset	: in STD_LOGIC;
+	--Memory port #1
+	addr1	: in NATURAL;
+	data1	:	inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+	re1	: in STD_LOGIC;
+	we1	: in STD_LOGIC;
+	busy1	: out STD_LOGIC;
+	--Memory port #2
+	addr2	: in NATURAL;
+	data2	: inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+	re2	: in STD_LOGIC;
+	we2	: in STD_LOGIC;
+	busy2	: out STD_LOGIC
   );
 end memory_arbiter;
 

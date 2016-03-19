@@ -51,8 +51,8 @@ signal IMM	: unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
 signal data_memory	: unsigned(DATA_WIDTH-1 downto 0);
 
 -- MULTISTAGE IO
-signal IR_1, IR_2, IR_3, IR_4, IR_5 : unsigned(DATA_WIDTH-1 downto 0);
-signal PC_1, PC_2, PC_3 : unsigned(DATA_WIDTH-1 downto 0);
+signal IR_1, IR_2, IR_3, IR_4, IR_5 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
+signal PC_1, PC_2, PC_3 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
 
 signal op1_2	: unsigned(DATA_WIDTH-1 downto 0);
 signal op2_2, op2_3	: unsigned(DATA_WIDTH-1 downto 0);
@@ -199,7 +199,7 @@ begin
 -----------------------
 -- hardwired signals --
 -----------------------
-addr_to_natural <= to_integer(PC_1);
+addr_to_natural <= to_integer(IR_addr);
 ------------------------------
 -- component initialization --
 ------------------------------

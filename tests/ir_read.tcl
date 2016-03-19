@@ -8,7 +8,12 @@ proc AddWaves {} {
 
     add wave -group "Memory Arbiter" -position end sim:/pipelinedprocessor/memory_arbiter_t/*
 
-    add wave -group "Fetch" -position end sim:/pipelinedprocessor/fetch/*
+    add wave -group "Fetch" -radix dec sim:/pipelinedprocessor/fetch/PC\
+                            -radix hex sim:/pipelinedprocessor/fetch/IR_data\
+                            -radix bin sim:/pipelinedprocessor/fetch/IR_busy\
+                            -radix dec sim:/pipelinedprocessor/fetch/IR_re\
+                            -radix dec sim:/pipelinedprocessor/fetch/branch_taken\
+                            -radix dec sim:/pipelinedprocessor/fetch/branch_pc
 }
   ;#Create the work library, which is the default library used by ModelSim
   vlib work
@@ -60,5 +65,5 @@ proc WaitReadDone {port} {
   force -deposit /pipelinedprocessor/memory_arbiter_t/busy1 0 0
   run 1ns
   PlaceRead IR 0
-  WaitReadDone IR
-  run 10ns
+  ;#WaitReadDone IR
+  run 50ns

@@ -29,29 +29,29 @@ begin
 
 PC_out <= PC;
 IR_pc <= PC;
-
+IR <= unsigned(IR_data);
 -- determine next value of PC
 update_pc : process (clk)
 begin
-	if (rising_edge(clk)) then
-		case branch_taken is
-			when '0' => PC <= PC + 4;
-			when '1' => PC <= branch_pc;
-			when others => report "unreachable" severity failure;
-		end case;
+	if (falling_edge(clk)) then
+		if (IR_busy = '0') then
+			case branch_taken is
+				when '0' => PC <= PC + 4;
+				when '1' => PC <= branch_pc;
+				when others => report "unreachable" severity failure;
+			end case;
+		end if;
 	end if;
 end process;
 
 -- get instruction
---update_pc : process (clk)
---begin
---	if (falling_edge(IR_re)) then
---		case branch_taken is
---			when '0' => PC <= PC + 4;
---			when '1' => PC <= branch_pc;
---			when others => report "unreachable" severity failure;
---		end case;
---	end if;
---end process;
+next_ir : process (clk)
+begin
+	if (falling_edge(clk)) then
+		if (IR_busy = '0') then
+			IR_re <= '1';
+		end if;
+	end if;
+end process;
 
 end disc;
