@@ -7,6 +7,7 @@ entity INSTRUCTION_FETCH is
 generic ( DATA_WIDTH : integer := 32
 	);
 port(	clk	: in std_logic;
+	reset	: in std_logic;
 	branch_taken	: in std_logic;
 	branch_pc	: in unsigned(DATA_WIDTH-1 downto 0);
 	IR	: out unsigned(DATA_WIDTH-1 downto 0);
@@ -23,33 +24,29 @@ end entity;
 architecture disc of INSTRUCTION_FETCH is
 
 -- signals
-signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, 32);
+signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
 begin
 
 PC_out <= PC;
 IR_pc <= PC;
 IR <= unsigned(IR_data);
+
+-- always read next instruction
+IR_re <= '1';
+
 -- determine next value of PC
 update_pc : process (clk)
 begin
-	if (falling_edge(clk)) then
+	if (reset = '1') then
+		PC <= to_unsigned(0, DATA_WIDTH);
+	elsif (rising_edge(clk)) then
 		if (IR_busy = '0') then
 			case branch_taken is
 				when '0' => PC <= PC + 4;
 				when '1' => PC <= branch_pc;
 				when others => report "unreachable" severity failure;
 			end case;
-		end if;
-	end if;
-end process;
-
--- get instruction
-next_ir : process (clk)
-begin
-	if (falling_edge(clk)) then
-		if (IR_busy = '0') then
-			IR_re <= '1';
 		end if;
 	end if;
 end process;

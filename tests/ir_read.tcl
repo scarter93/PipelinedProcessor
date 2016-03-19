@@ -9,6 +9,7 @@ proc AddWaves {} {
     add wave -group "Memory Arbiter" -position end sim:/pipelinedprocessor/memory_arbiter_t/*
 
     add wave -group "Fetch" -radix dec sim:/pipelinedprocessor/fetch/PC\
+                            -radix hex sim:/pipelinedprocessor/fetch/reset\
                             -radix hex sim:/pipelinedprocessor/fetch/IR_data\
                             -radix bin sim:/pipelinedprocessor/fetch/IR_busy\
                             -radix dec sim:/pipelinedprocessor/fetch/IR_re\
@@ -35,8 +36,9 @@ proc AddWaves {} {
   force -deposit {/PipelinedProcessor/clk} 0 0 ns, 1 0.5 ns -repeat 1 ns
   ;#Add the memory_arbiter's input and ouput signals to the waves window
   ;#to allow inspecting the module's behavior
-  force -deposit /pipelinedprocessor/memory_arbiter_t/reset 1 0 ns, 0 1 ns
   force -deposit /pipelinedprocessor/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
   force -deposit /pipelinedprocessor/memory_arbiter_t/busy1 0 0
 
-  run 50ns
+  ;#force -deposit /pipelinedprocessor/reset 1 1 ns, 0 2 ns
+
+  run 50 ns

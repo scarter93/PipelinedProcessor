@@ -88,6 +88,7 @@ component INSTRUCTION_FETCH is
 	generic ( DATA_WIDTH : integer := 32
 		);
 	port(	clk	: in std_logic;
+		reset	: in std_logic;
 		branch_taken	: in std_logic;
 		branch_pc	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR	: out unsigned(DATA_WIDTH-1 downto 0);
@@ -214,6 +215,7 @@ IR_addr_nat <= to_integer(IR_addr);
 fetch : INSTRUCTION_FETCH 
 	port map (
 		clk => clk,
+		reset => reset,
 		branch_taken => branch_taken_4,
 		branch_pc => branch_pc,
 		IR => IR_1,
