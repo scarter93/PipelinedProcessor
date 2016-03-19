@@ -13,9 +13,9 @@ port(	clk	: in std_logic;
 	PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	-- memory access
 	IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
-	IR_re	: out std_logic;
+	IR_re	: out std_logic := '1';
 	IR_data	: in std_logic_vector(DATA_WIDTH-1 downto 0);
-	IR_busy : in STD_LOGIC
+	IR_busy : in STD_LOGIC := '0'
 	);
 
 end entity;
