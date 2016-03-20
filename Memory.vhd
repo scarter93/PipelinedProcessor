@@ -27,21 +27,34 @@ end entity;
 
 architecture disc of MEMORY is
 
+constant LOAD_WORD : unsigned(5 downto 0) := "010100";
+constant LOAD_BYTE : unsigned(5 downto 0) := "010101";
+
+constant STORE_WORD : unsigned(5 downto 0) := "010110";
+constant STORE_BYTE : unsigned(5 downto 0) := "010111";
+
+
+
 signal op : unsigned(5 downto 0);
-signal reading : std_logic;
+signal reading, writing : std_logic := '0';
 begin
 
-op <= alu_result_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
+op <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
 ID_re <= reading;
+ID_we <= writing;
 
 update_values : process(clk)
 begin
 	if (rising_edge(clk)) then
 		if ((ID_busy = '0' and reading = '1')) then
 			reading <= '0';
-		elsif (op = "010100" or op = "010101") then
+		elsif (op = LOAD_WORD or op = LOAD_BYTE) then
 			reading <= '1';
-			ID_addr <= to_integer(op2_in);
+			writing <= '0';
+			ID_addr <= to_integer(alu_result_in);
+		elsif (op = STORE_WORD or op = STORE_BYTE) then
+			reading <= '0';
+			writing <= '1';
 		end if;
 	end if;
 end process;
