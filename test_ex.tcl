@@ -10,6 +10,9 @@ proc AddWaves {} {
     add wave -position end sim:/test_ex/op2_res
     add wave -position end sim:/test_ex/branch
     add wave -position end sim:/test_ex/IR_o
+    add wave -position end sim:/test_ex/dut/HILO
+    add wave -position end sim:/test_ex/dut/HI    add wave -position end sim:/test_ex/dut/LO
+    add wave -position end sim:/test_ex/dut/mult
 }
 
 

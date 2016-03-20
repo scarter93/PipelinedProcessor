@@ -45,7 +45,7 @@ signal HI	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 signal LO	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 signal HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
 
-signal multdivalu 	: std_logic_vector(2 downto 0) := "000";
+signal multdivalu : std_logic_vector(2 downto 0) := "000";
 signal shamt 	: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
 signal imm	: unsigned(15 downto 0);
 signal jaddr	: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
@@ -59,13 +59,23 @@ imm <= IR_in(15 downto 0);
 PC_temp <= PC_in + four;
 jaddr <= PC_temp(DATA_WIDTH-1 downto 28) & IR_in(25 downto 0) & "00";
 
-with multdivalu select HI <=
-	HILO(2*DATA_WIDTH-1 downto DATA_WIDTH) when "100",
-	HI when others;
+--process(clk)
+--begin
+--if rising_edge(clk) then
+--	case mult is
+--		when '1' =>
+--			HI <= HILO(2*DATA_WIDTH-1 downto DATA_WIDTH);
+--			LO <= HILO(DATA_WIDTH-1 downto 0);
+--		when others =>
+--			HI <= HI;
+--			LO <= LO;
+--	end case;
+--end if;
+--end process;
 
-with multdivalu select LO <=
-	HILO(DATA_WIDTH-1 downto 0) when "100",
-	LO when others;	
+--with mult select LO <=
+--	HILO(DATA_WIDTH-1 downto 0) when '1',
+--	LO when others;	
 
 IR_out <= IR_in;
 
@@ -97,6 +107,8 @@ begin
 			mult <= '1';
 			div <= '0';			
 			alu_op <= '0';
+			HI <= HILO(2*DATA_WIDTH-1 downto DATA_WIDTH);
+			LO <= HILO(DATA_WIDTH-1 downto 0);
 		when "000100" => --div
 			LO <= signed(op1) / signed(op2);
 			HI <= signed(op1) MOD signed(op2);
@@ -210,19 +222,21 @@ begin
 			alu_op <= '1';
 		when "010011" => --sra
 			alu_result <= unsigned(shift_right(signed(op2), to_integer(shamt)));
-						op2_out <= op2;
+			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "010100" => --lw
-			op2_out <= op1 + IMM_in;
+			alu_result <= op1 + IMM_in;
+			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "010101" => --lb
-			op2_out <= zeros(DATA_WIDTH-1 downto 8) & (op1(7 downto 0) + IMM_in(7 downto 0));
+			alu_result <= zeros(DATA_WIDTH-1 downto 8) & (op1(7 downto 0) + IMM_in(7 downto 0));
+			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';

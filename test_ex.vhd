@@ -88,16 +88,23 @@ BEGIN
 		WAIT FOR 1 * clk_period;
 		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SUB" SEVERITY ERROR;
 
---		REPORT "Mult test: 5, 6";
---		IR <= "000001" & (others => '0');
---		op1_test <= to_signed(5, 32);
---		op2_test <= to_signed(6, 32);
---		correct_HI <= to_signed(0, 32);
---		correct_LO <= to_signed(30, 32);
---		WAIT FOR 3 * clk_period;
---		ASSERT (LO = correct_LO) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN MUL HI" SEVERITY ERROR;
---		ASSERT (HI = correct_HI) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN MUL LO" SEVERITY ERROR;
---
+		REPORT "Mult and mfhi/mflo test: 5, 6";
+		IR <= "000011" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(5, 32);
+		op2_test <= to_unsigned(6, 32);
+		result_correct <= to_unsigned(30, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (op2_res = op2_test) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN op2_out" SEVERITY ERROR;
+		ASSERT (IR = IR_o) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN IR_out" SEVERITY ERROR;
+		ASSERT (branch = '0') REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN branch" SEVERITY ERROR;
+		IR <= "001111" & zeros(DATA_WIDTH-7 downto 0);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN result" SEVERITY ERROR;
+		IR <= "001110" & zeros(DATA_WIDTH-7 downto 0);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = zeros) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN result" SEVERITY ERROR;
+
+
 --		--REPORT "Mult test: 2147483647, 2";
 --		--IR <= "011000";
 --		--op1_test <= to_signed(2147483647, 32);
