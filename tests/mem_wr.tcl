@@ -6,9 +6,11 @@ proc AddWaves {} {
                                   -radix hex sim:/mem_wr_tb/memory_arbiter_t/main_memory/Block2/Memory\
                                   -radix hex sim:/mem_wr_tb/memory_arbiter_t/main_memory/Block3/Memory
 
-    add wave -group "Memory Arbiter" -position end sim:/mem_wr_tb/dut/*
+    add wave -group "Memory Arbiter" -position end -radix hex sim:/mem_wr_tb/memory_arbiter_t/*
 
-    add wave -group "Memory" -position end sim:/mem_wr_tb/dut/*
+    add wave -group "Memory" -radix hex sim:/mem_wr_tb/dut/*
+
+    add wave -position end -radix hex sim:/mem_wr_tb/ID_data
 }
   ;#Create the work library, which is the default library used by ModelSim
   vlib work
@@ -29,4 +31,4 @@ proc AddWaves {} {
   force -deposit /mem_wr_tb/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
   force -deposit /mem_wr_tb/memory_arbiter_t/busy1 0 0
 
-  run 50ns
+  run 70ns

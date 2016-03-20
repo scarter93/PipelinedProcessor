@@ -17,7 +17,7 @@ port(	clk	: in std_logic;
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	-- memory access
 	ID_addr	: out NATURAL := 0;
-	ID_data	: in STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+	ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 	ID_re	: out STD_LOGIC;
 	ID_we	: out STD_LOGIC;
 	ID_busy	: in STD_LOGIC

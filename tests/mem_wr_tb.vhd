@@ -35,10 +35,12 @@ signal IR_busy	: std_logic;
 
 -- Memory Port #2
 signal ID_addr	: natural;
-signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal mem_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
 signal ID_re	: std_logic;
 signal ID_we	: std_logic;
 signal ID_busy	: std_logic;
+
+signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
 
 component MEMORY is
 
@@ -54,7 +56,7 @@ component MEMORY is
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		ID_addr	: out NATURAL;
-		ID_data	: in STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+		ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 		ID_re	: out STD_LOGIC;
 		ID_we	: out STD_LOGIC;
 		ID_busy	: in STD_LOGIC
@@ -99,7 +101,7 @@ begin
 			alu_result_out => alu_result_out,
 			IR_out => IR_out,
 			ID_addr => ID_addr,
-			ID_data => ID_data,
+			ID_data => mem_data,
 			ID_re => ID_re,
 			ID_we => ID_we,
 			ID_busy => ID_busy
@@ -122,6 +124,10 @@ begin
 			we2 => IR_we,
 			busy2 => IR_busy
 		);
+
+--with ID_we select ID_data  <= 
+--	mem_data when '1',
+--	(others => 'Z') when others;
 
 -- clock process
 clk_process : process
@@ -167,6 +173,14 @@ begin
 	REPORT "WRITING TO 0x00000000";
 	alu_result <= x"8BADF00D";
 	IR <= "01011000000000000000000000000000";
+	wait for 10 * clk_period;
+------------------------------------------------------------------------
+---------------------------Read Back------------------------------------
+------------------------------------------------------------------------
+	REPORT "Reading back 0x00000000";
+	alu_result <= x"00000000";
+	IR <= "01010000000000000000000000000000";
+	wait for 10 * clk_period;
 ------------------------------------------------------------------------
 -----------------------------Done---------------------------------------
 ------------------------------------------------------------------------
