@@ -9,7 +9,7 @@ generic ( DATA_WIDTH : integer := 32
 port(   clk     : in std_logic;
 	memory	: in unsigned(DATA_WIDTH-1 downto 0);
 	alu_result	: in unsigned(DATA_WIDTH-1 downto 0);
-    mem_to_reg  : in std_logic;
+	mem_to_reg  : in std_logic;
 	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	WB	: out unsigned(DATA_WIDTH-1 downto 0)

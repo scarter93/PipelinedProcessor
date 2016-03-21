@@ -49,7 +49,7 @@ signal IMM	: unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
 
 -- STAGE 5 IN
 signal data_memory	: unsigned(DATA_WIDTH-1 downto 0);
-
+signal mem_to_reg	: std_logic := '0';
 -- MULTISTAGE IO
 signal IR_1, IR_2, IR_3, IR_4, IR_5 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
 signal PC_1, PC_2, PC_3 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
@@ -107,7 +107,8 @@ component INSTRUCTION_DECODE is
 
 	generic ( DATA_WIDTH : integer := 32
 		);
-	port( 	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
+	port( 	clk	: in std_logic;
+		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		PC_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		MEM	: in unsigned(DATA_WIDTH-1 downto 0);	-- location to write back
 		WB_IR	: in unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
@@ -125,7 +126,8 @@ component EXECUTE is
 
 	generic ( DATA_WIDTH : integer := 32
 		);
-	port(	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
+	port(	clk	: in std_logic;
+		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		PC_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		IMM_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		op1	: in unsigned(DATA_WIDTH-1 downto 0);
@@ -164,10 +166,10 @@ end component;
 -- Stage 5 --
 component WRITE_BACK is
 
-	generic ( DATA_WIDTH : integer := 32
-		);
-	port(	memory	: in unsigned(DATA_WIDTH-1 downto 0);
+	port(   clk     : in std_logic;
+		memory	: in unsigned(DATA_WIDTH-1 downto 0);
 		alu_result	: in unsigned(DATA_WIDTH-1 downto 0);
+		mem_to_reg	: in std_logic;
 		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		WB	: out unsigned(DATA_WIDTH-1 downto 0)
@@ -228,6 +230,7 @@ fetch : INSTRUCTION_FETCH
 
 decode : INSTRUCTION_DECODE
 	port map (
+		clk => clk,
 		IR_in => IR_1,
 		PC_in => PC_1,
 		MEM => MEM,
@@ -241,6 +244,7 @@ decode : INSTRUCTION_DECODE
 
 execute_t : EXECUTE 
 	port map (
+		clk => clk,
 		IR_in => IR_2,
 		PC_in => PC_2,
 		IMM_in => IMM,
@@ -272,8 +276,10 @@ memory_t : MEMORY
 
 write_back_t : WRITE_BACK
 	port map (
+		clk => clk,
 		memory => data_memory,
 		alu_result => alu_result_4,
+		mem_to_reg => mem_to_reg,
 		IR_in => IR_4,
 		IR_out => IR_5,
 		WB => WB_IR
