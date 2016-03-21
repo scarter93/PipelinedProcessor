@@ -13,6 +13,14 @@ proc AddWaves {} {
                             -radix dec sim:/pipelinedprocessor/fetch/IR_re\
                             -radix dec sim:/pipelinedprocessor/fetch/branch_taken\
                             -radix dec sim:/pipelinedprocessor/fetch/branch_pc
+
+    add wave -group "Decode" -radix dec sim:/pipelinedprocessor/decode/*
+
+    add wave -group "Execute" -radix dec sim:/pipelinedprocessor/execute_t/*
+
+    add wave -group "Memory" -radix dec sim:/pipelinedprocessor/memory_t/*
+
+    add wave -group "Write Back" -radix dec sim:/pipelinedprocessor/write_back_t/*
 }
 
   ;#Create the work library, which is the default library used by ModelSim
@@ -40,4 +48,4 @@ proc AddWaves {} {
 
   ;#force -deposit /pipelinedprocessor/reset 1 1 ns, 0 2 ns
 
-  run 50 ns
+  run 20 ns

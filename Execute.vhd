@@ -77,10 +77,10 @@ jaddr <= PC_temp(DATA_WIDTH-1 downto 28) & IR_in(25 downto 0) & "00";
 --	HILO(DATA_WIDTH-1 downto 0) when '1',
 --	LO when others;	
 
-IR_out <= IR_in;
-
 process(clk)
 begin
+
+	IR_out <= IR_in;
 
 	case operation is
 		when "000000" => --add
