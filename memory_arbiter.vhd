@@ -91,12 +91,14 @@ main_memory : ENTITY work.Main_Memory
             state <= start_reading;
           elsif we1 = '1' then
             current_port <= p1;
+            data1 <= (others => 'Z');
             state <= start_writing;
           elsif re2 = '1' then
             current_port <= p2;
             state <= start_reading;
           elsif we2 = '1' then
             current_port <= p2;
+            data1 <= (others => 'Z');
             state <= start_writing;
           end if;
         

@@ -33,4 +33,4 @@ proc AddWaves {} {
   force -deposit /mem_wr_tb/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
   force -deposit /mem_wr_tb/memory_arbiter_t/busy1 0 0
 
-  run 70ns
+  run 31ns
