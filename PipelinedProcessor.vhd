@@ -33,7 +33,7 @@ signal branch_pc	: unsigned(DATA_WIDTH-1 downto 0);
 -- IR, PC
 -- inputs from stage 5
 signal MEM	: unsigned(DATA_WIDTH-1 downto 0);	-- location to write back
-signal WB_IR	: unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
+signal WB	: unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
 
 -- STAGE 3 IN
 -- inputs from stage 2
@@ -239,7 +239,7 @@ decode : INSTRUCTION_DECODE
 		clk => clk,
 		IR_in => IR_1,
 		PC_in => PC_1,
-		MEM => WB_IR,
+		MEM => WB,
 		WB_IR => IR_5,
 		IR_out => IR_2,
 		PC_out => PC_2,
@@ -288,7 +288,7 @@ write_back_t : WRITE_BACK
 		mem_to_reg => mem_to_reg,
 		IR_in => IR_4,
 		IR_out => IR_5,
-		WB => WB_IR
+		WB => WB
 	);
 
 memory_arbiter_t : memory_arbiter
