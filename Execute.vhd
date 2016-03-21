@@ -128,11 +128,11 @@ begin
 			alu_op <= '0';
 		when "000110" => --slti
 			if op1 < IMM_in then
-				op2_out <= (others => '1');
+				alu_result <= (others => '1');
 			else
-				op2_out <= (others => '0');
+				alu_result <= (others => '0');
 			end if;
-			alu_result <= (others => 'Z');
+			op2_out <= op2;
 			mult <= '0';
 			div <= '0';
 			alu_op <= '0';
@@ -165,22 +165,22 @@ begin
 			div <= '0';
 			alu_op <= '1';
 		when "001011" => --andi
-			op2_out <= op1 AND IMM_in;
-			alu_result <= (others => 'Z');
+			alu_result <= op1 AND IMM_in;
+			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001100" => --ori
-			op2_out <= op1 OR IMM_in;
-			alu_result <= (others => 'Z');
+			alu_result <= op1 OR IMM_in;
+			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
 			alu_op <= '1';
 		when "001101" => --xori
-			op2_out <= op1 XOR IMM_in;
-			alu_result <= (others => 'Z');
+			alu_result <= op1 XOR IMM_in;
+			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
@@ -200,8 +200,8 @@ begin
 			div <= '0';
 			alu_op <= '0';
 		when "010000" => --lui
-			op2_out <= IMM_in(DATA_WIDTH-1 downto DATA_WIDTH/2) & zeros((DATA_WIDTH/2)-1 downto 0);
-			alu_result <= (others => 'Z');
+			alu_result <= IMM_in(DATA_WIDTH-1 downto DATA_WIDTH/2) & zeros((DATA_WIDTH/2)-1 downto 0);
+			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
 			div <= '0';
