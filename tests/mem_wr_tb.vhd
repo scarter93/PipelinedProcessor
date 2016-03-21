@@ -146,7 +146,14 @@ begin
 	REPORT "READING FROM 0x00000000";
 	alu_result <= x"00000000";
 	IR <= "01010000000000000000000000000000";
-	wait for 7 * clk_period;
+	
+	while (ID_busy = '0') loop
+		wait for 1 * clk_period;
+	end loop;
+	while (ID_busy = '1') loop
+		wait for 1 * clk_period;
+	end loop;
+
 	ASSERT (ID_data = x"DEADBEEF") REPORT "Read Improperly: ";
 ------------------------------------------------------------------------
 --------------------------Read More-------------------------------------
@@ -154,17 +161,38 @@ begin
 	REPORT "READING FROM 0x00000010";
 	alu_result <= x"00000010";
 	IR <= "01010000000000000000000000000000";
-	wait for 10 * clk_period;
+		
+	while (ID_busy = '0') loop
+		wait for 1 * clk_period;
+	end loop;
+	while (ID_busy = '1') loop
+		wait for 1 * clk_period;
+	end loop;
+
 	ASSERT (ID_data = x"00000010") REPORT "Read 0x00000010 Improperly";
 	REPORT "READING FROM 0x000000FF";
 	alu_result <= x"00000100";
 	IR <= "01010000000000000000000000000000";
-	wait for 10 * clk_period;
+		
+	while (ID_busy = '0') loop
+		wait for 1 * clk_period;
+	end loop;
+	while (ID_busy = '1') loop
+		wait for 1 * clk_period;
+	end loop;
+
 	ASSERT (ID_data = x"00000100") REPORT "Read 0x00000100 Improperly: ";
 	REPORT "READING FROM 0x000000F4";
 	alu_result <= x"000000F4";
 	IR <= "01010000000000000000000000000000";
-	wait for 10 * clk_period;
+		
+	while (ID_busy = '0') loop
+		wait for 1 * clk_period;
+	end loop;
+	while (ID_busy = '1') loop
+		wait for 1 * clk_period;
+	end loop;
+
 	ASSERT (ID_data = x"000000F4") REPORT "Read Improperly: ";
 
 ------------------------------------------------------------------------
