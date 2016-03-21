@@ -1,0 +1,26 @@
+proc AddWaves {} {
+	;#Add waves we're interested in to the Wave window
+    add wave -position end sim:/fetch_pc_tb/clk
+    add wave -position end sim:/fetch_pc_tb/branch_taken
+    add wave -position end sim:/fetch_pc_tb/branch_pc
+    add wave -position end sim:/fetch_pc_tb/IR
+    add wave -position end sim:/fetch_pc_tb/PC_out
+}
+
+vlib work
+
+;# Compile components if any
+vcom Fetch.vhd
+vcom -check_synthesis tests/fetch_pc_tb.vhd
+
+;# Start simulation
+vsim fetch_pc_tb
+
+;# Generate a clock with 1ns period
+force -deposit clk 0 0 ns, 1 0.5 ns -repeat 1 ns
+
+;# Add the waves
+AddWaves
+
+;# Run for 50 ns
+run 40ns
