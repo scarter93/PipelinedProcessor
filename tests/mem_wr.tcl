@@ -11,6 +11,8 @@ proc AddWaves {} {
     add wave -group "Memory" -radix hex sim:/mem_wr_tb/dut/*
 
     add wave -position end -radix hex sim:/mem_wr_tb/ID_data
+
+    add wave -position end -radix hex sim:/mem_wr_tb/mem_data
 }
   ;#Create the work library, which is the default library used by ModelSim
   vlib work

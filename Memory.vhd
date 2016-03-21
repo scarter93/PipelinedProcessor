@@ -35,24 +35,38 @@ constant STORE_BYTE : unsigned(5 downto 0) := "010111";
 
 
 
-signal op : unsigned(5 downto 0);
+signal operation : unsigned(5 downto 0);
 signal reading, writing : std_logic := '0';
 begin
 
-op <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
+-- TODO: clock gate?
+
+operation <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
 ID_re <= reading;
 ID_we <= writing;
+IR_out <= IR_in;
+alu_result_out <= alu_result_in;
+
+process(writing)
+begin
+       if (writing = '1') then
+               ID_data <= std_logic_vector(op2_in);
+       else
+               ID_data <= (others=>'Z');
+       end if;
+end process;
+
 
 update_values : process(clk)
 begin
-	if (rising_edge(clk)) then
+	if (falling_edge(clk)) then
 		if ((ID_busy = '0' and reading = '1')) then
 			reading <= '0';
-		elsif (op = LOAD_WORD or op = LOAD_BYTE) then
+		elsif (operation = LOAD_WORD or operation = LOAD_BYTE) then
 			reading <= '1';
 			writing <= '0';
 			ID_addr <= to_integer(alu_result_in);
-		elsif (op = STORE_WORD or op = STORE_BYTE) then
+		elsif (operation = STORE_WORD or operation = STORE_BYTE) then
 			reading <= '0';
 			writing <= '1';
 		end if;

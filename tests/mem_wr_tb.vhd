@@ -15,13 +15,13 @@ constant clk_period : time := 1 ns;
 signal clk : std_logic;
 signal reset : std_logic;
 signal branch_taken : std_logic;
-signal alu_result	: unsigned(DATA_WIDTH-1 downto 0);
-signal op2	: unsigned(DATA_WIDTH-1 downto 0);
-signal IR	: unsigned(DATA_WIDTH-1 downto 0);
-signal data_memory	: unsigned(DATA_WIDTH-1 downto 0);
+signal alu_result	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal op2	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal IR	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal data_memory	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 signal branch_taken_out : std_logic;
-signal alu_result_out	: unsigned(DATA_WIDTH-1 downto 0);
-signal IR_out	: unsigned(DATA_WIDTH-1 downto 0);
+signal alu_result_out	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal IR_out	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
 -- MEMORY ARBITER
 -- conversions
@@ -125,16 +125,16 @@ begin
 			busy2 => IR_busy
 		);
 
---with ID_we select ID_data  <= 
---	mem_data when '1',
---	(others => 'Z') when others;
+with ID_we select ID_data  <= 
+	mem_data when '1',
+	(others => 'Z') when others;
 
 -- clock process
 clk_process : process
 begin
-	clk <= '0';
-	wait for clk_period/2;
 	clk <= '1';
+	wait for clk_period/2;
+	clk <= '0';
 	wait for clk_period/2;
 end process;
 
@@ -144,7 +144,7 @@ begin
 -----------------------Read from Memory---------------------------------
 ------------------------------------------------------------------------
 	REPORT "READING FROM 0x00000000";
-	op2 <= x"00000000";
+	alu_result <= x"00000000";
 	IR <= "01010000000000000000000000000000";
 	wait for 7 * clk_period;
 	ASSERT (ID_data = x"DEADBEEF") REPORT "Read Improperly: ";
@@ -171,7 +171,8 @@ begin
 ------------------------Write to Memory---------------------------------
 ------------------------------------------------------------------------
 	REPORT "WRITING TO 0x00000000";
-	alu_result <= x"8BADF00D";
+	alu_result <= x"00000000";
+	op2 <= x"8BADF00D";
 	IR <= "01011000000000000000000000000000";
 	wait for 10 * clk_period;
 ------------------------------------------------------------------------
