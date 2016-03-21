@@ -39,14 +39,18 @@ signal operation : unsigned(5 downto 0);
 signal reading, writing : std_logic := '0';
 begin
 
--- TODO: clock gate?
-
 operation <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
 ID_re <= reading;
 ID_we <= writing;
-IR_out <= IR_in;
-alu_result_out <= alu_result_in;
 
+clocked : process(clk)
+begin
+	if (rising_edge(clk)) then
+		IR_out <= IR_in;
+		alu_result_out <= alu_result_in;
+	end if;
+end process;
+	
 process(writing)
 begin
        if (writing = '1') then
