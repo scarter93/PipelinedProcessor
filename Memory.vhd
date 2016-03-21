@@ -69,6 +69,7 @@ begin
 		elsif (operation = STORE_WORD or operation = STORE_BYTE) then
 			reading <= '0';
 			writing <= '1';
+			ID_addr <= to_integer(alu_result_in);
 		end if;
 	end if;
 end process;
