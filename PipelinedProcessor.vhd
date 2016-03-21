@@ -49,6 +49,7 @@ signal IMM	: unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
 
 -- STAGE 5 IN
 signal data_memory	: unsigned(DATA_WIDTH-1 downto 0);
+signal mem_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
 signal mem_to_reg	: std_logic := '0';
 -- MULTISTAGE IO
 signal IR_1, IR_2, IR_3, IR_4, IR_5 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
@@ -155,7 +156,7 @@ component MEMORY is
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		ID_addr	: out NATURAL;
-		ID_data	: in STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+		ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 		ID_re	: out STD_LOGIC;
 		ID_we	: out STD_LOGIC;
 		ID_busy	: in STD_LOGIC
@@ -210,6 +211,11 @@ begin
 -- hardwired signals --
 -----------------------
 IR_addr_nat <= to_integer(IR_addr);
+
+with ID_we select ID_data  <= 
+	mem_data when '1',
+	(others => 'Z') when others;
+
 --ID_addr_nat <= to_integer(ID_addr);
 ------------------------------
 -- component initialization --
@@ -257,22 +263,22 @@ execute_t : EXECUTE
 	);
 
 memory_t : MEMORY
-	port map (
-		clk => clk,
-		branch_taken => branch_taken_3,
-		alu_result_in => alu_result_3,
-		op2_in => op2_3,
-		IR_in => IR_3,
-		memory => data_memory,
-		branch_taken_out => branch_taken_4,
-		alu_result_out => alu_result_4,
-		IR_out => IR_4,
-		ID_addr => ID_addr,
-		ID_data => ID_data,
-		ID_re => ID_re,
-		ID_we => ID_we,
-		ID_busy => ID_busy
-	);
+		port map (
+			clk => clk,
+			branch_taken => branch_taken_3,
+			alu_result_in => alu_result_3,
+			op2_in => op2_3,
+			IR_in => IR_3,
+			memory => data_memory,
+			branch_taken_out => branch_taken_4,
+			alu_result_out => alu_result_4,
+			IR_out => IR_4,
+			ID_addr => ID_addr,
+			ID_data => mem_data,
+			ID_re => ID_re,
+			ID_we => ID_we,
+			ID_busy => ID_busy
+		);
 
 write_back_t : WRITE_BACK
 	port map (
