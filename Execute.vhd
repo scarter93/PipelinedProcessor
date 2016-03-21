@@ -235,7 +235,7 @@ begin
 			div <= '0';
 			alu_op <= '1';
 		when "010101" => --lb
-			alu_result <= zeros(DATA_WIDTH-1 downto 8) & (op1(7 downto 0) + IMM_in(7 downto 0));
+			alu_result <= op1 + IMM_in;
 			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
@@ -249,7 +249,7 @@ begin
 			div <= '0';
 			alu_op <= '1';
 		when "010111" => --sb
-			alu_result <= zeros(DATA_WIDTH-1 downto 8) & (op1(7 downto 0) + IMM_in(7 downto 0));
+			alu_result <= op1 + IMM_in;
 			op2_out <= op2;
 			branch_taken <= '0';
 			mult <= '0';
