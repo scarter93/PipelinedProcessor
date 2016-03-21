@@ -97,8 +97,8 @@ begin
 				div <= '0';
 				alu_op <= '1';
 			when "000010" => --addi
-				op2_out <= unsigned(signed(op1) + signed(IMM_in));
-				alu_result <= (others => 'Z');
+				alu_result <= unsigned(signed(op1) + signed(IMM_in));
+				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
 				alu_op <= '1';
