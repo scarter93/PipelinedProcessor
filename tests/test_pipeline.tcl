@@ -48,4 +48,4 @@ proc AddWaves {} {
 
   ;#force -deposit /pipelinedprocessor/reset 1 1 ns, 0 2 ns
 
-  run 20 ns
+  run 30 ns

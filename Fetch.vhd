@@ -28,9 +28,12 @@ signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
 begin
 
-PC_out <= PC;
-IR_pc <= PC;
-IR <= unsigned(IR_data);
+clockgate : process(clk)
+begin 
+	PC_out <= PC;
+	IR_pc <= PC;
+	IR <= unsigned(IR_data);
+end process;
 
 -- always read next instruction
 IR_re <= '1';
