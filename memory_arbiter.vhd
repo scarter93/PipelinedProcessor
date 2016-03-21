@@ -50,8 +50,8 @@ main_memory : ENTITY work.Main_Memory
       GENERIC MAP (
 				Num_Bytes_in_Word	=> NUM_BYTES_IN_WORD,
 				Num_Bits_in_Byte 	=> NUM_BITS_IN_BYTE,
-        Read_Delay        => 3, 
-        Write_Delay       => 3
+        Read_Delay        => 0, 
+        Write_Delay       => 0
       )
       PORT MAP (
         clk         => clk,
