@@ -39,6 +39,7 @@ signal result, result_correct : unsigned(DATA_WIDTH-1 downto 0);
 signal correct_HI, correct_LO, LO, HI : unsigned(DATA_WIDTH-1 downto 0);
 signal PC : unsigned(DATA_WIDTH-1 downto 0) := (others =>  '0');
 signal zeros : unsigned(DATA_WIDTH-1 downto 0) := (others =>  '0');
+signal ones : unsigned(DATA_WIDTH-1 downto 0) := (others =>  '1');
 signal imm : unsigned(DATA_WIDTH-1 downto 0) := (others =>  '0');
 signal op2_res : unsigned(DATA_WIDTH-1 downto 0) := (others =>  '0');
 signal branch : std_logic;
@@ -90,8 +91,8 @@ BEGIN
 
 		REPORT "Mult and mfhi/mflo test: 5, 6";
 		IR <= "000011" & zeros(DATA_WIDTH-7 downto 0);
-		op1_test <= to_unsigned(5, 32);
-		op2_test <= to_unsigned(6, 32);
+		op1_test <= to_unsigned(5, DATA_WIDTH);
+		op2_test <= to_unsigned(6, DATA_WIDTH);
 		result_correct <= to_unsigned(30, DATA_WIDTH);
 		WAIT FOR 1 * clk_period;
 		ASSERT (op2_res = op2_test) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN op2_out" SEVERITY ERROR;
@@ -99,82 +100,220 @@ BEGIN
 		ASSERT (branch = '0') REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN branch" SEVERITY ERROR;
 		IR <= "001111" & zeros(DATA_WIDTH-7 downto 0);
 		WAIT FOR 1 * clk_period;
-		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN result" SEVERITY ERROR;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN LO result" SEVERITY ERROR;
 		IR <= "001110" & zeros(DATA_WIDTH-7 downto 0);
 		WAIT FOR 1 * clk_period;
-		ASSERT (result = zeros) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN result" SEVERITY ERROR;
+		ASSERT (result = zeros) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN HI result" SEVERITY ERROR;
 
 
---		--REPORT "Mult test: 2147483647, 2";
---		--IR <= "011000";
---		--op1_test <= to_signed(2147483647, 32);
---		--op2_test <= to_signed(2, 32);
---		--correct_HI <= to_signed(0, 32);
---		--correct_LO <= to_signed(0, 32);
---		--WAIT FOR 3 * clk_period;
---		--ASSERT (LO = correct_LO) REPORT "ERROR IN MUL HI" SEVERITY ERROR;
---		--ASSERT (HI = correct_HI) REPORT "ERROR IN MUL LO" SEVERITY ERROR;
---
---		REPORT "Div test: 300, 50";
---		IR <= "011010";
---		op1_test <= to_signed(300, 32);
---		op2_test <= to_signed(50, 32);
---		correct_HI <= to_signed(0, 32);
---		correct_LO <= to_signed(6, 32);
---		WAIT FOR 3 * clk_period;
---		ASSERT (LO = correct_LO) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN DIV HI" SEVERITY ERROR;
---		ASSERT (HI = correct_HI) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN DIV LO" SEVERITY ERROR;
---
---		REPORT "Div test: 34, 5";
---		IR <= "011010";
---		op1_test <= to_signed(34, 32);
---		op2_test <= to_signed(5, 32);
---		correct_HI <= to_signed(4, 32);
---		correct_LO <= to_signed(6, 32);
---		WAIT FOR 3 * clk_period;
---		ASSERT (LO = correct_LO) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN DIV HI" SEVERITY ERROR;
---		ASSERT (HI = correct_HI) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN DIV LO" SEVERITY ERROR;
---
---		REPORT "XOR test";
---		IR <= "100110";
---		op1_test <= to_signed(364836, 32);
---		op2_test <= to_signed(947376, 32);
---		result_correct <= to_signed(779668, 32);
---		WAIT FOR 1 * clk_period;
---		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN XOR" SEVERITY ERROR;
---
---		REPORT "SHIFT LEFT test";
---		IR <= "000000";
---		op1_test <= to_signed(40, 32);
---		op2_test <= to_signed(1, 32);
---		result_correct <= to_signed(80, 32);
---		WAIT FOR 1 * clk_period;
---		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SHIFT LEFT" SEVERITY ERROR;
---
---		REPORT "SHIFT RIGHT LOGICAL test";
---		IR <= "000010";
---		op1_test <= to_signed(40, 32);
---		op2_test <= to_signed(1, 32);
---		result_correct <= to_signed(20, 32);
---		WAIT FOR 1 * clk_period;
---		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SHIFT RIGHT LOGICAL" SEVERITY ERROR;
---
---		REPORT "SHIFT RIGHT ARITHMETIC test";
---		IR <= "000011";
---		op1_test <= to_signed(40, 32);
---		op2_test <= to_signed(1, 32);
---		result_correct <= to_signed(20, 32);
---		WAIT FOR 1 * clk_period;
---		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SHIFT RIGHT ARITHMETIC" SEVERITY ERROR;
---
---		REPORT "SHIFT RIGHT ARITHMETIC test: Negative";
---		IR <= "000011";
---		op1_test <= to_signed(-40, 32);
---		op2_test <= to_signed(1, 32);
---		result_correct <= to_signed(-20, 32);
---		WAIT FOR 1 * clk_period;
---		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SHIFT RIGHT ARITHMETIC" SEVERITY ERROR;
-	wait;
+		REPORT "Div test: 300, 34 and mfhi,mflo";
+		IR <= "000100" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(300, DATA_WIDTH);
+		op2_test <= to_unsigned(34, DATA_WIDTH);
+		correct_HI <= to_unsigned(28, DATA_WIDTH);
+		correct_LO <= to_unsigned(8, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (op2_res = op2_test) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN op2_out" SEVERITY ERROR;
+		ASSERT (IR = IR_o) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN IR_out" SEVERITY ERROR;
+		ASSERT (branch = '0') REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN branch" SEVERITY ERROR;
+		IR <= "001111" & zeros(DATA_WIDTH-7 downto 0);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = correct_LO) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN result" SEVERITY ERROR;
+		IR <= "001110" & zeros(DATA_WIDTH-7 downto 0);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = correct_HI) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN result" SEVERITY ERROR;
+		
+		REPORT "slt test: 0 5";
+		IR <= "000101" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(0, DATA_WIDTH);
+		op2_test <= to_unsigned(5, DATA_WIDTH);
+		result_correct <= (others => '1');
+		WAIT FOR 1* clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN slt" SEVERITY ERROR;
+
+		REPORT "slti test: 5 0";
+		IR <= "000110" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(5, DATA_WIDTH);
+		imm <= to_unsigned(0, DATA_WIDTH);
+		result_correct <= (others => '0');
+		WAIT FOR 1* clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN slt" SEVERITY ERROR;
+
+		REPORT "and test: 3 5";
+		IR <= "000111" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(3, DATA_WIDTH);
+		op2_test <= to_unsigned(5, DATA_WIDTH);
+		result_correct <= to_unsigned(1, DATA_WIDTH);
+		WAIT FOR 1* clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN and" SEVERITY ERROR;
+
+		REPORT "or test: 5 0";
+		IR <= "001000" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(5, DATA_WIDTH);
+		op2_test <= to_unsigned(0, DATA_WIDTH);
+		result_correct <= to_unsigned(5, DATA_WIDTH);
+		WAIT FOR 1* clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN or" SEVERITY ERROR;
+
+		REPORT "nor test: 3 7";
+		IR <= "001000" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(3, DATA_WIDTH);
+		op2_test <= to_unsigned(6, DATA_WIDTH);
+		result_correct <= to_unsigned(7, DATA_WIDTH);
+		WAIT FOR 1* clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN nor" SEVERITY ERROR;
+		
+		REPORT "XOR test";
+		IR <= "001010" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(364836, DATA_WIDTH);
+		op2_test <= to_unsigned(129090, DATA_WIDTH);
+		result_correct <= to_unsigned(289126, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN xor" SEVERITY ERROR;
+
+		REPORT "andi test: 3 5";
+		IR <= "001011" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(3, DATA_WIDTH);
+		imm <= to_unsigned(5, DATA_WIDTH);
+		result_correct <= to_unsigned(1, DATA_WIDTH);
+		WAIT FOR 1* clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN andi" SEVERITY ERROR;
+
+		REPORT "ori test: 5 0";
+		IR <= "001100" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(5, DATA_WIDTH);
+		imm <= to_unsigned(0, DATA_WIDTH);
+		result_correct <= to_unsigned(5, DATA_WIDTH);
+		WAIT FOR 1* clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN ori" SEVERITY ERROR;
+
+		REPORT "xori test";
+		IR <= "001101" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(364836, DATA_WIDTH);
+		imm <= to_unsigned(129090, DATA_WIDTH);
+		result_correct <= to_unsigned(289126, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN xori" SEVERITY ERROR;
+		
+		REPORT "lui test";
+		IR <= "010000" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(364836, DATA_WIDTH);
+		imm <= (others => '1');
+		result_correct <= ones(DATA_WIDTH-1 downto 16) & zeros(15 downto 0);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN lui" SEVERITY ERROR;
+
+		REPORT "SHIFT LEFT LOGICAL test";
+		IR <= "010001" & zeros(DATA_WIDTH-7 downto 11) & "00001000000";
+		op2_test <= to_unsigned(40, DATA_WIDTH);
+		--op2_test <= to_unsigned(1, DATA_WIDTH);
+		result_correct <= to_unsigned(80, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SHIFT LEFT" SEVERITY ERROR;
+
+		REPORT "SHIFT RIGHT LOGICAL test";
+		IR <= "010010" & zeros(DATA_WIDTH-7 downto 11) & "00001000000";
+		op2_test <= to_unsigned(40, DATA_WIDTH);
+		--op2_test <= to_unsigned(1, DATA_WIDTH);
+		result_correct <= to_unsigned(20, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SHIFT RIGHT LOGICAL" SEVERITY ERROR;
+
+		REPORT "SHIFT RIGHT ARITHMETIC test";
+		IR <= "010011" & zeros(DATA_WIDTH-7 downto 11) & "00001000000";
+		op2_test <= to_unsigned(40, DATA_WIDTH);
+		--op2_test <= to_unsigned(1, DATA_WIDTH);
+		result_correct <= to_unsigned(20, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SHIFT RIGHT ARITHMETIC" SEVERITY ERROR;
+
+		REPORT "SHIFT RIGHT ARITHMETIC test: Negative";
+		IR <= "010011" & zeros(DATA_WIDTH-7 downto 11) & "00001000000";
+		op2_test <= unsigned(to_signed(-40, DATA_WIDTH));
+		--op2_test <= to_unsigned(1, DATA_WIDTH);
+		result_correct <= unsigned(to_signed(-20, DATA_WIDTH));
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN SHIFT RIGHT ARITHMETIC" SEVERITY ERROR;
+		
+		REPORT "lw test";
+		IR <= "010100" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(32, DATA_WIDTH);
+		imm <= to_unsigned(4, DATA_WIDTH);
+		result_correct <= to_unsigned(36, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN lw" SEVERITY ERROR;	
+	
+		REPORT "lb test";
+		IR <= "010101" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(28, DATA_WIDTH);
+		imm <= to_unsigned(4, DATA_WIDTH);
+		result_correct <= to_unsigned(32, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN lb" SEVERITY ERROR;	
+
+		REPORT "sw test";
+		IR <= "010110" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(32, DATA_WIDTH);
+		imm <= to_unsigned(4, DATA_WIDTH);
+		result_correct <= to_unsigned(36, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN sw" SEVERITY ERROR;	
+
+		REPORT "sb test";
+		IR <= "010111" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(28, DATA_WIDTH);
+		imm <= to_unsigned(4, DATA_WIDTH);
+		result_correct <= to_unsigned(32, DATA_WIDTH);
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN sb" SEVERITY ERROR;		
+		
+		REPORT "beq test";
+		IR <= "011000" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(32, DATA_WIDTH);
+		op2_test <= to_unsigned(32, DATA_WIDTH);
+		result_correct <= PC + to_unsigned(integer(4), DATA_WIDTH) + zeros;
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN beq" SEVERITY ERROR;	
+		ASSERT (branch = '1') REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN branch" SEVERITY ERROR;
+
+		REPORT "bne test";
+		IR <= "011001" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(28, DATA_WIDTH);
+		op2_test <= to_unsigned(28, DATA_WIDTH);
+		--result_correct <= PC + to_unsigned(integer(4), DATA_WIDTH) + zeros;;
+		WAIT FOR 1 * clk_period;
+		--ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN bne" SEVERITY ERROR;	
+		ASSERT (branch = '0') REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN branch" SEVERITY ERROR;
+
+		REPORT "j test";
+		IR <= "011010" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(20, DATA_WIDTH);
+		--imm <= to_unsigned(4, DATA_WIDTH);
+		result_correct <= (others => '0');
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN j" SEVERITY ERROR;	
+		ASSERT (branch = '1') REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN branch" SEVERITY ERROR;
+
+		REPORT "jr test";
+		IR <= "011010" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(20, DATA_WIDTH);
+		--imm <= to_unsigned(4, DATA_WIDTH);
+		result_correct <= (others => '0');
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN jr" SEVERITY ERROR;	
+		ASSERT (branch = '1') REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN branch" SEVERITY ERROR;
+
+		REPORT "jal test";
+		IR <= "011010" & zeros(DATA_WIDTH-7 downto 0);
+		op1_test <= to_unsigned(20, DATA_WIDTH);
+		--imm <= to_unsigned(4, DATA_WIDTH);
+		result_correct <= (others => '0');
+		WAIT FOR 1 * clk_period;
+		ASSERT (result = result_correct) REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN sw" SEVERITY ERROR;	
+		ASSERT (branch = '1') REPORT ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ERROR IN branch" SEVERITY ERROR;
+
+
+		wait;
 
 	END PROCESS;
 END architecture;

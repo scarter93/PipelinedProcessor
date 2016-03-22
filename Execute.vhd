@@ -42,7 +42,7 @@ signal div	: std_logic := '0';
 signal alu_op	: std_logic := '0';
 
 signal HI	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
-signal LO	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
+signal LO	: signed(DATA_WIDTH-1 downto 0);
 signal HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
 
 signal multdivalu : std_logic_vector(2 downto 0) := "000";
@@ -58,7 +58,6 @@ multdivalu <= mult & div & alu_op;
 imm <= IR_in(15 downto 0);
 PC_temp <= PC_in + four;
 jaddr <= PC_temp(DATA_WIDTH-1 downto 28) & IR_in(25 downto 0) & "00";
-
 --process(clk)
 --begin
 --if rising_edge(clk) then
@@ -80,9 +79,17 @@ jaddr <= PC_temp(DATA_WIDTH-1 downto 28) & IR_in(25 downto 0) & "00";
 process(clk)
 begin
 
+	case mult is
+		when '1' =>
+			LO <= HILO(DATA_WIDTH-1 downto 0);
+		when others =>
+			LO <= LO;
+	end case;
+
+
 	if rising_edge(clk) then
 		IR_out <= IR_in;
-	
+		
 		case operation is
 			when "000000" => --add
 				alu_result <= unsigned(signed(op1) + signed(op2));
@@ -108,8 +115,8 @@ begin
 				mult <= '1';
 				div <= '0';			
 				alu_op <= '0';
-				HI <= HILO(2*DATA_WIDTH-1 downto DATA_WIDTH);
-				LO <= HILO(DATA_WIDTH-1 downto 0);
+				--HI <= HILO(2*DATA_WIDTH-1 downto DATA_WIDTH);
+				--LO <= HILO(DATA_WIDTH-1 downto 0);
 			when "000100" => --div
 				LO <= signed(op1) / signed(op2);
 				HI <= signed(op1) MOD signed(op2);
@@ -261,7 +268,11 @@ begin
 					branch_taken <= '1';
 					if(imm(15) = '1') then
 						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+					elsif(imm(15) = '0') then
+						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
 					end if;
+				else
+					branch_taken <= '0';
 				end if;
 				op2_out <= op2;
 				mult <= '0';
@@ -270,9 +281,13 @@ begin
 			when "011001" => --bne
 				if(op1 /= op2) then
 					branch_taken <= '1';
-					if(imm(15) = '0') then
+					if(imm(15) = '1') then
+						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+					elsif(imm(15) = '0') then
 						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
 					end if;
+				else
+					branch_taken <= '0';
 				end if;
 				op2_out <= op2;
 				mult <= '0';

@@ -9,40 +9,39 @@ z2
 cModel Technology
 Z0 dC:/Users/skanet1/PipelinedProcessor
 Eexecute
-Z1 w1458591048
+Z1 w1458662846
 Z2 DPx3 lpm 14 lpm_components 0 22 4J@JVnz0@^T1iA`f^fRg21
 Z3 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
 Z4 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z5 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
 Z6 dC:/Users/scarte9/PipelinedProcessor
-Z7 8C:/Users/scarte9/PipelinedProcessor/Execute.vhd
-Z8 FC:/Users/scarte9/PipelinedProcessor/Execute.vhd
+Z7 8Execute.vhd
+Z8 FExecute.vhd
 l0
 L7
-VQNYAK6dVddhkHBGk;4Wz20
+VckX1kQ0O3nH;X2DLj>c7g3
 !s100 Bf`F[Xk1dijc^bZ<<XojH1
 Z9 OV;C;10.3d;59
-32
-Z10 !s110 1458591066
+33
+Z10 !s110 1458662848
 !i10b 1
-Z11 !s108 1458591066.322000
-Z12 !s90 -reportprogress|300|-work|work|C:/Users/scarte9/PipelinedProcessor/Execute.vhd|
-Z13 !s107 C:/Users/scarte9/PipelinedProcessor/Execute.vhd|
+Z11 !s108 1458662848.881000
+Z12 !s90 -reportprogress|300|Execute.vhd|
+Z13 !s107 Execute.vhd|
 !i113 1
-Z14 o-work work
-Z15 tExplicit 1
+Z14 tExplicit 1 NoCoverage 1
 Adisc
 R2
 R3
 R4
 R5
-DEx4 work 7 execute 0 22 QNYAK6dVddhkHBGk;4Wz20
+DEx4 work 7 execute 0 22 ckX1kQ0O3nH;X2DLj>c7g3
 l53
 L25
-VG?LafSO?:3_1=^F6W?`cn2
-!s100 ^o`e@dZOfJlR40LHoLZdP3
+V]i;niCI_BSc4o21H^NX0W1
+!s100 W3BzzdaF743h_4S;RJ;b;2
 R9
-32
+33
 R10
 !i10b 1
 R11
@@ -50,29 +49,28 @@ R12
 R13
 !i113 1
 R14
-R15
 Efetch_pc_tb
-Z16 w1457817512
+Z15 w1457817512
 R3
 R4
 R5
 R0
-Z17 8C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd
-Z18 FC:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd
+Z16 8C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd
+Z17 FC:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd
 l0
 L6
 Vz4>><c8CYRBgDk=nKkOR<2
 !s100 OVfKCOGfWmJ1g<BRQG[Bi2
 R9
 33
-Z19 !s110 1458397813
+Z18 !s110 1458397813
 !i10b 1
-Z20 !s108 1458397813.527000
-Z21 !s90 -reportprogress|300|-work|work|-2008|-explicit|-stats=none|C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd|
-Z22 !s107 C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd|
+Z19 !s108 1458397813.527000
+Z20 !s90 -reportprogress|300|-work|work|-2008|-explicit|-stats=none|C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd|
+Z21 !s107 C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd|
 !i113 1
-Z23 o-work work -2008 -explicit
-R15
+Z22 o-work work -2008 -explicit
+Z23 tExplicit 1
 Atest
 R3
 R4
@@ -84,14 +82,14 @@ V4c]lJnf2Mej65F<[0ReDM2
 !s100 M92mccE>MMUzOH?EMGdP32
 R9
 33
-R19
+R18
 !i10b 1
+R19
 R20
 R21
-R22
 !i113 1
+R22
 R23
-R15
 Einstruction_decode
 Z24 w1457813114
 R3
@@ -112,7 +110,7 @@ Z28 !s108 1458402401.443000
 Z29 !s90 -reportprogress|300|Decode.vhd|
 Z30 !s107 Decode.vhd|
 !i113 1
-R15
+R23
 Adisc
 R3
 R4
@@ -130,7 +128,7 @@ R28
 R29
 R30
 !i113 1
-R15
+R23
 Einstruction_fetch
 Z31 w1458402035
 R3
@@ -151,7 +149,7 @@ Z35 !s108 1458402400.922000
 Z36 !s90 -reportprogress|300|Fetch.vhd|
 Z37 !s107 Fetch.vhd|
 !i113 1
-R15
+R23
 Adisc
 R3
 R4
@@ -169,7 +167,7 @@ R35
 R36
 R37
 !i113 1
-R15
+R23
 Emain_memory
 Z38 w1457818438
 R4
@@ -189,7 +187,7 @@ Z42 !s108 1458402399.719000
 Z43 !s90 -reportprogress|300|lib/Main_Memory.vhd|
 Z44 !s107 lib/Main_Memory.vhd|
 !i113 1
-R15
+R23
 Abehavioural
 R4
 R5
@@ -206,7 +204,7 @@ R42
 R43
 R44
 !i113 1
-R15
+R23
 Ememory
 R24
 R3
@@ -227,7 +225,7 @@ Z49 !s108 1458402402.433000
 Z50 !s90 -reportprogress|300|Memory.vhd|
 Z51 !s107 Memory.vhd|
 !i113 1
-R15
+R23
 Adisc
 R3
 R4
@@ -245,7 +243,7 @@ R49
 R50
 R51
 !i113 1
-R15
+R23
 Ememory_arbiter
 Z52 w1458400233
 Z53 DPx4 work 18 memory_arbiter_lib 0 22 3]lmkAfJ>R:=JJz_1GdoG0
@@ -267,7 +265,7 @@ Z56 !s108 1458402400.427000
 Z57 !s90 -reportprogress|300|memory_arbiter.vhd|
 Z58 !s107 memory_arbiter.vhd|
 !i113 1
-R15
+R23
 Abehavioral
 R45
 R53
@@ -287,7 +285,7 @@ R56
 R57
 R58
 !i113 1
-R15
+R23
 Pmemory_arbiter_lib
 R3
 R4
@@ -308,7 +306,7 @@ R34
 !s90 -reportprogress|300|lib/memory_arbiter_lib.vhd|
 !s107 lib/memory_arbiter_lib.vhd|
 !i113 1
-R15
+R23
 Ememory_in_byte
 Z59 w1457818422
 R4
@@ -328,7 +326,7 @@ Z62 !s108 1458402399.253000
 Z63 !s90 -reportprogress|300|lib/Memory_in_Byte.vhd|
 Z64 !s107 lib/Memory_in_Byte.vhd|
 !i113 1
-R15
+R23
 Abehavioural
 R4
 R5
@@ -345,7 +343,7 @@ R62
 R63
 R64
 !i113 1
-R15
+R23
 Epipelined_processor
 w1457810165
 R3
@@ -367,7 +365,7 @@ R9
 !s107 C:/Users/skanet1/PipelinedProcessor/PipelinedProcessor.vhd|
 !i113 1
 o-work work -2002 -explicit
-R15
+R23
 Epipelinedprocessor
 Z65 w1458400801
 R53
@@ -390,7 +388,7 @@ Z70 !s90 -reportprogress|300|-check_synthesis|PipelinedProcessor.vhd|
 Z71 !s107 PipelinedProcessor.vhd|
 !i113 1
 Z72 o-check_synthesis
-R15
+R23
 Adisc
 R53
 R3
@@ -410,15 +408,54 @@ R70
 R71
 !i113 1
 R72
-R15
+R23
+Etest_ex
+Z73 w1458662615
+R3
+R4
+R5
+R6
+Z74 8test_ex.vhd
+Z75 Ftest_ex.vhd
+l0
+L5
+ViH]YYHER2lQd0S8XNj>aM3
+!s100 JzAglgSgFcAO;L==]A_040
+R9
+33
+Z76 !s110 1458662849
+!i10b 1
+Z77 !s108 1458662849.465000
+Z78 !s90 -reportprogress|300|test_ex.vhd|
+Z79 !s107 test_ex.vhd|
+!i113 1
+R14
+Abehaviour
+R3
+R4
+R5
+Z80 DEx4 work 7 test_ex 0 22 iH]YYHER2lQd0S8XNj>aM3
+l48
+L8
+Z81 VSzMm?FD[fl9ZVBOkci0UX1
+Z82 !s100 chLJj3jeAbVh?P[`k;SH?0
+R9
+33
+R76
+!i10b 1
+R77
+R78
+R79
+!i113 1
+R14
 Ewrite_back
 R24
 R3
 R4
 R5
 R0
-Z73 8WriteBack.vhd
-Z74 FWriteBack.vhd
+Z83 8WriteBack.vhd
+Z84 FWriteBack.vhd
 l0
 L5
 VSldH=BkIK9T66b=f87Mbz2
@@ -427,11 +464,11 @@ R9
 32
 R48
 !i10b 1
-Z75 !s108 1458402402.922000
-Z76 !s90 -reportprogress|300|WriteBack.vhd|
-Z77 !s107 WriteBack.vhd|
+Z85 !s108 1458402402.922000
+Z86 !s90 -reportprogress|300|WriteBack.vhd|
+Z87 !s107 WriteBack.vhd|
 !i113 1
-R15
+R23
 Adisc
 R3
 R4
@@ -445,8 +482,8 @@ R9
 32
 R48
 !i10b 1
-R75
-R76
-R77
+R85
+R86
+R87
 !i113 1
-R15
+R23
