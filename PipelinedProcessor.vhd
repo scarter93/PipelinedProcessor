@@ -33,7 +33,7 @@ signal branch_pc	: unsigned(DATA_WIDTH-1 downto 0);
 -- IR, PC
 -- inputs from stage 5
 signal MEM	: unsigned(DATA_WIDTH-1 downto 0);	-- location to write back
-signal WB_IR	: unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
+signal WB	: unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
 
 -- STAGE 3 IN
 -- inputs from stage 2
@@ -49,7 +49,8 @@ signal IMM	: unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
 
 -- STAGE 5 IN
 signal data_memory	: unsigned(DATA_WIDTH-1 downto 0);
-
+signal mem_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal mem_to_reg	: std_logic := '0';
 -- MULTISTAGE IO
 signal IR_1, IR_2, IR_3, IR_4, IR_5 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
 signal PC_1, PC_2, PC_3 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
@@ -62,7 +63,7 @@ signal branch_taken_3, branch_taken_4	: std_logic := '0';
 
 -- MEMORY ARBITER
 -- conversions
-signal IR_addr_nat, ID_addr_nat : natural; 
+signal IR_addr_nat, ID_addr_nat : natural;
 -- Memory Port #1
 signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
 signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -107,7 +108,8 @@ component INSTRUCTION_DECODE is
 
 	generic ( DATA_WIDTH : integer := 32
 		);
-	port( 	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
+	port( 	clk	: in std_logic;
+		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		PC_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		MEM	: in unsigned(DATA_WIDTH-1 downto 0);	-- location to write back
 		WB_IR	: in unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
@@ -125,7 +127,8 @@ component EXECUTE is
 
 	generic ( DATA_WIDTH : integer := 32
 		);
-	port(	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
+	port(	clk	: in std_logic;
+		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		PC_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		IMM_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		op1	: in unsigned(DATA_WIDTH-1 downto 0);
@@ -153,7 +156,7 @@ component MEMORY is
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		ID_addr	: out NATURAL;
-		ID_data	: in STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+		ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 		ID_re	: out STD_LOGIC;
 		ID_we	: out STD_LOGIC;
 		ID_busy	: in STD_LOGIC
@@ -164,9 +167,8 @@ end component;
 -- Stage 5 --
 component WRITE_BACK is
 
-	generic ( DATA_WIDTH : integer := 32
-		);
-	port(	memory	: in unsigned(DATA_WIDTH-1 downto 0);
+	port(   clk     : in std_logic;
+		memory	: in unsigned(DATA_WIDTH-1 downto 0);
 		alu_result	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
@@ -183,14 +185,14 @@ component memory_arbiter is
 	port(
 		clk	: in std_logic;
 		reset	: in std_logic;
-	      
+
 		--Memory port #1
 		addr1	: in natural;
 		data1	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
 		re1	: in std_logic;
 		we1	: in std_logic;
 		busy1 : out std_logic;
-	
+
 		--Memory port #2
 		addr2	: in natural;
 		data2	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -208,11 +210,16 @@ begin
 -- hardwired signals --
 -----------------------
 IR_addr_nat <= to_integer(IR_addr);
+
+with ID_we select ID_data  <=
+	mem_data when '1',
+	(others => 'Z') when others;
+
 --ID_addr_nat <= to_integer(ID_addr);
 ------------------------------
 -- component initialization --
 ------------------------------
-fetch : INSTRUCTION_FETCH 
+fetch : INSTRUCTION_FETCH
 	port map (
 		clk => clk,
 		reset => reset,
@@ -223,15 +230,16 @@ fetch : INSTRUCTION_FETCH
 		IR_pc => IR_addr,
 		IR_re => IR_re,
 		IR_data => IR_data,
-		IR_busy => IR_busy	
+		IR_busy => IR_busy
 	);
 
 decode : INSTRUCTION_DECODE
 	port map (
+		clk => clk,
 		IR_in => IR_1,
 		PC_in => PC_1,
-		MEM => MEM,
-		WB_IR => WB_IR,
+		MEM => WB,
+		WB_IR => IR_5,
 		IR_out => IR_2,
 		PC_out => PC_2,
 		IMM => IMM,
@@ -239,8 +247,9 @@ decode : INSTRUCTION_DECODE
 		op2 => op2_2
 	);
 
-execute_t : EXECUTE 
+execute_t : EXECUTE
 	port map (
+		clk => clk,
 		IR_in => IR_2,
 		PC_in => PC_2,
 		IMM_in => IMM,
@@ -253,30 +262,32 @@ execute_t : EXECUTE
 	);
 
 memory_t : MEMORY
-	port map (
-		clk => clk,
-		branch_taken => branch_taken_3,
-		alu_result_in => alu_result_3,
-		op2_in => op2_3,
-		IR_in => IR_3,
-		memory => data_memory,
-		branch_taken_out => branch_taken_4,
-		alu_result_out => alu_result_4,
-		IR_out => IR_4,
-		ID_addr => ID_addr,
-		ID_data => ID_data,
-		ID_re => ID_re,
-		ID_we => ID_we,
-		ID_busy => ID_busy
-	);
+		port map (
+			clk => clk,
+			branch_taken => branch_taken_3,
+			alu_result_in => alu_result_3,
+			op2_in => op2_3,
+			IR_in => IR_3,
+			memory => data_memory,
+			branch_taken_out => branch_taken_4,
+			alu_result_out => alu_result_4,
+			IR_out => IR_4,
+			ID_addr => ID_addr,
+			ID_data => mem_data,
+			ID_re => ID_re,
+			ID_we => ID_we,
+			ID_busy => ID_busy
+		);
 
 write_back_t : WRITE_BACK
 	port map (
+		clk => clk,
 		memory => data_memory,
 		alu_result => alu_result_4,
+		mem_to_reg => mem_to_reg,
 		IR_in => IR_4,
 		IR_out => IR_5,
-		WB => WB_IR
+		WB => WB
 	);
 
 memory_arbiter_t : memory_arbiter
