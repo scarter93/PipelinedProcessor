@@ -9,7 +9,6 @@ generic ( DATA_WIDTH : integer := 32
 port(   clk     : in std_logic;
 	memory	: in unsigned(DATA_WIDTH-1 downto 0);
 	alu_result	: in unsigned(DATA_WIDTH-1 downto 0);
-    mem_to_reg  : in std_logic;
 	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	WB	: out unsigned(DATA_WIDTH-1 downto 0)
@@ -18,16 +17,25 @@ port(   clk     : in std_logic;
 end entity;
 
 architecture disc of WRITE_BACK is
+
+constant LW     : unsigned(5 downto 0) := "010100";
+constant LB     : unsigned(5 downto 0) := "010101";
+
+signal current_opcode : unsigned(5 downto 0);
+
 begin
 
-process (clk)
+current_opcode <= IR_in(31 downto 26);
+
+process(clk)
 begin
     if rising_edge(clk) then
         IR_out <= IR_in;
-        case mem_to_reg is
-            when '0' => WB <= alu_result;
-            when others => WB <= memory;
-        end case;
+        if current_opcode = LW or current_opcode = LB then
+            WB <= memory;
+        else
+            WB <= alu_result;
+        end if;
     end if;
 end process;
 
