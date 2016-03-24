@@ -60,9 +60,11 @@ end process;
 	
 process(writing)
 begin
-       if (writing = '1') then
-               ID_data <= std_logic_vector(op2_in);
-       else
+	if (writing = '1' and operation = STORE_WORD) then
+		ID_data <= std_logic_vector(op2_in);
+	elsif (writing = '1' and operation = STORE_BYTE) then
+		ID_data <= "ZZZZZZZZZZZZZZZZZZZZZZZZ" & std_logic_vector(op2_in(7 downto 0));
+	else
                ID_data <= (others=>'Z');
        end if;
 end process;
