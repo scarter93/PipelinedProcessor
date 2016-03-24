@@ -49,7 +49,7 @@ with operation select rw_word <=
 	'1' when STORE_WORD,
 	'0' when LOAD_BYTE,
 	'0' when STORE_BYTE,
-	'U' when others;
+	'1' when others;
 clocked : process(clk)
 begin
 	if (rising_edge(clk)) then
