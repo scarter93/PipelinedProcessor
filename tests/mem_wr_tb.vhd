@@ -24,6 +24,7 @@ signal alu_result_out	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_W
 signal IR_out	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
 -- MEMORY ARBITER
+signal rw_word : std_logic;
 -- conversions
 signal IR_addr_nat, ID_addr_nat : natural; 
 -- Memory Port #1
@@ -52,6 +53,7 @@ component MEMORY is
 		op2_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		memory	: out unsigned(DATA_WIDTH-1 downto 0);
+		rw_word	: out std_logic;
 		branch_taken_out : out std_logic;
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
@@ -69,7 +71,7 @@ component memory_arbiter is
 	port(
 		clk	: in std_logic;
 		reset	: in std_logic;
-	      
+		rw_word	: in std_logic;
 		--Memory port #1
 		addr1	: in natural;
 		data1	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -97,6 +99,7 @@ begin
 			op2_in => op2,
 			IR_in => IR,
 			memory => data_memory,
+			rw_word => rw_word,
 			branch_taken_out => branch_taken_out,
 			alu_result_out => alu_result_out,
 			IR_out => IR_out,
@@ -111,6 +114,7 @@ begin
 		port map (
 			clk => clk,
 			reset => reset,
+			rw_word => rw_word,
 			--Memory port #1
 			addr1 => ID_addr,
 			data1 => ID_data,

@@ -12,6 +12,7 @@ port(	clk	: in std_logic;
 	op2_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	memory	: out unsigned(DATA_WIDTH-1 downto 0);
+	rw_word	: out std_logic;
 	branch_taken_out : out std_logic := '0';
 	alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
@@ -42,7 +43,7 @@ begin
 operation <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
 ID_re <= reading;
 ID_we <= writing;
-
+rw_word <= '1';
 clocked : process(clk)
 begin
 	if (rising_edge(clk)) then
