@@ -66,6 +66,8 @@ begin
 	if (falling_edge(clk)) then
 		if ((ID_busy = '0' and reading = '1')) then
 			reading <= '0';
+		elsif ((ID_busy = '0' and writing = '1')) then
+			writing <= '0';
 		elsif (operation = LOAD_WORD or operation = LOAD_BYTE) then
 			reading <= '1';
 			writing <= '0';
