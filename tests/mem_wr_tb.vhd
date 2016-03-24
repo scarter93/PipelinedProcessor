@@ -154,7 +154,7 @@ begin
 		wait for 1 * clk_period;
 	end loop;
 
-	ASSERT (ID_data = x"DEADBEEF") REPORT "Read Improperly: ";
+	ASSERT (ID_data = x"00000800") REPORT "Read Improperly: ";
 ------------------------------------------------------------------------
 --------------------------Read More-------------------------------------
 ------------------------------------------------------------------------
@@ -169,7 +169,8 @@ begin
 		wait for 1 * clk_period;
 	end loop;
 
-	ASSERT (ID_data = x"00000010") REPORT "Read 0x00000010 Improperly";
+	ASSERT (ID_data = x"CAFED00D") REPORT "Read 0x00000010 Improperly";
+
 	REPORT "READING FROM 0x00000100";
 	alu_result <= x"00000100";
 	IR <= "01010000000000000000000000000000";
@@ -180,6 +181,7 @@ begin
 	while (ID_busy = '1') loop
 		wait for 1 * clk_period;
 	end loop;
+
 	ASSERT (ID_data = x"00000100") REPORT "Read 0x00000100 Improperly: ";
 
 	REPORT "READING FROM 0x000000F4";
