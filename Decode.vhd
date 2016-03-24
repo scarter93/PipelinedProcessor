@@ -103,36 +103,37 @@ begin
 end process;
 
 
-write_to_registers : process(clk)
+write_to_registers : process(clk, wb_opcode)
 begin
-	if rising_edge(clk) then
-		-- don't store anything for
-		-- MULT or DIV or SW or SB or BEQ or BNE or J or JR or JAL
-		if 	wb_opcode = ADD or --store to rd
-			wb_opcode = SUB or
-			wb_opcode = SLT or
-			wb_opcode = ANDD or
-			wb_opcode = ORR or
-			wb_opcode = NORR or
-			wb_opcode = XORR or
-			wb_opcode = MFHI or
-			wb_opcode = MFLO or
-			wb_opcode = SLLL or
-			wb_opcode = SRLL or
-			wb_opcode = SRAA
-		then
-			wb_addr <= WB_IR(15 downto 11);
-		elsif wb_opcode = ADDI or --store to rt
-			wb_opcode = SLTI or
-			wb_opcode = ANDI or
-			wb_opcode = ORI or
-			wb_opcode = XORI or
-			wb_opcode = LUI or
-			wb_opcode = LW or
-			wb_opcode = LB
-		then
-			wb_addr <= WB_IR(20 downto 16);
-		end if;
+	-- don't store anything for
+	-- MULT or DIV or SW or SB or BEQ or BNE or J or JR or JAL
+	if 	wb_opcode = ADD or --store to rd
+		wb_opcode = SUB or
+		wb_opcode = SLT or
+		wb_opcode = ANDD or
+		wb_opcode = ORR or
+		wb_opcode = NORR or
+		wb_opcode = XORR or
+		wb_opcode = MFHI or
+		wb_opcode = MFLO or
+		wb_opcode = SLLL or
+		wb_opcode = SRLL or
+		wb_opcode = SRAA
+	then
+		wb_addr <= WB_IR(15 downto 11);
+	elsif wb_opcode = ADDI or --store to rt
+		wb_opcode = SLTI or
+		wb_opcode = ANDI or
+		wb_opcode = ORI or
+		wb_opcode = XORI or
+		wb_opcode = LUI or
+		wb_opcode = LW or
+		wb_opcode = LB
+	then
+		wb_addr <= WB_IR(20 downto 16);
+	end if;
+
+	if falling_edge(clk) then
 		--write data
 		reg(to_integer(wb_addr)) <= MEM;
 
