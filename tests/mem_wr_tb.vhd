@@ -255,9 +255,56 @@ begin
 	end loop;
 	ASSERT (ID_data = x"000000F0") REPORT "Read 0x000000F4 Improperly: ";
 ------------------------------------------------------------------------
----------------------Read Byte from Memory------------------------------
+--------------------Read Bytes from Memory------------------------------
 ------------------------------------------------------------------------
+	REPORT "Reading Byte 0x00000008";
+	alu_result <= x"00000008";
+	IR <= "01010100000000000000000000000000";
+	while (ID_busy = '0') loop
+		wait for 1 * clk_period;
+	end loop;
+	while (ID_busy = '1') loop
+		wait for 1 * clk_period;
+	end loop;
+	ASSERT (ID_data(7 downto 0) = x"EF") REPORT "Read 0x00000008 Improperly: ";
+
 	REPORT "Reading Byte 0x00000009";
+	alu_result <= x"00000009";
+	IR <= "01010100000000000000000000000000";
+	while (ID_busy = '0') loop
+		wait for 1 * clk_period;
+	end loop;
+	while (ID_busy = '1') loop
+		wait for 1 * clk_period;
+	end loop;
+	ASSERT (ID_data(7 downto 0) = x"BE") REPORT "Read 0x00000009 Improperly: ";
+
+	REPORT "Reading Byte 0x0000000A";
+	alu_result <= x"0000000A";
+	IR <= "01010100000000000000000000000000";
+	while (ID_busy = '0') loop
+		wait for 1 * clk_period;
+	end loop;
+	while (ID_busy = '1') loop
+		wait for 1 * clk_period;
+	end loop;
+	ASSERT (ID_data(7 downto 0) = x"AD") REPORT "Read 0x0000000A Improperly: ";
+
+	REPORT "Reading Byte 0x0000000B";
+	alu_result <= x"0000000B";
+	IR <= "01010100000000000000000000000000";
+	while (ID_busy = '0') loop
+		wait for 1 * clk_period;
+	end loop;
+	while (ID_busy = '1') loop
+		wait for 1 * clk_period;
+	end loop;
+	ASSERT (ID_data(7 downto 0) = x"DE") REPORT "Read 0x0000000B Improperly: ";
+
+------------------------------------------------------------------------
+---------------------Write Byte from Memory-----------------------------
+------------------------------------------------------------------------
+	REPORT "Writing Byte 0x0000000A";
 	alu_result <= x"00000009";
 	IR <= "01010100000000000000000000000000";
 	while (ID_busy = '0') loop
