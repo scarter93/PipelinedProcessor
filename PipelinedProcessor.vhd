@@ -64,7 +64,7 @@ signal branch_taken_3, branch_taken_4	: std_logic := '0';
 -- MEMORY ARBITER
 signal rw_word	: std_logic;
 -- conversions
-signal IR_addr_nat, ID_addr_nat : natural; 
+signal IR_addr_nat, ID_addr_nat : natural;
 -- Memory Port #1
 signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
 signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -172,7 +172,6 @@ component WRITE_BACK is
 	port(   clk     : in std_logic;
 		memory	: in unsigned(DATA_WIDTH-1 downto 0);
 		alu_result	: in unsigned(DATA_WIDTH-1 downto 0);
-		mem_to_reg	: in std_logic;
 		IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		WB	: out unsigned(DATA_WIDTH-1 downto 0)
@@ -195,7 +194,7 @@ component memory_arbiter is
 		re1	: in std_logic;
 		we1	: in std_logic;
 		busy1 : out std_logic;
-	
+
 		--Memory port #2
 		addr2	: in natural;
 		data2	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -214,7 +213,7 @@ begin
 -----------------------
 IR_addr_nat <= to_integer(IR_addr);
 
-with ID_we select ID_data  <= 
+with ID_we select ID_data  <=
 	mem_data when '1',
 	(others => 'Z') when others;
 
@@ -222,7 +221,7 @@ with ID_we select ID_data  <=
 ------------------------------
 -- component initialization --
 ------------------------------
-fetch : INSTRUCTION_FETCH 
+fetch : INSTRUCTION_FETCH
 	port map (
 		clk => clk,
 		reset => reset,
@@ -233,7 +232,7 @@ fetch : INSTRUCTION_FETCH
 		IR_pc => IR_addr,
 		IR_re => IR_re,
 		IR_data => IR_data,
-		IR_busy => IR_busy	
+		IR_busy => IR_busy
 	);
 
 decode : INSTRUCTION_DECODE
@@ -250,7 +249,7 @@ decode : INSTRUCTION_DECODE
 		op2 => op2_2
 	);
 
-execute_t : EXECUTE 
+execute_t : EXECUTE
 	port map (
 		clk => clk,
 		IR_in => IR_2,
@@ -288,7 +287,6 @@ write_back_t : WRITE_BACK
 		clk => clk,
 		memory => data_memory,
 		alu_result => alu_result_4,
-		mem_to_reg => mem_to_reg,
 		IR_in => IR_4,
 		IR_out => IR_5,
 		WB => WB
