@@ -43,7 +43,13 @@ begin
 operation <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
 ID_re <= reading;
 ID_we <= writing;
-rw_word <= '1';
+
+with operation select rw_word <= 
+	'1' when LOAD_WORD,
+	'1' when STORE_WORD,
+	'0' when LOAD_BYTE,
+	'0' when STORE_BYTE,
+	'U' when others;
 clocked : process(clk)
 begin
 	if (rising_edge(clk)) then
