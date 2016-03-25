@@ -23,9 +23,9 @@ Vm?h?iUY8`]1mCC;eWP17e0
 !s100 Bf`F[Xk1dijc^bZ<<XojH1
 Z9 OV;C;10.4b;61
 32
-Z10 !s110 1458935524
+Z10 !s110 1458937530
 !i10b 1
-Z11 !s108 1458935524.000000
+Z11 !s108 1458937530.000000
 Z12 !s90 -reportprogress|300|Execute.vhd|
 Z13 !s107 Execute.vhd|
 !i113 1
@@ -91,7 +91,7 @@ R22
 R23
 R14
 Einstruction_decode
-Z24 w1458885197
+Z24 w1458937520
 R3
 R4
 R5
@@ -118,8 +118,8 @@ R5
 DEx4 work 18 instruction_decode 0 22 aY6d8aliEDEWnKHIg?@[C0
 l63
 L23
-VF?=:gFHebYNk7SPN]MeRJ0
-!s100 2Mdmle5mLU8D^MdTz0Mk;0
+V^BS:6Ba`=8<L2FAmZZ66P3
+!s100 Gb<dO6[cNC?f5mDI?C6BW1
 R9
 32
 R10
@@ -181,9 +181,9 @@ VZ2gm]O<315V:iDRzVFPLX0
 !s100 A_CV;KMiU4ED`M9hgXdHI3
 R9
 32
-Z37 !s110 1458935523
+Z37 !s110 1458937529
 !i10b 1
-Z38 !s108 1458935523.000000
+Z38 !s108 1458937529.000000
 Z39 !s90 -reportprogress|300|lib/Main_Memory.vhd|
 Z40 !s107 lib/Main_Memory.vhd|
 !i113 1
@@ -381,33 +381,33 @@ V10`40@7`5_7[X8BljiKmZ3
 !s100 CMK:?V;;M6GDCR4oI8MLG2
 R9
 32
-R10
+Z59 !s110 1458937531
 !i10b 1
-R11
-Z59 !s90 -reportprogress|300|-check_synthesis|PipelinedProcessor.vhd|
-Z60 !s107 PipelinedProcessor.vhd|
+Z60 !s108 1458937531.000000
+Z61 !s90 -reportprogress|300|-check_synthesis|PipelinedProcessor.vhd|
+Z62 !s107 PipelinedProcessor.vhd|
 !i113 1
-Z61 o-check_synthesis
+Z63 o-check_synthesis
 R14
 Adisc
 R47
 R3
 R4
 R5
-Z62 DEx4 work 18 pipelinedprocessor 0 22 10`40@7`5_7[X8BljiKmZ3
+Z64 DEx4 work 18 pipelinedprocessor 0 22 10`40@7`5_7[X8BljiKmZ3
 l209
 L13
-Z63 Vle0Smo?aGo_j_<3[PYKHJ3
-Z64 !s100 YUXbAYa_iVf;[e63Rg`Sa0
+Z65 Vle0Smo?aGo_j_<3[PYKHJ3
+Z66 !s100 YUXbAYa_iVf;[e63Rg`Sa0
 R9
 32
-R10
-!i10b 1
-R11
 R59
+!i10b 1
 R60
-!i113 1
 R61
+R62
+!i113 1
+R63
 R14
 Ewrite_back
 R42
@@ -415,8 +415,8 @@ R3
 R4
 R5
 R6
-Z65 8WriteBack.vhd
-Z66 FWriteBack.vhd
+Z67 8WriteBack.vhd
+Z68 FWriteBack.vhd
 l0
 L5
 V4;2^<e2K^S5ILOH;QZ?9H0
@@ -426,8 +426,8 @@ R9
 R10
 !i10b 1
 R11
-Z67 !s90 -reportprogress|300|WriteBack.vhd|
-Z68 !s107 WriteBack.vhd|
+Z69 !s90 -reportprogress|300|WriteBack.vhd|
+Z70 !s107 WriteBack.vhd|
 !i113 1
 R14
 Adisc
@@ -444,7 +444,7 @@ R9
 R10
 !i10b 1
 R11
-R67
-R68
+R69
+R70
 !i113 1
 R14

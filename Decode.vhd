@@ -103,11 +103,9 @@ begin
 end process;
 
 
-get_wb_addr : process(wb_opcode)
-begin
-	-- don't store anything for
-	-- MULT or DIV or SW or SB or BEQ or BNE or J or JR or JAL
-	if 	wb_opcode = ADD or --store to rd
+-- get_wb_addr
+wb_addr <= WB_IR(15 downto 11) when --store to rd
+		wb_opcode = ADD or
 		wb_opcode = SUB or
 		wb_opcode = SLT or
 		wb_opcode = ANDD or
@@ -119,9 +117,8 @@ begin
 		wb_opcode = SLLL or
 		wb_opcode = SRLL or
 		wb_opcode = SRAA
-	then
-		wb_addr <= WB_IR(15 downto 11);
-	elsif wb_opcode = ADDI or --store to rt
+	else WB_IR(20 downto 16) when --store to rt
+		wb_opcode = ADDI or
 		wb_opcode = SLTI or
 		wb_opcode = ANDI or
 		wb_opcode = ORI or
@@ -129,12 +126,9 @@ begin
 		wb_opcode = LUI or
 		wb_opcode = LW or
 		wb_opcode = LB
-	then
-		wb_addr <= WB_IR(20 downto 16);
-	else
-		wb_addr <= (others => '0');
-	end if;
-end process;
+		-- don't store anything for
+		-- MULT or DIV or SW or SB or BEQ or BNE or J or JR or JAL
+	else (others => '0');
 
 write_to_regs : process(clk)
 begin
