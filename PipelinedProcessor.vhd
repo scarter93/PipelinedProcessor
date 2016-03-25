@@ -50,7 +50,6 @@ signal IMM	: unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
 -- STAGE 5 IN
 signal data_memory	: unsigned(DATA_WIDTH-1 downto 0);
 signal mem_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
-signal mem_to_reg	: std_logic := '0';
 -- MULTISTAGE IO
 signal IR_1, IR_2, IR_3, IR_4, IR_5 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
 signal PC_1, PC_2, PC_3 : unsigned(DATA_WIDTH-1 downto 0) := (OTHERS => '0');
