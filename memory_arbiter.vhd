@@ -71,7 +71,7 @@ begin
 		dump		=> '0'
 	);
 
-process (clk, reset, re1, re2, we1, we2)
+process (clk, reset, re1, re2, we1, we2, mm_rd_ready, mm_wr_done)
 begin
 	if reset = '1' then
 		state <= idle;
@@ -92,22 +92,18 @@ begin
 		--wait for user command
 			if re1 = '1' then
 				current_port <= p1;
-				mm_address <= addr1;
 				mm_data <= (others => 'Z');
 				state <= reading;
 			elsif we1 = '1' then
 				current_port <= p1;
-				mm_address <= addr1;
 				mm_data <= data1;
 				state <= writing;
 			elsif re2 = '1' then
 				current_port <= p2;
-				mm_address <= addr2;
 				mm_data <= (others => 'Z');
 				state <= reading;
 			elsif we2 = '1' then
 				current_port <= p2;
-				mm_address <= addr2;
 				mm_data <= data2;
 				state <= writing;
 			end if;
@@ -149,5 +145,7 @@ end process;
 
 mm_re <= '1' when state = reading else '0';
 mm_we <= '1' when state = writing else '0';
+
+mm_address <= addr1 when re1 = '1' or we1 = '1' else addr2;
 
 end behavioral;

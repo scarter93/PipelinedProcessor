@@ -4,10 +4,12 @@ proc AddWaves {} {
   add wave -group "Main Memory" -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block0/Memory\
                                 -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block1/Memory\
                                 -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block2/Memory\
-                                -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block3/Memory
+                                -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block3/Memory\
+                                -radix dec /pipelinedprocessor/memory_arbiter_t/main_memory/*
 
   add wave -group "Fetch" -radix dec sim:/pipelinedprocessor/fetch/PC_out\
                           -radix dec sim:/pipelinedprocessor/fetch/PC\
+                          -radix dec sim:/pipelinedprocessor/fetch/IR_pc\
                           -radix hex sim:/pipelinedprocessor/fetch/reset\
                           -radix hex sim:/pipelinedprocessor/fetch/IR\
                           -radix hex sim:/pipelinedprocessor/fetch/IR_data\
