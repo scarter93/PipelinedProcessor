@@ -70,11 +70,11 @@ begin
 	if rising_edge(clk) then
         op1_addr <= IR_in(25 downto 21);
 		op2_addr <= IR_in(20 downto 16);
-        op1 <= reg(to_integer(op1_addr));
-		op2 <= reg(to_integer(op2_addr));
 	end if;
 end process;
 
+op1 <= reg(to_integer(op1_addr));
+op2 <= reg(to_integer(op2_addr));
 
 sign_extend : process(clk)
 begin
@@ -103,7 +103,7 @@ begin
 end process;
 
 
-write_to_registers : process(clk, wb_opcode)
+get_wb_addr : process(wb_opcode)
 begin
 	-- don't store anything for
 	-- MULT or DIV or SW or SB or BEQ or BNE or J or JR or JAL
@@ -131,8 +131,13 @@ begin
 		wb_opcode = LB
 	then
 		wb_addr <= WB_IR(20 downto 16);
+	else
+		wb_addr <= (others => '0');
 	end if;
+end process;
 
+write_to_regs : process(clk)
+begin
 	if falling_edge(clk) then
 		--write data
 		reg(to_integer(wb_addr)) <= MEM;
