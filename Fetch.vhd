@@ -29,28 +29,29 @@ signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 begin
 
 clockgate : process(clk)
-begin 
-	PC_out <= PC;
-	IR_pc <= PC;
-	IR <= unsigned(IR_data);
+begin
+	if rising_edge(clk) then
+		IR <= unsigned(IR_data);
+	end if;
 end process;
 
--- always read next instruction
-IR_re <= '1';
+PC_out <= PC - 8;
 
--- determine next value of PC
-update_pc : process (clk)
+PC_update : process(IR_busy, clk)
 begin
+	-- read next instruction unless reset
+	IR_re <= '1';
 	if (reset = '1') then
 		PC <= to_unsigned(0, DATA_WIDTH);
-	elsif (rising_edge(clk)) then
-		if (IR_busy = '0') then
-			case branch_taken is
-				when '0' => PC <= PC + 4;
-				when '1' => PC <= branch_pc;
-				when others => report "unreachable" severity failure;
-			end case;
-		end if;
+		IR_re <= '0';
+	elsif rising_edge(IR_busy) then
+		case branch_taken is
+			when '0' => PC <= PC + 4;
+			when '1' => PC <= branch_pc;
+			when others => report "unreachable" severity failure;
+		end case;
+	elsif falling_edge(IR_busy) then
+		IR_pc <= PC;
 	end if;
 end process;
 
