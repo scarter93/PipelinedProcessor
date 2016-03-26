@@ -56,6 +56,7 @@ constant JAL	: unsigned(5 downto 0) := "011100";
 type REGISTERS is array (0 to 31) of unsigned(DATA_WIDTH-1 downto 0);
 signal reg :  REGISTERS;
 signal op1_addr, op2_addr, wb_addr : unsigned(4 downto 0);
+signal op1_tmp, op2_tmp : unsigned(DATA_WIDTH-1 downto 0);
 
 signal wb_opcode : unsigned(5 downto 0);
 signal current_opcode : unsigned(5 downto 0);
@@ -65,16 +66,20 @@ begin
 wb_opcode <= WB_IR(31 downto 26);
 current_opcode <= IR_in(31 downto 26);
 
+op1_addr <= IR_in(25 downto 21);
+op2_addr <= IR_in(20 downto 16);
+
+op1_tmp <= reg(to_integer(op1_addr));
+op2_tmp <= reg(to_integer(op2_addr));
+
 operands : process (clk)
 begin
 	if rising_edge(clk) then
-        op1_addr <= IR_in(25 downto 21);
-		op2_addr <= IR_in(20 downto 16);
+        op1 <= op1_tmp;
+		op2 <= op2_tmp;
 	end if;
 end process;
 
-op1 <= reg(to_integer(op1_addr));
-op2 <= reg(to_integer(op2_addr));
 
 sign_extend : process(clk)
 begin
