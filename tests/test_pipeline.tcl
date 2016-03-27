@@ -20,7 +20,7 @@ proc AddWaves {} {
                           -radix dec sim:/pipelinedprocessor/fetch/hazard\
                           -radix hex sim:/pipelinedprocessor/fetch/IR_check\
                           -radix hex sim:/pipelinedprocessor/fetch/IR_log\
-                          -radix hex sim:/pipelinedprocessor/fetch/IR_next
+                          -radix hex sim:/pipelinedprocessor/fetch/final
 
   add wave -group "Fetch" -group "Hazard Detection" -radix dec sim:/pipelinedprocessor/fetch/hazard_detect/*
 

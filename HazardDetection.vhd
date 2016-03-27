@@ -12,7 +12,8 @@ port(
 	IR2	: in unsigned(DATA_WIDTH-1 downto 0);
 	IR3	: in unsigned(DATA_WIDTH-1 downto 0);
 	IR4	: in unsigned(DATA_WIDTH-1 downto 0);
-	HAZARD	: out std_logic
+	HAZARD	: out std_logic;
+	FINAL	: out std_logic
 	);
 
 end entity;
@@ -205,6 +206,20 @@ op2_addr <= to_unsigned(0, 5) when --these instructions don't read from rt
 		IR_check_opcode = JR or
 		IR_check_opcode = JAL
 	else IR_check(20 downto 16);
+
+
+process(op1_addr, op2_addr, write1, write2, write3, write4)
+begin
+	if (op1_addr /= write1 and op1_addr /= write2 and op1_addr /= write3
+		and op1_addr = write4 and op1_addr /= to_unsigned(0, 5)) or
+		(op2_addr /= write1 and op2_addr /= write2 and op2_addr /= write3
+		and op2_addr = write4 and op2_addr /= to_unsigned(0, 5))
+	then
+		FINAL <= '1';
+	else
+		FINAl <= '0';
+	end if;
+end process;
 
 op1_hazard <= '0' when
 		op1_addr = to_unsigned(0, 5) or

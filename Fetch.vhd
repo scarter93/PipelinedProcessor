@@ -33,7 +33,8 @@ component HAZARD_DETECTION is
 		IR2	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR3	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR4	: in unsigned(DATA_WIDTH-1 downto 0);
-		HAZARD	: out std_logic
+		HAZARD	: out std_logic;
+		FINAL	: out std_logic
 		);
 
 end component;
@@ -47,11 +48,9 @@ signal IR_check : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
 --hazards
 signal hazard : std_logic;
-signal IR_next : unsigned(DATA_WIDTH-1 downto 0);
+signal final : std_logic;
 
 begin
-
-IR_next <= unsigned(IR_data) when hazard = '0';
 
 hazard_detect : HAZARD_DETECTION
 	port map (
@@ -60,7 +59,8 @@ hazard_detect : HAZARD_DETECTION
 		IR2 => IR_log(2),
 		IR3 => IR_log(3),
 		IR4 => IR_log(4),
-		HAZARD => hazard
+		HAZARD => hazard,
+		FINAL => final
 	);
 
 IR_update : process(clk)
