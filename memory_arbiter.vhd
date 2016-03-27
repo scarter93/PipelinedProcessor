@@ -7,7 +7,8 @@ use work.memory_arbiter_lib.all;
 -- Do not modify the port map of this structure
 entity memory_arbiter is
 	generic (
-		DATA_WIDTH : integer := 32
+		DATA_WIDTH : integer := 32;
+		File_Address_Read : string := "Init.dat"
 	);
 	port(
 	    clk	: in STD_LOGIC;
@@ -53,6 +54,7 @@ begin
 	--Instantiation of the main memory component (DO NOT MODIFY)
 	main_memory : ENTITY work.Main_Memory
 	GENERIC MAP (
+		File_Address_Read	=> File_Address_Read,
 		Num_Bytes_in_Word	=> NUM_BYTES_IN_WORD,
 		Num_Bits_in_Byte	=> NUM_BITS_IN_BYTE,
 		Read_Delay			=> 0,
@@ -70,6 +72,11 @@ begin
 		initialize	=> mm_initialize,
 		dump		=> '0'
 	);
+
+mm_data <=  data1 when we1 = '1' else 
+	data2 when we2 = '1' else
+	(others => 'Z');
+
 
 process (clk, reset, re1, re2, we1, we2, mm_rd_ready, mm_wr_done)
 begin
@@ -92,19 +99,19 @@ begin
 		--wait for user command
 			if re1 = '1' then
 				current_port <= p1;
-				mm_data <= (others => 'Z');
+				--mm_data <= (others => 'Z');
 				state <= reading;
 			elsif we1 = '1' then
 				current_port <= p1;
-				mm_data <= data1;
+				--mm_data <= data1;
 				state <= writing;
 			elsif re2 = '1' then
 				current_port <= p2;
-				mm_data <= (others => 'Z');
+				--mm_data <= (others => 'Z');
 				state <= reading;
 			elsif we2 = '1' then
 				current_port <= p2;
-				mm_data <= data2;
+				--mm_data <= data2;
 				state <= writing;
 			end if;
 
