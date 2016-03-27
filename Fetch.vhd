@@ -37,12 +37,10 @@ begin
 	if (reset = '1') then
 		PC <= to_unsigned(0, DATA_WIDTH);
 		IR_re <= '0';
-	elsif rising_edge(IR_busy) then
-		case branch_taken is
-			when '0' => PC <= PC + 4;
-			when '1' => PC <= branch_pc;
-			when others => report "unreachable" severity failure;
-		end case;
+	elsif (branch_taken = '1') then
+		PC <= branch_pc;
+	elsif falling_edge(IR_busy) then
+		PC <= PC + 4;
 		IR_pc <= PC;
 		PC_out <= PC;
 	end if;
