@@ -24,13 +24,11 @@ end entity;
 architecture disc of INSTRUCTION_FETCH is
 
 -- signals
-signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal PC : unsigned(DATA_WIDTH-1 downto 0);
 
 begin
 
 IR <= unsigned(IR_data);
-
-PC_out <= PC - 8;
 
 PC_update : process(IR_busy, clk)
 begin
@@ -40,12 +38,13 @@ begin
 		PC <= to_unsigned(0, DATA_WIDTH);
 		IR_re <= '0';
 	elsif falling_edge(IR_busy) then
-		IR_pc <= PC + 4;
 		case branch_taken is
 			when '0' => PC <= PC + 4;
-			when '1' => PC <= branch_pc + 8;
+			when '1' => PC <= branch_pc;
 			when others => report "unreachable" severity failure;
 		end case;
+		IR_pc <= PC;
+		PC_out <= PC;
 	end if;
 end process;
 
