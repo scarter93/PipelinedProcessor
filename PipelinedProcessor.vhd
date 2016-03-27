@@ -182,7 +182,8 @@ end component;
 -- MISC --
 -- Memory Arbiter --
 component memory_arbiter is
-
+	generic ( File_Address_Read : string := "test_branch.dat"
+		);
 	port(
 		clk	: in std_logic;
 		reset	: in std_logic;
@@ -215,6 +216,8 @@ IR_addr_nat <= to_integer(IR_addr);
 with ID_we select ID_data  <=
 	mem_data when '1',
 	(others => 'Z') when others;
+
+branch_pc <= alu_result_4;
 
 --ID_addr_nat <= to_integer(ID_addr);
 ------------------------------

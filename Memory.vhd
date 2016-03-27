@@ -55,6 +55,7 @@ begin
 	if (rising_edge(clk)) then
 		IR_out <= IR_in;
 		alu_result_out <= alu_result_in;
+		branch_taken_out <= branch_taken;
 	end if;
 end process;
 	

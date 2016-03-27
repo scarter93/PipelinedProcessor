@@ -82,7 +82,7 @@ begin
 
 	if rising_edge(clk) then
 		IR_out <= IR_in;
-	
+		branch_taken <= '0';
 		case operation is
 			when "000000" => --add
 				alu_result <= unsigned(signed(op1) + signed(op2));

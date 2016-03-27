@@ -43,7 +43,7 @@ begin
 		IR_pc <= PC + 4;
 		case branch_taken is
 			when '0' => PC <= PC + 4;
-			when '1' => PC <= branch_pc;
+			when '1' => PC <= branch_pc + 8;
 			when others => report "unreachable" severity failure;
 		end case;
 	end if;
