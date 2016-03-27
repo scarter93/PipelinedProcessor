@@ -23,6 +23,21 @@ end entity;
 
 architecture disc of INSTRUCTION_FETCH is
 
+component HAZARD_DETECTION is
+
+	generic ( DATA_WIDTH : integer := 32
+		);
+	port(
+		IR_check	: in unsigned(DATA_WIDTH-1 downto 0);
+		IR1	: in unsigned(DATA_WIDTH-1 downto 0);
+		IR2	: in unsigned(DATA_WIDTH-1 downto 0);
+		IR3	: in unsigned(DATA_WIDTH-1 downto 0);
+		IR4	: in unsigned(DATA_WIDTH-1 downto 0);
+		HAZARD	: out std_logic
+		);
+
+end component;
+
 type instruction_log is array (1 to 4) of unsigned(DATA_WIDTH-1 downto 0);
 signal IR_log :  instruction_log;
 
@@ -30,12 +45,28 @@ signal IR_log :  instruction_log;
 signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 signal IR_check : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
+signal hazard : std_logic;
+
 begin
+
+hazard_detect : HAZARD_DETECTION
+	port map (
+		IR_check => unsigned(IR_data),
+		IR1	=> IR_log(1),
+		IR2 => IR_log(2),
+		IR3 => IR_log(3),
+		IR4 => IR_log(4),
+		HAZARD => hazard
+	);
 
 IR_update : process(clk)
 begin
 	if falling_edge(clk) then --check for hazards
-
+		if hazard = '1' then
+			IR_check <= to_unsigned(0, DATA_WIDTH);
+		else
+			IR_check <= unsigned(IR_data);
+		end if;
 	elsif rising_edge(clk) then --pass new instruction
 		IR <= unsigned(IR_data);
 		PC_out <= PC - 8;
