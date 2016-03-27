@@ -16,7 +16,13 @@ proc AddWaves {} {
                           -radix bin sim:/pipelinedprocessor/fetch/IR_busy\
                           -radix dec sim:/pipelinedprocessor/fetch/IR_re\
                           -radix dec sim:/pipelinedprocessor/fetch/branch_taken\
-                          -radix dec sim:/pipelinedprocessor/fetch/branch_pc
+                          -radix dec sim:/pipelinedprocessor/fetch/branch_pc\
+                          -radix dec sim:/pipelinedprocessor/fetch/hazard\
+                          -radix hex sim:/pipelinedprocessor/fetch/IR_check\
+                          -radix hex sim:/pipelinedprocessor/fetch/IR_log\
+                          -radix hex sim:/pipelinedprocessor/fetch/IR_next
+
+  add wave -group "Fetch" -group "Hazard Detection" -radix dec sim:/pipelinedprocessor/fetch/hazard_detect/*
 
   add wave -group "Decode" -radix dec sim:/pipelinedprocessor/decode/*
 
@@ -37,6 +43,7 @@ vcom lib/Memory_in_Byte.vhd
 vcom lib/Main_Memory.vhd
 vcom lib/memory_arbiter_lib.vhd
 vcom memory_arbiter.vhd
+vcom HazardDetection.vhd
 vcom Fetch.vhd
 vcom Decode.vhd
 vcom Execute.vhd

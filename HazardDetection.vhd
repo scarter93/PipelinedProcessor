@@ -222,6 +222,6 @@ op2_hazard <= '0' when
 		 op2_addr /= write4)
 	else '1';
 
-HAZARD <= op1_hazard and op2_hazard;
+HAZARD <= op1_hazard or op2_hazard;
 
 end disc;

@@ -16,7 +16,7 @@ port(	clk	: in std_logic;
 	IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
 	IR_re	: out std_logic := '1';
 	IR_data	: in std_logic_vector(DATA_WIDTH-1 downto 0);
-	IR_busy : in STD_LOGIC := '0'
+	IR_busy : in std_logic := '0'
 	);
 
 end entity;
@@ -45,9 +45,13 @@ signal IR_log :  instruction_log;
 signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 signal IR_check : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
+--hazards
 signal hazard : std_logic;
+signal IR_next : unsigned(DATA_WIDTH-1 downto 0);
 
 begin
+
+IR_next <= unsigned(IR_data) when hazard = '0';
 
 hazard_detect : HAZARD_DETECTION
 	port map (
@@ -68,14 +72,14 @@ begin
 			IR_check <= unsigned(IR_data);
 		end if;
 	elsif rising_edge(clk) then --pass new instruction
-		IR <= unsigned(IR_data);
+		IR <= IR_check;
 		PC_out <= PC - 8;
 	end if;
 end process;
 
 IR_track : process(clk)
 begin
-	if rising_edge(clk)
+	if rising_edge(clk) then
 		IR_log(4) <= IR_log(3);
 		IR_log(3) <= IR_log(2);
 		IR_log(2) <= IR_log(1);
@@ -83,12 +87,14 @@ begin
 	end if;
 end process;
 
-PC_update : process(IR_busy, clk)
+PC_update : process(IR_busy, clk, hazard)
 begin
-	-- read next instruction unless reset
+	-- read next instruction unless reset or hazard
 	IR_re <= '1';
-	if (reset = '1') then
+	if reset = '1' then
 		PC <= to_unsigned(0, DATA_WIDTH);
+		IR_re <= '0';
+	elsif hazard = '1' then
 		IR_re <= '0';
 	elsif falling_edge(IR_busy) then
 		IR_pc <= PC + 4;
