@@ -1,5 +1,6 @@
 proc AddWaves {} {
   ;#Add waves we're interested in to the Wave window
+  add wave -group "Registers" -radix dec sim:/pipelinedprocessor/decode/reg
   add wave -position end sim:/PipelinedProcessor/clk
   add wave -group "Main Memory" -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block0/Memory\
                                 -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block1/Memory\
@@ -54,6 +55,6 @@ force -deposit /pipelinedprocessor/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
 
 force -deposit /pipelinedprocessor/reset 1 0ns, 0 2.25ns
 
-run 50 ns
+run 70 ns
 
 wave zoom full
