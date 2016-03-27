@@ -60,6 +60,10 @@ signal op2_2, op2_3	: unsigned(DATA_WIDTH-1 downto 0);
 signal alu_result_3, alu_result_4, alu_result_5 : unsigned(DATA_WIDTH-1 downto 0);
 signal branch_taken_3, branch_taken_4	: std_logic := '0';
 
+
+--FORWARDING
+signal forward : unsigned(4 downto 0) := (OTHERS => 'Z');
+
 -- MEMORY ARBITER
 signal rw_word	: std_logic;
 -- conversions
@@ -113,6 +117,8 @@ component INSTRUCTION_DECODE is
 		PC_in	: in unsigned(DATA_WIDTH-1 downto 0);
 		MEM	: in unsigned(DATA_WIDTH-1 downto 0);	-- location to write back
 		WB_IR	: in unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
+		forw_reg: in unsigned(4 downto 0);
+		alu_res	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IMM	: out unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
@@ -134,6 +140,7 @@ component EXECUTE is
 		op1	: in unsigned(DATA_WIDTH-1 downto 0);
 		op2	: in unsigned(DATA_WIDTH-1 downto 0);
 		branch_taken	: out std_logic;
+		forw_reg	: out unsigned(4 downto 0);
 		alu_result	: out unsigned(DATA_WIDTH-1 downto 0);
 		op2_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0)
@@ -241,6 +248,8 @@ decode : INSTRUCTION_DECODE
 		PC_in => PC_1,
 		MEM => WB,
 		WB_IR => IR_5,
+		forw_reg => forward,
+		alu_res => alu_result_3,
 		IR_out => IR_2,
 		PC_out => PC_2,
 		IMM => IMM,
@@ -258,6 +267,7 @@ execute_t : EXECUTE
 		op2 => op2_2,
 		branch_taken => branch_taken_3,
 		alu_result => alu_result_3,
+		forw_reg => forward,
 		op2_out => op2_3,
 		IR_out => IR_3
 	);

@@ -11,6 +11,8 @@ port( 	clk	: in std_logic;
 	PC_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	MEM	: in unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
 	WB_IR	: in unsigned(DATA_WIDTH-1 downto 0);	-- location to write back
+	forw_reg: in unsigned(4 downto 0);		-- forwarding register
+	alu_res	: in unsigned(DATA_WIDTH-1 downto 0);	-- forwarding data
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	IMM	: out unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
@@ -75,8 +77,16 @@ op2_tmp <= reg(to_integer(op2_addr));
 operands : process (clk)
 begin
 	if rising_edge(clk) then
-        op1 <= op1_tmp;
-		op2 <= op2_tmp;
+		if(op1_addr = forw_reg) then
+			op1 <= alu_res;
+		else
+        		op1 <= op1_tmp;
+		end if;
+		if(op1_addr = forw_reg) then
+			op2 <= alu_res;
+		else
+			op2 <= op2_tmp;
+		end if;
 	end if;
 end process;
 

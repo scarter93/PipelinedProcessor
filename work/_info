@@ -9,39 +9,40 @@ z2
 cModel Technology
 Z0 dC:/Users/skanet1/PipelinedProcessor
 Eexecute
-Z1 w1458689048
-Z2 DPx3 lpm 14 lpm_components 0 22 Y]^clEQ]2cFhkOGN9>BOd0
+Z1 w1459119600
+Z2 DPx3 lpm 14 lpm_components 0 22 4J@JVnz0@^T1iA`f^fRg21
 Z3 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
 Z4 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
 Z5 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
-Z6 dC:/users/auguste/workspace/pipelinedProcessor
-Z7 8Execute.vhd
-Z8 FExecute.vhd
+Z6 dC:/Users/scarte9/PipelinedProcessor
+Z7 8C:/Users/scarte9/PipelinedProcessor/Execute.vhd
+Z8 FC:/Users/scarte9/PipelinedProcessor/Execute.vhd
 l0
 L7
-Vm?h?iUY8`]1mCC;eWP17e0
-!s100 Bf`F[Xk1dijc^bZ<<XojH1
-Z9 OV;C;10.4b;61
-32
-Z10 !s110 1459009969
+V`n6<RN7EKU[bjmPF>f]zc0
+!s100 lGeojz5Gz]_AkmV5[lonJ3
+Z9 OV;C;10.3d;59
+33
+Z10 !s110 1459120224
 !i10b 1
-Z11 !s108 1459009969.000000
-Z12 !s90 -reportprogress|300|Execute.vhd|
-Z13 !s107 Execute.vhd|
+Z11 !s108 1459120224.733000
+Z12 !s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/Execute.vhd|
+Z13 !s107 C:/Users/scarte9/PipelinedProcessor/Execute.vhd|
 !i113 1
-Z14 tExplicit 1
+Z14 o-work work
+Z15 tExplicit 1 NoCoverage 1
 Adisc
 R2
 R3
 R4
 R5
-DEx4 work 7 execute 0 22 m?h?iUY8`]1mCC;eWP17e0
+DEx4 work 7 execute 0 22 `n6<RN7EKU[bjmPF>f]zc0
 l53
-L25
-VZgbo]iFVePRCS3R78RTSB3
-!s100 [7f65TdaL=j9dW6KiEajH2
+L26
+VdYN8VTGEj5f[fHP92Bl3_2
+!s100 SUdm1?bBY=9S5M^Y9a4m:2
 R9
-32
+33
 R10
 !i10b 1
 R11
@@ -49,19 +50,20 @@ R12
 R13
 !i113 1
 R14
+R15
 Efetch_pc_tb
-Z15 w1457817512
+Z16 w1457817512
 R3
 R4
 R5
 R0
-Z16 8C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd
-Z17 FC:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd
+Z17 8C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd
+Z18 FC:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd
 l0
 L6
 Vz4>><c8CYRBgDk=nKkOR<2
 !s100 OVfKCOGfWmJ1g<BRQG[Bi2
-Z18 OV;C;10.3d;59
+R9
 33
 Z19 !s110 1458397813
 !i10b 1
@@ -70,7 +72,7 @@ Z21 !s90 -reportprogress|300|-work|work|-2008|-explicit|-stats=none|C:/Users/ska
 Z22 !s107 C:/Users/skanet1/PipelinedProcessor/tests/fetch_pc_tb.vhd|
 !i113 1
 Z23 o-work work -2008 -explicit
-R14
+Z24 tExplicit 1
 Atest
 R3
 R4
@@ -80,7 +82,7 @@ l32
 L9
 V4c]lJnf2Mej65F<[0ReDM2
 !s100 M92mccE>MMUzOH?EMGdP32
-R18
+R9
 33
 R19
 !i10b 1
@@ -89,261 +91,274 @@ R21
 R22
 !i113 1
 R23
-R14
+R24
 Einstruction_decode
-Z24 w1459009896
+Z25 w1459119874
 R3
 R4
 R5
 R6
-Z25 8Decode.vhd
-Z26 FDecode.vhd
+Z26 8C:/Users/scarte9/PipelinedProcessor/Decode.vhd
+Z27 FC:/Users/scarte9/PipelinedProcessor/Decode.vhd
 l0
 L5
-VaY6d8aliEDEWnKHIg?@[C0
-!s100 hP56imR0RCAnL?B2dmfCl2
+V5U2_nen;3C^z8aIWmS6l51
+!s100 k14Rn_b6MHg^U]<QYjMmK1
 R9
-32
-R10
+33
+Z28 !s110 1459120223
 !i10b 1
-R11
-Z27 !s90 -reportprogress|300|Decode.vhd|
-Z28 !s107 Decode.vhd|
+Z29 !s108 1459120223.750000
+Z30 !s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/Decode.vhd|
+Z31 !s107 C:/Users/scarte9/PipelinedProcessor/Decode.vhd|
 !i113 1
 R14
+R15
 Adisc
 R3
 R4
 R5
-DEx4 work 18 instruction_decode 0 22 aY6d8aliEDEWnKHIg?@[C0
-l64
-L23
-VoMl74JYeM7L`?ocINK=3Y0
-!s100 MN_Qdb>P3o@HA:ngBj4n82
+DEx4 work 18 instruction_decode 0 22 5U2_nen;3C^z8aIWmS6l51
+l66
+L25
+Vm5a;KEAjoIK[9MV2dL=BX2
+!s100 [IlSlU0nW7@Cm8PTKMnT92
 R9
-32
-R10
-!i10b 1
-R11
-R27
+33
 R28
+!i10b 1
+R29
+R30
+R31
 !i113 1
 R14
+R15
 Einstruction_fetch
-Z29 w1458935251
+Z32 w1459118492
 R3
 R4
 R5
 R6
-Z30 8Fetch.vhd
-Z31 FFetch.vhd
+Z33 8C:/Users/scarte9/PipelinedProcessor/Fetch.vhd
+Z34 FC:/Users/scarte9/PipelinedProcessor/Fetch.vhd
 l0
 L5
-VaSF]5_h8Hf8@7<JZQ?67X0
+VI?J=4FnXYUIMC`dhg446:1
 !s100 aW9lF7X6aAAYM@fnlS]Th2
 R9
-32
-R10
+33
+Z35 !s110 1459120225
 !i10b 1
-Z32 !s108 1459009968.000000
-Z33 !s90 -reportprogress|300|Fetch.vhd|
-Z34 !s107 Fetch.vhd|
+Z36 !s108 1459120225.825000
+Z37 !s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/Fetch.vhd|
+Z38 !s107 C:/Users/scarte9/PipelinedProcessor/Fetch.vhd|
 !i113 1
 R14
+R15
 Adisc
 R3
 R4
 R5
-DEx4 work 17 instruction_fetch 0 22 aSF]5_h8Hf8@7<JZQ?67X0
+DEx4 work 17 instruction_fetch 0 22 I?J=4FnXYUIMC`dhg446:1
 l29
 L24
-V?4jQUBBPfEiOZYA^3Ozjh1
+Vk7_nc`LO3CmY:ljenIL9B1
 !s100 0E^LIIc][ANF5Xb1n4hW20
 R9
-32
-R10
+33
+R35
 !i10b 1
-R32
-R33
-R34
+R36
+R37
+R38
 !i113 1
 R14
+R15
 Emain_memory
-Z35 w1458589967
+R32
 R4
 R5
 R6
-Z36 8lib/Main_Memory.vhd
-Z37 Flib/Main_Memory.vhd
+Z39 8C:/Users/scarte9/PipelinedProcessor/lib/Main_Memory.vhd
+Z40 FC:/Users/scarte9/PipelinedProcessor/lib/Main_Memory.vhd
 l0
 L5
-VZ2gm]O<315V:iDRzVFPLX0
+VIm7JVH]gOVCGYmj5L^4l>3
 !s100 A_CV;KMiU4ED`M9hgXdHI3
 R9
-32
-Z38 !s110 1459009968
+33
+Z41 !s110 1459120218
 !i10b 1
-R32
-Z39 !s90 -reportprogress|300|lib/Main_Memory.vhd|
-Z40 !s107 lib/Main_Memory.vhd|
+Z42 !s108 1459120218.306000
+Z43 !s90 -reportprogress|300|-work|work|C:/Users/scarte9/PipelinedProcessor/lib/Main_Memory.vhd|
+Z44 !s107 C:/Users/scarte9/PipelinedProcessor/lib/Main_Memory.vhd|
 !i113 1
 R14
+R15
 Abehavioural
 R4
 R5
-Z41 DEx4 work 11 main_memory 0 22 Z2gm]O<315V:iDRzVFPLX0
+Z45 DEx4 work 11 main_memory 0 22 Im7JVH]gOVCGYmj5L^4l>3
 l65
 L29
-VL@I[K0K@nAfAnleLBe:PE2
+VSIa48GoaFmXPcSbHBXV<@2
 !s100 ?Y`g6Hi4?WMZ^X;QHS:5X2
 R9
-32
-R38
+33
+R41
 !i10b 1
-R32
-R39
-R40
+R42
+R43
+R44
 !i113 1
 R14
+R15
 Ememory
-Z42 w1458875361
+R32
 R3
 R4
 R5
 R6
-Z43 8Memory.vhd
-Z44 FMemory.vhd
+Z46 8C:/Users/scarte9/PipelinedProcessor/Memory.vhd
+Z47 FC:/Users/scarte9/PipelinedProcessor/Memory.vhd
 l0
 L5
-V:JBlWKE@nR;Ha38?HUC^z3
+V4ZVGL0<_fFS]_Qn41P]UO0
 !s100 nJKVAZ7>aialz:hh3=EP:2
 R9
-32
-R10
+33
+Z48 !s110 1459120226
 !i10b 1
-R11
-Z45 !s90 -reportprogress|300|Memory.vhd|
-Z46 !s107 Memory.vhd|
+Z49 !s108 1459120226.886000
+Z50 !s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/Memory.vhd|
+Z51 !s107 C:/Users/scarte9/PipelinedProcessor/Memory.vhd|
 !i113 1
 R14
+R15
 Adisc
 R3
 R4
 R5
-DEx4 work 6 memory 0 22 :JBlWKE@nR;Ha38?HUC^z3
+DEx4 work 6 memory 0 22 4ZVGL0<_fFS]_Qn41P]UO0
 l41
 L29
-V5eINB=;<[k;LDdEgS0FP^0
+VQ3>^h>02H>H6FA6Ci^`GV0
 !s100 UNXUgSEk^@n2[^eACiMM90
 R9
-32
-R10
+33
+R48
 !i10b 1
-R11
-R45
-R46
-!i113 1
-R14
-Ememory_arbiter
-R29
-Z47 DPx4 work 18 memory_arbiter_lib 0 22 3]lmkAfJ>R:=JJz_1GdoG0
-R3
-R4
-R5
-R6
-Z48 8memory_arbiter.vhd
-Z49 Fmemory_arbiter.vhd
-l0
-L8
-VR>7n]_cNPoBWSKG03zN>h0
-!s100 :AQc6:5IYW^_OIBUQLZW73
-R9
-32
-R38
-!i10b 1
-R32
-Z50 !s90 -reportprogress|300|memory_arbiter.vhd|
-Z51 !s107 memory_arbiter.vhd|
-!i113 1
-R14
-Abehavioral
-R41
-R47
-R3
-R4
-R5
-DEx4 work 14 memory_arbiter 0 22 R>7n]_cNPoBWSKG03zN>h0
-l51
-L33
-VU2SFkb_:Om[4Szi@TA_gD3
-!s100 9IS>mk;MLB:F]jkRMoABe0
-R9
-32
-R38
-!i10b 1
-R32
+R49
 R50
 R51
 !i113 1
 R14
+R15
+Ememory_arbiter
+R32
+Z52 DPx4 work 18 memory_arbiter_lib 0 22 L[^Zibhk`jEeY6ZmMYE@L3
+R3
+R4
+R5
+R6
+Z53 8C:/Users/scarte9/PipelinedProcessor/memory_arbiter.vhd
+Z54 FC:/Users/scarte9/PipelinedProcessor/memory_arbiter.vhd
+l0
+L8
+Vm0oWTeU68OH>d>XUzUSYZ1
+!s100 __@9IbC8P>D407bShFhnY3
+R9
+33
+Z55 !s110 1459120228
+!i10b 1
+Z56 !s108 1459120228.056000
+Z57 !s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/memory_arbiter.vhd|
+Z58 !s107 C:/Users/scarte9/PipelinedProcessor/memory_arbiter.vhd|
+!i113 1
+R14
+R15
+Abehavioral
+R45
+R52
+R3
+R4
+R5
+DEx4 work 14 memory_arbiter 0 22 m0oWTeU68OH>d>XUzUSYZ1
+l52
+L34
+Vcba8TYGHHe=GD8b7cJJ0:3
+!s100 n?W@4olc[ndjbE]?;KVcb0
+R9
+33
+R55
+!i10b 1
+R56
+R57
+R58
+!i113 1
+R14
+R15
 Pmemory_arbiter_lib
 R3
 R4
 R5
-R35
+R32
 R6
-8lib/memory_arbiter_lib.vhd
-Flib/memory_arbiter_lib.vhd
+8C:/Users/scarte9/PipelinedProcessor/lib/memory_arbiter_lib.vhd
+FC:/Users/scarte9/PipelinedProcessor/lib/memory_arbiter_lib.vhd
 l0
 L6
-V3]lmkAfJ>R:=JJz_1GdoG0
+VL[^Zibhk`jEeY6ZmMYE@L3
 !s100 JK5X]eYRnoWJ>HZkiVX380
 R9
-32
-R38
+33
+!s110 1459120219
 !i10b 1
-R32
-!s90 -reportprogress|300|lib/memory_arbiter_lib.vhd|
-!s107 lib/memory_arbiter_lib.vhd|
+!s108 1459120219.429000
+!s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/lib/memory_arbiter_lib.vhd|
+!s107 C:/Users/scarte9/PipelinedProcessor/lib/memory_arbiter_lib.vhd|
 !i113 1
 R14
+R15
 Ememory_in_byte
-R35
+R32
 R4
 R5
 R6
-Z52 8lib/Memory_in_Byte.vhd
-Z53 Flib/Memory_in_Byte.vhd
+Z59 8C:/Users/scarte9/PipelinedProcessor/lib/Memory_in_Byte.vhd
+Z60 FC:/Users/scarte9/PipelinedProcessor/lib/Memory_in_Byte.vhd
 l0
 L5
-Vmcm4WH<X>_L=7h14IHP?82
+Vm<8O`=NR9ZdLQHmmZEG?:1
 !s100 jXbBLDeI>Jz91`Od40R<@2
 R9
-32
-R38
+33
+Z61 !s110 1459120221
 !i10b 1
-R32
-Z54 !s90 -reportprogress|300|lib/Memory_in_Byte.vhd|
-Z55 !s107 lib/Memory_in_Byte.vhd|
+Z62 !s108 1459120221.270000
+Z63 !s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/lib/Memory_in_Byte.vhd|
+Z64 !s107 C:/Users/scarte9/PipelinedProcessor/lib/Memory_in_Byte.vhd|
 !i113 1
 R14
+R15
 Abehavioural
 R4
 R5
-DEx4 work 14 memory_in_byte 0 22 mcm4WH<X>_L=7h14IHP?82
+DEx4 work 14 memory_in_byte 0 22 m<8O`=NR9ZdLQHmmZEG?:1
 l33
 L29
-VOVHehc@dGadQDNe=ZOdEh3
+V3i0_8[5Q?la8oe5T=aVDQ1
 !s100 [eJ=L2WSB:ZMP_QLeki433
 R9
-32
-R38
+33
+R61
 !i10b 1
-R32
-R54
-R55
+R62
+R63
+R64
 !i113 1
 R14
+R15
 Epipelined_processor
 w1457810165
 R3
@@ -356,7 +371,7 @@ l0
 L5
 V8RDZbcJz6;iMQ?;W6TV^_3
 !s100 fL<fz:cYNgDfo9Y8>7O8U0
-R18
+R9
 32
 !s110 1457810604
 !i10b 1
@@ -365,86 +380,129 @@ R18
 !s107 C:/Users/skanet1/PipelinedProcessor/PipelinedProcessor.vhd|
 !i113 1
 o-work work -2002 -explicit
-R14
+R24
 Epipelinedprocessor
-Z56 w1458876975
-R47
+Z65 w1459120180
+R52
 R3
 R4
 R5
 R6
-Z57 8PipelinedProcessor.vhd
-Z58 FPipelinedProcessor.vhd
+Z66 8C:/Users/scarte9/PipelinedProcessor/PipelinedProcessor.vhd
+Z67 FC:/Users/scarte9/PipelinedProcessor/PipelinedProcessor.vhd
 l0
 L6
-V10`40@7`5_7[X8BljiKmZ3
+VNjYz1<b:>oom`Pn^BO9Xb0
 !s100 CMK:?V;;M6GDCR4oI8MLG2
 R9
-32
-R10
+33
+Z68 !s110 1459120229
 !i10b 1
-R11
-Z59 !s90 -reportprogress|300|-check_synthesis|PipelinedProcessor.vhd|
-Z60 !s107 PipelinedProcessor.vhd|
+Z69 !s108 1459120229.787000
+Z70 !s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/PipelinedProcessor.vhd|
+Z71 !s107 C:/Users/scarte9/PipelinedProcessor/PipelinedProcessor.vhd|
 !i113 1
-Z61 o-check_synthesis
 R14
+R15
 Adisc
-R47
+R52
 R3
 R4
 R5
-Z62 DEx4 work 18 pipelinedprocessor 0 22 10`40@7`5_7[X8BljiKmZ3
-l209
+DEx4 work 18 pipelinedprocessor 0 22 NjYz1<b:>oom`Pn^BO9Xb0
+l216
 L13
-Z63 Vle0Smo?aGo_j_<3[PYKHJ3
-Z64 !s100 YUXbAYa_iVf;[e63Rg`Sa0
+VI]8@@_QP4B=Zb8UWCSh6R3
+!s100 ?8=1nME>2HVLD28gdEMHY1
 R9
-32
-R10
+33
+R68
 !i10b 1
-R11
-R59
-R60
+R69
+R70
+R71
 !i113 1
-R61
 R14
-Ewrite_back
-R42
+R15
+Etest_ex
+R32
 R3
 R4
 R5
 R6
-Z65 8WriteBack.vhd
-Z66 FWriteBack.vhd
+Z72 8C:/Users/scarte9/PipelinedProcessor/test_ex.vhd
+Z73 FC:/Users/scarte9/PipelinedProcessor/test_ex.vhd
 l0
 L5
-V4;2^<e2K^S5ILOH;QZ?9H0
-!s100 aTG2HnL`560U`Y9k^No^U3
+V[DoQHRl_TEaXV]PkhhQB13
+!s100 JzAglgSgFcAO;L==]A_040
 R9
-32
-R10
+33
+Z74 !s110 1459120231
 !i10b 1
-R11
-Z67 !s90 -reportprogress|300|WriteBack.vhd|
-Z68 !s107 WriteBack.vhd|
+Z75 !s108 1459120231.893000
+Z76 !s90 -reportprogress|30|-work|work|C:/Users/scarte9/PipelinedProcessor/test_ex.vhd|
+Z77 !s107 C:/Users/scarte9/PipelinedProcessor/test_ex.vhd|
 !i113 1
 R14
+R15
+Abehaviour
+R3
+R4
+R5
+DEx4 work 7 test_ex 0 22 [DoQHRl_TEaXV]PkhhQB13
+l47
+L8
+V:AS^VUkWeRfd:XBeJUoa_1
+!s100 GNM6KCn[fJEc0B>^l9j__0
+R9
+33
+R74
+!i10b 1
+R75
+R76
+R77
+!i113 1
+R14
+R15
+Ewrite_back
+R32
+R3
+R4
+R5
+R6
+Z78 8C:/Users/scarte9/PipelinedProcessor/WriteBack.vhd
+Z79 FC:/Users/scarte9/PipelinedProcessor/WriteBack.vhd
+l0
+L5
+V5R>:lz]>SEle0U`ZgLJmF2
+!s100 aTG2HnL`560U`Y9k^No^U3
+R9
+33
+Z80 !s110 1459120235
+!i10b 1
+Z81 !s108 1459120235.294000
+Z82 !s90 -reportprogress|300|-work|work|C:/Users/scarte9/PipelinedProcessor/WriteBack.vhd|
+Z83 !s107 C:/Users/scarte9/PipelinedProcessor/WriteBack.vhd|
+!i113 1
+R14
+R15
 Adisc
 R3
 R4
 R5
-DEx4 work 10 write_back 0 22 4;2^<e2K^S5ILOH;QZ?9H0
+DEx4 work 10 write_back 0 22 5R>:lz]>SEle0U`ZgLJmF2
 l26
 L19
-V;ZGek=K?NY7>jNV:UmDDY2
-!s100 `PI=E1`nLlFNoehdBcL;F3
+VcjCBQ6A[NX42Gl?BSWhZh0
+Z84 !s100 `PI=E1`nLlFNoehdBcL;F3
 R9
-32
-R10
+33
+R80
 !i10b 1
-R11
-R67
-R68
+R81
+R82
+R83
 !i113 1
 R14
+R15
