@@ -32,7 +32,7 @@ IR <= unsigned(IR_data);
 
 PC_out <= PC - 8;
 
-PC_update : process(IR_busy, clk)
+PC_update : process(IR_busy, clk, branch_taken)
 begin
 	-- read next instruction unless reset
 	IR_re <= '1';
@@ -40,7 +40,8 @@ begin
 		PC <= to_unsigned(0, DATA_WIDTH);
 		IR_re <= '0';
 	elsif (branch_taken = '1') then
-		PC <= branch_pc + 8;
+		PC <= branch_pc;
+		IR_pc <= branch_pc;
 	elsif falling_edge(IR_busy) then
 		IR_pc <= PC + 4;
 		PC <= PC + 4;
