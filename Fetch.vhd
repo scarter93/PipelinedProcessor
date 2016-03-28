@@ -34,13 +34,13 @@ component HAZARD_DETECTION is
 		IR3	: in unsigned(DATA_WIDTH-1 downto 0);
 		IR4	: in unsigned(DATA_WIDTH-1 downto 0);
 		HAZARD	: out std_logic;
-		FINAL	: out std_logic
+		cycles_to_wait	: out unsigned(2 downto 0)
 		);
 
 end component;
 
-type instruction_log is array (1 to 4) of unsigned(DATA_WIDTH-1 downto 0);
-signal IR_log :  instruction_log;
+type instruction_log is array (integer range <>) of unsigned(DATA_WIDTH-1 downto 0);
+signal IR_log :  instruction_log(1 to 4);
 
 -- signals
 signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
@@ -48,7 +48,9 @@ signal IR_check : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
 --hazards
 signal hazard : std_logic;
-signal final : std_logic;
+signal cycles_to_wait : unsigned(2 downto 0);
+
+signal IR_next : unsigned(DATA_WIDTH-1 downto 0);
 
 begin
 
@@ -60,7 +62,7 @@ hazard_detect : HAZARD_DETECTION
 		IR3 => IR_log(3),
 		IR4 => IR_log(4),
 		HAZARD => hazard,
-		FINAL => final
+		cycles_to_wait => cycles_to_wait
 	);
 
 IR_update : process(clk)
@@ -73,7 +75,7 @@ begin
 		end if;
 	elsif rising_edge(clk) then --pass new instruction
 		IR <= IR_check;
-		PC_out <= PC - 8;
+		PC_out <= PC - 4;
 	end if;
 end process;
 
@@ -87,15 +89,10 @@ begin
 	end if;
 end process;
 
-PC_update : process(IR_busy, clk, hazard)
+PC_update : process(reset, IR_busy, clk, hazard)
 begin
-	-- read next instruction unless reset or hazard
-	IR_re <= '1';
 	if reset = '1' then
 		PC <= to_unsigned(0, DATA_WIDTH);
-		IR_re <= '0';
-	elsif hazard = '1' then
-		IR_re <= '0';
 	elsif falling_edge(IR_busy) then
 		IR_pc <= PC + 4;
 		case branch_taken is
@@ -103,7 +100,27 @@ begin
 			when '1' => PC <= branch_pc;
 			when others => report "unreachable" severity failure;
 		end case;
+		IR_next <= unsigned(IR_data);
 	end if;
+
+	if rising_edge(hazard) then
+		IR_pc <= PC - 4;
+		PC <= PC - 4;
+	elsif falling_edge(hazard) then
+		IR_pc <= PC + 4;
+		PC <= PC + 4;
+	end if;
+end process;
+
+memory_read_update : process(reset, clk, hazard)
+begin
+	if reset = '1' then
+		IR_re <= '0';
+	elsif hazard = '1' then
+		IR_re <= '0';
+	elsif falling_edge(clk) then
+		IR_re <= '1';
+	end if ;
 end process;
 
 end disc;

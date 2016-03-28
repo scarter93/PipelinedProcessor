@@ -13,7 +13,7 @@ port(
 	IR3	: in unsigned(DATA_WIDTH-1 downto 0);
 	IR4	: in unsigned(DATA_WIDTH-1 downto 0);
 	HAZARD	: out std_logic;
-	FINAL	: out std_logic
+	cycles_to_wait	: out unsigned(2 downto 0) --4 cycles max
 	);
 
 end entity;
@@ -207,20 +207,6 @@ op2_addr <= to_unsigned(0, 5) when --these instructions don't read from rt
 		IR_check_opcode = JAL
 	else IR_check(20 downto 16);
 
-
-process(op1_addr, op2_addr, write1, write2, write3, write4)
-begin
-	if (op1_addr /= write1 and op1_addr /= write2 and op1_addr /= write3
-		and op1_addr = write4 and op1_addr /= to_unsigned(0, 5)) or
-		(op2_addr /= write1 and op2_addr /= write2 and op2_addr /= write3
-		and op2_addr = write4 and op2_addr /= to_unsigned(0, 5))
-	then
-		FINAL <= '1';
-	else
-		FINAl <= '0';
-	end if;
-end process;
-
 op1_hazard <= '0' when
 		op1_addr = to_unsigned(0, 5) or
 		(op1_addr /= write1 and
@@ -238,5 +224,32 @@ op2_hazard <= '0' when
 	else '1';
 
 HAZARD <= op1_hazard or op2_hazard;
+
+process(op1_addr, op2_addr, write1, write2, write3, write4)
+begin
+	if (op1_addr = write1 and op1_addr /= to_unsigned(0, 5)) or
+			(op2_addr = write1 and op2_addr /= to_unsigned(0, 5))
+	then
+		cycles_to_wait <= to_unsigned(4, 3);
+	elsif (op1_addr /= write1 and op1_addr = write2 and op1_addr /= to_unsigned(0, 5)) or
+			(op2_addr /= write1 and op2_addr = write2 and op2_addr /= to_unsigned(0, 5))
+	then
+		cycles_to_wait <= to_unsigned(3, 3);
+	elsif (op1_addr /= write1 and op1_addr /= write2 and op1_addr = write3
+	       	and op1_addr /= to_unsigned(0, 5)) or
+			(op2_addr /= write1 and op2_addr /= write2 and op2_addr = write3
+			and op2_addr /= to_unsigned(0, 5))
+	then
+		cycles_to_wait <= to_unsigned(2, 3);
+	elsif (op1_addr /= write1 and op1_addr /= write2 and op1_addr /= write3
+			and op1_addr = write4 and op1_addr /= to_unsigned(0, 5)) or
+			(op2_addr /= write1 and op2_addr /= write2 and op2_addr /= write3
+			and op2_addr = write4 and op2_addr /= to_unsigned(0, 5))
+	then
+		cycles_to_wait <= to_unsigned(1, 3);
+	else
+		cycles_to_wait <= to_unsigned(0, 3);
+	end if;
+end process;
 
 end disc;

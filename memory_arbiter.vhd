@@ -73,11 +73,6 @@ begin
 		dump		=> '0'
 	);
 
-mm_data <=  data1 when we1 = '1' else 
-	data2 when we2 = '1' else
-	(others => 'Z');
-
-
 process (clk, reset, re1, re2, we1, we2, mm_rd_ready, mm_wr_done)
 begin
 	if reset = '1' then
@@ -99,22 +94,17 @@ begin
 		--wait for user command
 			if re1 = '1' then
 				current_port <= p1;
-				--mm_data <= (others => 'Z');
 				state <= reading;
 			elsif we1 = '1' then
 				current_port <= p1;
-				--mm_data <= data1;
 				state <= writing;
 			elsif re2 = '1' then
 				current_port <= p2;
-				--mm_data <= (others => 'Z');
 				state <= reading;
 			elsif we2 = '1' then
 				current_port <= p2;
-				--mm_data <= data2;
 				state <= writing;
 			end if;
-
 		when reading =>
 		--wait for data to be put on data bus
 		--when ready, put data on requesting port data bus
@@ -149,6 +139,10 @@ begin
 		end case;
 	end if;
 end process;
+
+mm_data <=  data1 when we1 = '1' else
+			data2 when we2 = '1' else
+			(others => 'Z');
 
 mm_re <= '1' when state = reading else '0';
 mm_we <= '1' when state = writing else '0';
