@@ -82,7 +82,7 @@ begin
 		else
         		op1 <= op1_tmp;
 		end if;
-		if(op1_addr = forw_reg) then
+		if(op2_addr = forw_reg) then
 			op2 <= alu_res;
 		else
 			op2 <= op2_tmp;
