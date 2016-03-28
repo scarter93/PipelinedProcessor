@@ -169,10 +169,8 @@ begin
 				else
 					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
 				end if;
-				--IR_out <= to_unsigned(0, DATA_WIDTH);
-				--PC_out <= to_unsigned(0, DATA_WIDTH);
-			IR_out <= IR_in;
-			PC_out <= PC_in;
+				IR_out <= to_unsigned(0, DATA_WIDTH);
+				PC_out <= to_unsigned(0, DATA_WIDTH);
 			end if;
 		when "011001" => --bne
 			if(op1_tmp /= op2_tmp) then
@@ -182,10 +180,8 @@ begin
 				else
 					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
 				end if;
-				--IR_out <= to_unsigned(0, DATA_WIDTH);
-				--PC_out <= to_unsigned(0, DATA_WIDTH);
-			IR_out <= IR_in;
-			PC_out <= PC_in;
+				IR_out <= to_unsigned(0, DATA_WIDTH);
+				PC_out <= to_unsigned(0, DATA_WIDTH);
 			end if;
 		when others =>
 			branch_taken <= '0';

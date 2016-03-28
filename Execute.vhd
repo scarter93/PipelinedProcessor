@@ -257,27 +257,29 @@ begin
 				div <= '0';
 				alu_op <= '1';
 			when "011000" => --beq
-				if(op1 = op2) then
-					branch_taken <= '1';
-					if(imm(15) = '1') then
-						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
-					else
-						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
-					end if;
-				end if;
+--				if(op1 = op2) then
+--					branch_taken <= '1';
+--					if(imm(15) = '1') then
+--						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+--					else
+--						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
+--					end if;
+--				end if;
+				alu_result <= to_unsigned(0, DATA_WIDTH);
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
 				alu_op <= '0';
 			when "011001" => --bne
-				if(op1 /= op2) then
-					branch_taken <= '1';
-					if(imm(15) = '1') then
-						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
-					else
-						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
-					end if;
-				end if;
+--				if(op1 /= op2) then
+--					branch_taken <= '1';
+--					if(imm(15) = '1') then
+--						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+--					else
+--						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
+--					end if;
+--				end if;
+				alu_result <= to_unsigned(0, DATA_WIDTH);
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
