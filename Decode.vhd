@@ -163,8 +163,8 @@ begin
 		case current_opcode is
 		when "011000" => --beq
 			if(op1_tmp = op2_tmp) then
-				branch_taken <= '1';
 				if(IR_in(15) = '1') then
+					branch_taken <= '1';
 					branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15) & "00");
 				end if;
 				--IR_out <= to_unsigned(0, DATA_WIDTH);
@@ -174,8 +174,8 @@ begin
 			end if;
 		when "011001" => --bne
 			if(op1_tmp /= op2_tmp) then
-				branch_taken <= '1';
 				if(IR_in(15) = '0') then
+					branch_taken <= '1';
 					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15) & "00");
 				end if;
 				--IR_out <= to_unsigned(0, DATA_WIDTH);
