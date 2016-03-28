@@ -261,6 +261,8 @@ begin
 					branch_taken <= '1';
 					if(imm(15) = '1') then
 						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+					else
+						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
 					end if;
 				end if;
 				op2_out <= op2;
@@ -270,7 +272,9 @@ begin
 			when "011001" => --bne
 				if(op1 /= op2) then
 					branch_taken <= '1';
-					if(imm(15) = '0') then
+					if(imm(15) = '1') then
+						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+					else
 						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
 					end if;
 				end if;
