@@ -50,8 +50,6 @@ signal IR_check : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 signal hazard : std_logic;
 signal cycles_to_wait : unsigned(2 downto 0);
 
-signal IR_next : unsigned(DATA_WIDTH-1 downto 0);
-
 begin
 
 hazard_detect : HAZARD_DETECTION
@@ -100,7 +98,6 @@ begin
 			when '1' => PC <= branch_pc;
 			when others => report "unreachable" severity failure;
 		end case;
-		IR_next <= unsigned(IR_data);
 	end if;
 
 	if rising_edge(hazard) then

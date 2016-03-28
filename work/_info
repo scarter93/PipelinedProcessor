@@ -23,9 +23,9 @@ Vm?h?iUY8`]1mCC;eWP17e0
 !s100 Bf`F[Xk1dijc^bZ<<XojH1
 Z9 OV;C;10.4b;61
 32
-Z10 !s110 1459191783
+Z10 !s110 1459195215
 !i10b 1
-Z11 !s108 1459191783.000000
+Z11 !s108 1459195215.000000
 Z12 !s90 -reportprogress|300|Execute.vhd|
 Z13 !s107 Execute.vhd|
 !i113 1
@@ -106,9 +106,9 @@ R9
 32
 R10
 !i10b 1
-Z27 !s108 1459191782.000000
-Z28 !s90 -reportprogress|300|HazardDetection.vhd|
-Z29 !s107 HazardDetection.vhd|
+R11
+Z27 !s90 -reportprogress|300|HazardDetection.vhd|
+Z28 !s107 HazardDetection.vhd|
 !i113 1
 R14
 Adisc
@@ -124,19 +124,19 @@ R9
 32
 R10
 !i10b 1
+R11
 R27
 R28
-R29
 !i113 1
 R14
 Einstruction_decode
-Z30 w1459087178
+Z29 w1459087178
 R3
 R4
 R5
 R6
-Z31 8Decode.vhd
-Z32 FDecode.vhd
+Z30 8Decode.vhd
+Z31 FDecode.vhd
 l0
 L5
 VaY6d8aliEDEWnKHIg?@[C0
@@ -146,8 +146,8 @@ R9
 R10
 !i10b 1
 R11
-Z33 !s90 -reportprogress|300|Decode.vhd|
-Z34 !s107 Decode.vhd|
+Z32 !s90 -reportprogress|300|Decode.vhd|
+Z33 !s107 Decode.vhd|
 !i113 1
 R14
 Adisc
@@ -164,18 +164,18 @@ R9
 R10
 !i10b 1
 R11
+R32
 R33
-R34
 !i113 1
 R14
 Einstruction_fetch
-Z35 w1459191780
+Z34 w1459195200
 R3
 R4
 R5
 R6
-Z36 8Fetch.vhd
-Z37 FFetch.vhd
+Z35 8Fetch.vhd
+Z36 FFetch.vhd
 l0
 L5
 V19XQkkP_7TaMiFaP`SoBA0
@@ -185,8 +185,8 @@ R9
 R10
 !i10b 1
 R11
-Z38 !s90 -reportprogress|300|Fetch.vhd|
-Z39 !s107 Fetch.vhd|
+Z37 !s90 -reportprogress|300|Fetch.vhd|
+Z38 !s107 Fetch.vhd|
 !i113 1
 R14
 Adisc
@@ -194,98 +194,98 @@ R3
 R4
 R5
 DEx4 work 17 instruction_fetch 0 22 19XQkkP_7TaMiFaP`SoBA0
-l55
+l53
 L24
-VSCm_Ag>MeL9dVkZ5KT]l<3
-!s100 ^P60lDbYaJSm9Y7S]T6VR0
+VLL58cTU[b1@RJHA_MZQn:1
+!s100 b^=K_HXG<3`oP>Lz1I`0R0
 R9
 32
 R10
 !i10b 1
 R11
+R37
 R38
-R39
 !i113 1
 R14
 Emain_memory
-Z40 w1458589967
+Z39 w1458589967
 R4
 R5
 R6
-Z41 8lib/Main_Memory.vhd
-Z42 Flib/Main_Memory.vhd
+Z40 8lib/Main_Memory.vhd
+Z41 Flib/Main_Memory.vhd
 l0
 L5
 VZ2gm]O<315V:iDRzVFPLX0
 !s100 A_CV;KMiU4ED`M9hgXdHI3
 R9
 32
-Z43 !s110 1459192139
+R10
 !i10b 1
-Z44 !s108 1459192139.000000
-Z45 !s90 -reportprogress|300|lib/Main_Memory.vhd|
-Z46 !s107 lib/Main_Memory.vhd|
+Z42 !s108 1459195214.000000
+Z43 !s90 -reportprogress|300|lib/Main_Memory.vhd|
+Z44 !s107 lib/Main_Memory.vhd|
 !i113 1
 R14
 Abehavioural
 R4
 R5
-Z47 DEx4 work 11 main_memory 0 22 Z2gm]O<315V:iDRzVFPLX0
+Z45 DEx4 work 11 main_memory 0 22 Z2gm]O<315V:iDRzVFPLX0
 l65
 L29
 VL@I[K0K@nAfAnleLBe:PE2
 !s100 ?Y`g6Hi4?WMZ^X;QHS:5X2
 R9
 32
-Z48 !s110 1459192140
+R10
 !i10b 1
+R42
+R43
 R44
-R45
-R46
 !i113 1
 R14
 Emem_wr_tb
-Z49 w1459095276
-Z50 DPx4 work 18 memory_arbiter_lib 0 22 3]lmkAfJ>R:=JJz_1GdoG0
+Z46 w1459095276
+Z47 DPx4 work 18 memory_arbiter_lib 0 22 3]lmkAfJ>R:=JJz_1GdoG0
 R3
 R4
 R5
 R6
-Z51 8tests/mem_wr_tb.vhd
-Z52 Ftests/mem_wr_tb.vhd
+Z48 8tests/mem_wr_tb.vhd
+Z49 Ftests/mem_wr_tb.vhd
 l0
 L10
 VKIMA3PcI9UMiPk<V3`Xbd2
 !s100 JAffD8ZbaoAR0V7Yc0CC70
 R9
 32
-R48
+Z50 !s110 1459192140
 !i10b 1
-Z53 !s108 1459192140.000000
-Z54 !s90 -reportprogress|300|-check_synthesis|tests/mem_wr_tb.vhd|
-Z55 !s107 tests/mem_wr_tb.vhd|
+Z51 !s108 1459192140.000000
+Z52 !s90 -reportprogress|300|-check_synthesis|tests/mem_wr_tb.vhd|
+Z53 !s107 tests/mem_wr_tb.vhd|
 !i113 1
-Z56 o-check_synthesis
+Z54 o-check_synthesis
 R14
 Atest
-R50
+R47
 R3
 R4
 R5
-Z57 DEx4 work 9 mem_wr_tb 0 22 KIMA3PcI9UMiPk<V3`Xbd2
+DEx4 work 9 mem_wr_tb 0 22 KIMA3PcI9UMiPk<V3`Xbd2
 l97
 L13
-Z58 V9XiDSR@Z58Hj7lVKihgGT1
-Z59 !s100 >JgNMmzY7Q20[`XU;^1e92
+V9XiDSR@Z58Hj7lVKihgGT1
+!s100 >JgNMmzY7Q20[`XU;^1e92
 R9
 32
-R48
+R50
 !i10b 1
+R51
+R52
 R53
-R54
-R55
 !i113 1
-R56
+R54
 R14
 Ememory
 R1
@@ -293,19 +293,19 @@ R3
 R4
 R5
 R6
-Z60 8Memory.vhd
-Z61 FMemory.vhd
+Z55 8Memory.vhd
+Z56 FMemory.vhd
 l0
 L5
 V:JBlWKE@nR;Ha38?HUC^z3
 !s100 nJKVAZ7>aialz:hh3=EP:2
 R9
 32
-R48
+R10
 !i10b 1
-R53
-Z62 !s90 -reportprogress|300|Memory.vhd|
-Z63 !s107 Memory.vhd|
+R11
+Z57 !s90 -reportprogress|300|Memory.vhd|
+Z58 !s107 Memory.vhd|
 !i113 1
 R14
 Adisc
@@ -319,38 +319,38 @@ V5eINB=;<[k;LDdEgS0FP^0
 !s100 UNXUgSEk^@n2[^eACiMM90
 R9
 32
-R48
+R10
 !i10b 1
-R53
-R62
-R63
+R11
+R57
+R58
 !i113 1
 R14
 Ememory_arbiter
-Z64 w1459190223
-R50
+Z59 w1459190223
+R47
 R3
 R4
 R5
 R6
-Z65 8memory_arbiter.vhd
-Z66 Fmemory_arbiter.vhd
+Z60 8memory_arbiter.vhd
+Z61 Fmemory_arbiter.vhd
 l0
 L8
 VL_mTmKedjR3MDT^_U[KL^0
 !s100 __@9IbC8P>D407bShFhnY3
 R9
 32
-R48
+R10
 !i10b 1
-R53
-Z67 !s90 -reportprogress|300|memory_arbiter.vhd|
-Z68 !s107 memory_arbiter.vhd|
+R11
+Z62 !s90 -reportprogress|300|memory_arbiter.vhd|
+Z63 !s107 memory_arbiter.vhd|
 !i113 1
 R14
 Abehavioral
+R45
 R47
-R50
 R3
 R4
 R5
@@ -361,18 +361,18 @@ VVoG_BJWVnK?RB[GYBhaLU1
 !s100 agA>S]zhjd5m<<nfJg]Dg0
 R9
 32
-R48
+R10
 !i10b 1
-R53
-R67
-R68
+R11
+R62
+R63
 !i113 1
 R14
 Pmemory_arbiter_lib
 R3
 R4
 R5
-R40
+R39
 R6
 8lib/memory_arbiter_lib.vhd
 Flib/memory_arbiter_lib.vhd
@@ -382,31 +382,31 @@ V3]lmkAfJ>R:=JJz_1GdoG0
 !s100 JK5X]eYRnoWJ>HZkiVX380
 R9
 32
-R48
+R10
 !i10b 1
-R53
+R11
 !s90 -reportprogress|300|lib/memory_arbiter_lib.vhd|
 !s107 lib/memory_arbiter_lib.vhd|
 !i113 1
 R14
 Ememory_in_byte
-Z69 w1459191654
+Z64 w1459191654
 R4
 R5
 R6
-Z70 8lib/Memory_in_Byte.vhd
-Z71 Flib/Memory_in_Byte.vhd
+Z65 8lib/Memory_in_Byte.vhd
+Z66 Flib/Memory_in_Byte.vhd
 l0
 L5
 Vmcm4WH<X>_L=7h14IHP?82
 !s100 jXbBLDeI>Jz91`Od40R<@2
 R9
 32
-R43
+Z67 !s110 1459195214
 !i10b 1
-R44
-Z72 !s90 -reportprogress|300|lib/Memory_in_Byte.vhd|
-Z73 !s107 lib/Memory_in_Byte.vhd|
+R42
+Z68 !s90 -reportprogress|300|lib/Memory_in_Byte.vhd|
+Z69 !s107 lib/Memory_in_Byte.vhd|
 !i113 1
 R14
 Abehavioural
@@ -419,11 +419,11 @@ V2<gOX4Mkfc59=D70e1YW93
 !s100 a>h>jZ`Ho2b?:k]om:Oe31
 R9
 32
-R43
+R67
 !i10b 1
-R44
-R72
-R73
+R42
+R68
+R69
 !i113 1
 R14
 Epipelined_processor
@@ -450,13 +450,13 @@ o-work work -2002 -explicit
 R14
 Epipelinedprocessor
 R1
-R50
+R47
 R3
 R4
 R5
 R6
-Z74 8PipelinedProcessor.vhd
-Z75 FPipelinedProcessor.vhd
+Z70 8PipelinedProcessor.vhd
+Z71 FPipelinedProcessor.vhd
 l0
 L6
 V10`40@7`5_7[X8BljiKmZ3
@@ -466,39 +466,39 @@ R9
 R10
 !i10b 1
 R11
-Z76 !s90 -reportprogress|300|-check_synthesis|PipelinedProcessor.vhd|
-Z77 !s107 PipelinedProcessor.vhd|
+Z72 !s90 -reportprogress|300|-check_synthesis|PipelinedProcessor.vhd|
+Z73 !s107 PipelinedProcessor.vhd|
 !i113 1
-R56
+R54
 R14
 Adisc
-R50
+R47
 R3
 R4
 R5
-DEx4 work 18 pipelinedprocessor 0 22 10`40@7`5_7[X8BljiKmZ3
+Z74 DEx4 work 18 pipelinedprocessor 0 22 10`40@7`5_7[X8BljiKmZ3
 l209
 L13
-Vle0Smo?aGo_j_<3[PYKHJ3
-!s100 YUXbAYa_iVf;[e63Rg`Sa0
+Z75 Vle0Smo?aGo_j_<3[PYKHJ3
+Z76 !s100 YUXbAYa_iVf;[e63Rg`Sa0
 R9
 32
 R10
 !i10b 1
 R11
-R76
-R77
+R72
+R73
 !i113 1
-R56
+R54
 R14
 Ewrite_back
-Z78 w1458875361
+Z77 w1458875361
 R3
 R4
 R5
 R6
-Z79 8WriteBack.vhd
-Z80 FWriteBack.vhd
+Z78 8WriteBack.vhd
+Z79 FWriteBack.vhd
 l0
 L5
 V4;2^<e2K^S5ILOH;QZ?9H0
@@ -508,8 +508,8 @@ R9
 R10
 !i10b 1
 R11
-Z81 !s90 -reportprogress|300|WriteBack.vhd|
-Z82 !s107 WriteBack.vhd|
+Z80 !s90 -reportprogress|300|WriteBack.vhd|
+Z81 !s107 WriteBack.vhd|
 !i113 1
 R14
 Adisc
@@ -526,7 +526,7 @@ R9
 R10
 !i10b 1
 R11
+R80
 R81
-R82
 !i113 1
 R14
