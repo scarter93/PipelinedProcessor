@@ -1,5 +1,6 @@
 proc AddWaves {} {
   ;#Add waves we're interested in to the Wave window
+  add wave -group "Registers" -radix dec sim:/pipelinedprocessor/decode/reg
   add wave -position end sim:/PipelinedProcessor/clk
   add wave -group "Main Memory" -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block0/Memory\
                                 -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block1/Memory\
@@ -33,6 +34,8 @@ proc AddWaves {} {
   add wave -group "Write Back" -radix dec sim:/pipelinedprocessor/write_back_t/*
 
   add wave -group "Memory Arbiter" -radix bin sim:/pipelinedprocessor/memory_arbiter_t/*
+
+  add wave -group "Main Memory" sim:/pipelinedprocessor/memory_arbiter_t/main_memory/*
 }
 
 ;#Create the work library, which is the default library used by ModelSim
@@ -61,6 +64,6 @@ force -deposit /pipelinedprocessor/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
 
 force -deposit /pipelinedprocessor/reset 1 0ns, 0 2.25ns
 
-run 50 ns
+run 70 ns
 
 wave zoom full

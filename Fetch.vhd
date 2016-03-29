@@ -87,17 +87,17 @@ begin
 	end if;
 end process;
 
-PC_update : process(reset, IR_busy, clk, hazard)
+PC_update : process(reset, IR_busy, clk, hazard, branch_taken)
+
 begin
 	if reset = '1' then
 		PC <= to_unsigned(0, DATA_WIDTH);
+	elsif (branch_taken = '1') then
+		PC <= branch_pc;
+		IR_pc <= branch_pc;
 	elsif falling_edge(IR_busy) then
 		IR_pc <= PC + 4;
-		case branch_taken is
-			when '0' => PC <= PC + 4;
-			when '1' => PC <= branch_pc;
-			when others => report "unreachable" severity failure;
-		end case;
+		PC <= PC + 4;
 	end if;
 
 	if rising_edge(hazard) then

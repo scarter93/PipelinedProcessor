@@ -15,7 +15,9 @@ port( 	clk	: in std_logic;
 	PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	IMM	: out unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
 	op1	: out unsigned(DATA_WIDTH-1 downto 0);
-	op2	: out unsigned(DATA_WIDTH-1 downto 0)
+	op2	: out unsigned(DATA_WIDTH-1 downto 0);
+	branch_taken	: out std_logic;
+	branch_to	: out unsigned(DATA_WIDTH-1 downto 0)
 	);
 
 end entity;
@@ -52,6 +54,10 @@ constant J		: unsigned(5 downto 0) := "011010";
 constant JR		: unsigned(5 downto 0) := "011011";
 constant JAL	: unsigned(5 downto 0) := "011100";
 
+-- used in branch resolution
+constant zeros		: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
+constant ones		: unsigned(DATA_WIDTH-1 downto 0) := (others => '1');
+constant four		: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(integer(4), DATA_WIDTH);
 
 type REGISTERS is array (0 to 31) of unsigned(DATA_WIDTH-1 downto 0);
 signal reg :  REGISTERS;
@@ -154,8 +160,34 @@ end process;
 push_through : process(clk)
 begin
 	if rising_edge(clk) then
-		IR_out <= IR_in;
-		PC_out <= PC_in;
+		case current_opcode is
+		when "011000" => --beq
+			if(op1_tmp = op2_tmp) then
+				branch_taken <= '1';
+				if(IR_in(15) = '1') then
+					branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
+				else
+					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
+				end if;
+				IR_out <= to_unsigned(0, DATA_WIDTH);
+				PC_out <= to_unsigned(0, DATA_WIDTH);
+			end if;
+		when "011001" => --bne
+			if(op1_tmp /= op2_tmp) then
+				branch_taken <= '1';
+				if(IR_in(15) = '1') then
+					branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
+				else
+					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
+				end if;
+				IR_out <= to_unsigned(0, DATA_WIDTH);
+				PC_out <= to_unsigned(0, DATA_WIDTH);
+			end if;
+		when others =>
+			branch_taken <= '0';
+			IR_out <= IR_in;
+			PC_out <= PC_in;
+		end case;
 	end if;
 end process;
 

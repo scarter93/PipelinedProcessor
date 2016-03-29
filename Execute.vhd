@@ -82,7 +82,7 @@ begin
 
 	if rising_edge(clk) then
 		IR_out <= IR_in;
-	
+		branch_taken <= '0';
 		case operation is
 			when "000000" => --add
 				alu_result <= unsigned(signed(op1) + signed(op2));
@@ -257,23 +257,29 @@ begin
 				div <= '0';
 				alu_op <= '1';
 			when "011000" => --beq
-				if(op1 = op2) then
-					branch_taken <= '1';
-					if(imm(15) = '1') then
-						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
-					end if;
-				end if;
+--				if(op1 = op2) then
+--					branch_taken <= '1';
+--					if(imm(15) = '1') then
+--						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+--					else
+--						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
+--					end if;
+--				end if;
+				alu_result <= to_unsigned(0, DATA_WIDTH);
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
 				alu_op <= '0';
 			when "011001" => --bne
-				if(op1 /= op2) then
-					branch_taken <= '1';
-					if(imm(15) = '0') then
-						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
-					end if;
-				end if;
+--				if(op1 /= op2) then
+--					branch_taken <= '1';
+--					if(imm(15) = '1') then
+--						alu_result <=  PC_in + four + (ones(13 downto 0) & imm & "00");
+--					else
+--						alu_result <=  PC_in + four + (zeros(13 downto 0) & imm & "00");
+--					end if;
+--				end if;
+				alu_result <= to_unsigned(0, DATA_WIDTH);
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';

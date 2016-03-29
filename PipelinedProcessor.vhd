@@ -27,13 +27,15 @@ signal reset	: std_logic;
 -- inputs from stage 4
 -- branch_taken
 signal branch_pc	: unsigned(DATA_WIDTH-1 downto 0);
-
+signal branch_taken	: std_logic;
 -- STAGE 2 IN
 -- inputs from stage 1
 -- IR, PC
 -- inputs from stage 5
 signal MEM	: unsigned(DATA_WIDTH-1 downto 0);	-- location to write back
 signal WB	: unsigned(DATA_WIDTH-1 downto 0);	-- data to write back
+signal branch_to_early	: unsigned(DATA_WIDTH-1 downto 0);
+signal branch_taken_early	: std_logic;
 
 -- STAGE 3 IN
 -- inputs from stage 2
@@ -73,7 +75,7 @@ signal IR_busy	: std_logic;
 
 -- Memory Port #2
 signal ID_addr	: natural;
-signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => 'Z');
 signal ID_re	: std_logic;
 signal ID_we	: std_logic;
 signal ID_busy	: std_logic;
@@ -117,7 +119,9 @@ component INSTRUCTION_DECODE is
 		PC_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IMM	: out unsigned(DATA_WIDTH-1 downto 0);	-- immiediate operand
 		op1	: out unsigned(DATA_WIDTH-1 downto 0);
-		op2	: out unsigned(DATA_WIDTH-1 downto 0)
+		op2	: out unsigned(DATA_WIDTH-1 downto 0);
+		branch_taken	: out std_logic;
+		branch_to	: out unsigned(DATA_WIDTH-1 downto 0)
 		);
 
 end component;
@@ -157,7 +161,7 @@ component MEMORY is
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		ID_addr	: out NATURAL;
-		ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+		ID_data	: inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 		ID_re	: out STD_LOGIC;
 		ID_we	: out STD_LOGIC;
 		ID_busy	: in STD_LOGIC
@@ -182,7 +186,8 @@ end component;
 -- MISC --
 -- Memory Arbiter --
 component memory_arbiter is
-
+	generic ( File_Address_Read : string := "test_loadw.dat"
+		);
 	port(
 		clk	: in std_logic;
 		reset	: in std_logic;
@@ -212,9 +217,15 @@ begin
 -----------------------
 IR_addr_nat <= to_integer(IR_addr);
 
-with ID_we select ID_data  <=
-	mem_data when '1',
-	(others => 'Z') when others;
+--with ID_we select ID_data  <=
+--	mem_data when '1',
+--	(others => 'Z') when others;
+
+branch_pc <= alu_result_4 when (branch_taken_4 = '1') else
+	branch_to_early when (branch_taken_early = '1') else
+	(others => 'Z');
+
+branch_taken <= (branch_taken_4 or branch_taken_early);
 
 --ID_addr_nat <= to_integer(ID_addr);
 ------------------------------
@@ -224,7 +235,7 @@ fetch : INSTRUCTION_FETCH
 	port map (
 		clk => clk,
 		reset => reset,
-		branch_taken => branch_taken_4,
+		branch_taken => branch_taken,
 		branch_pc => branch_pc,
 		IR => IR_1,
 		PC_out => PC_1,
@@ -245,7 +256,9 @@ decode : INSTRUCTION_DECODE
 		PC_out => PC_2,
 		IMM => IMM,
 		op1 => op1_2,
-		op2 => op2_2
+		op2 => op2_2,
+		branch_taken => branch_taken_early,
+		branch_to => branch_to_early
 	);
 
 execute_t : EXECUTE
@@ -275,7 +288,7 @@ memory_t : MEMORY
 			alu_result_out => alu_result_4,
 			IR_out => IR_4,
 			ID_addr => ID_addr,
-			ID_data => mem_data,
+			ID_data => ID_data,
 			ID_re => ID_re,
 			ID_we => ID_we,
 			ID_busy => ID_busy
