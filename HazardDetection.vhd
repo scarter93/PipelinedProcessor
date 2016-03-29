@@ -64,7 +64,7 @@ signal IR3_opcode : unsigned(5 downto 0);
 signal IR4_opcode : unsigned(5 downto 0);
 
 --HAZARDS
-signal op1_hazard, op2_hazard : std_logic;
+signal op1_hazard, op2_hazard, branch_hazard : std_logic;
 
 begin
 
@@ -223,7 +223,13 @@ op2_hazard <= '0' when
 		 op2_addr /= write4)
 	else '1';
 
-HAZARD <= op1_hazard or op2_hazard;
+branch_hazard <= '1' when IR4_opcode = J or IR4_opcode = JR or IR4_opcode = JAL or IR4_opcode = BEQ or IR4_opcode = BNE or
+			IR3_opcode = J or IR3_opcode = JR or IR3_opcode = JAL or IR3_opcode = BEQ or IR3_opcode = BNE or
+			IR2_opcode = J or IR2_opcode = JR or IR2_opcode = JAL or IR2_opcode = BEQ or IR2_opcode = BNE or
+			IR1_opcode = J or IR1_opcode = JR or IR1_opcode = JAL or IR1_opcode = BEQ or IR1_opcode = BNE
+	else '0';
+
+HAZARD <= op1_hazard or op2_hazard or branch_hazard;
 
 process(op1_addr, op2_addr, write1, write2, write3, write4)
 begin

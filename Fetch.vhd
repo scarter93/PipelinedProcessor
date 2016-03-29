@@ -50,6 +50,7 @@ signal IR_check : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 --hazards
 signal hazard : std_logic;
 signal cycles_to_wait : unsigned(2 downto 0);
+signal hazard_resume_delay : std_logic := '0';
 
 begin
 
@@ -70,6 +71,8 @@ begin
 		if hazard = '1' then
 			IR_check <= to_unsigned(0, DATA_WIDTH);
 		elsif ID_busy = '1' then
+			IR_check <= to_unsigned(0, DATA_WIDTH);
+		elsif hazard_resume_delay = '1' then
 			IR_check <= to_unsigned(0, DATA_WIDTH);
 		else
 			IR_check <= unsigned(IR_data);
@@ -95,8 +98,8 @@ begin
 	if reset = '1' then
 		PC <= to_unsigned(0, DATA_WIDTH);
 	elsif (branch_taken = '1') then
-		PC <= branch_pc;
-		IR_pc <= branch_pc;
+		PC <= branch_pc - 4;
+		IR_pc <= branch_pc - 4;
 	elsif falling_edge(IR_busy) then
 		IR_pc <= PC + 4;
 		PC <= PC + 4;
@@ -108,6 +111,11 @@ begin
 	elsif falling_edge(hazard) then
 		IR_pc <= PC + 4;
 		PC <= PC + 4;
+		hazard_resume_delay <= '1';
+	end if;
+
+	if rising_edge(clk) then
+		hazard_resume_delay <= '0';
 	end if;
 end process;
 

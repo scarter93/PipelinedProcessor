@@ -105,6 +105,9 @@ begin
 				elsif we2 = '1' then
 					current_port <= p2;
 					state <= writing;
+				else
+					busy1 <= '0';
+					busy2 <= '0';
 				end if;
 			end if;
 		when reading =>

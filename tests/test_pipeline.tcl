@@ -21,7 +21,8 @@ proc AddWaves {} {
                           -radix dec sim:/pipelinedprocessor/fetch/hazard\
                           -radix hex sim:/pipelinedprocessor/fetch/IR_check\
                           -radix hex sim:/pipelinedprocessor/fetch/IR_log\
-                          -radix unsigned sim:/pipelinedprocessor/fetch/cycles_to_wait
+                          -radix unsigned sim:/pipelinedprocessor/fetch/cycles_to_wait\
+			  -radix decimal sim:/pipelinedprocessor/fetch/hazard_resume_delay
 
   add wave -group "Fetch" -group "Hazard Detection" -radix dec sim:/pipelinedprocessor/fetch/hazard_detect/*
 
