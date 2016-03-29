@@ -161,7 +161,7 @@ component MEMORY is
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		ID_addr	: out NATURAL;
-		ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+		ID_data	: inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 		ID_re	: out STD_LOGIC;
 		ID_we	: out STD_LOGIC;
 		ID_busy	: in STD_LOGIC
@@ -217,9 +217,9 @@ begin
 -----------------------
 IR_addr_nat <= to_integer(IR_addr);
 
-with ID_we select ID_data  <=
-	mem_data when '1',
-	(others => 'Z') when others;
+--with ID_we select ID_data  <=
+--	mem_data when '1',
+--	(others => 'Z') when others;
 
 branch_pc <= alu_result_4 when (branch_taken_4 = '1') else
 	branch_to_early when (branch_taken_early = '1') else
@@ -288,7 +288,7 @@ memory_t : MEMORY
 			alu_result_out => alu_result_4,
 			IR_out => IR_4,
 			ID_addr => ID_addr,
-			ID_data => mem_data,
+			ID_data => ID_data,
 			ID_re => ID_re,
 			ID_we => ID_we,
 			ID_busy => ID_busy

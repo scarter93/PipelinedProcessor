@@ -18,7 +18,7 @@ port(	clk	: in std_logic;
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	-- memory access
 	ID_addr	: out NATURAL := 0;
-	ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+	ID_data	: inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 	ID_re	: out STD_LOGIC;
 	ID_we	: out STD_LOGIC;
 	ID_busy	: in STD_LOGIC
@@ -34,7 +34,7 @@ constant LOAD_BYTE : unsigned(5 downto 0) := "010101";
 constant STORE_WORD : unsigned(5 downto 0) := "010110";
 constant STORE_BYTE : unsigned(5 downto 0) := "010111";
 
-
+signal tmp_data : std_logic_vector(DATA_WIDTH-1 downto 0);
 
 signal operation : unsigned(5 downto 0);
 signal reading, writing : std_logic := '0';
@@ -59,7 +59,7 @@ begin
 	end if;
 end process;
 	
-process(writing)
+process(writing, reading)
 begin
 	if (writing = '1' and operation = STORE_WORD) then
 		ID_data <= std_logic_vector(op2_in);
@@ -71,7 +71,7 @@ begin
 end process;
 
 
-update_values : process(clk)
+update_values : process(clk, ID_busy)
 begin
 	if (falling_edge(clk)) then
 		if ((ID_busy = '0' and reading = '1')) then
@@ -88,6 +88,19 @@ begin
 			ID_addr <= to_integer(alu_result_in);
 		end if;
 	end if;
+
+	if (falling_edge(ID_busy)) then
+		reading <= '0';
+		writing <= '0';
+	end if;
 end process;
+
+update_tmp_data : process(ID_busy)
+begin
+	if (falling_edge(ID_busy)) then
+		memory <= unsigned(ID_data);
+	end if;
+end process;
+
 
 end disc;
