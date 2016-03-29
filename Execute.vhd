@@ -16,6 +16,7 @@ port(	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
 	clk	: in std_logic;
 	branch_taken	: out std_logic;
 	alu_result	: out unsigned(DATA_WIDTH-1 downto 0);
+	forw_reg	: out unsigned(4 downto 0);
 	op2_out	: out unsigned(DATA_WIDTH-1 downto 0);
 	IR_out	: out unsigned(DATA_WIDTH-1 downto 0)
 	);
@@ -32,10 +33,7 @@ constant zeros		: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
 constant ones		: unsigned(DATA_WIDTH-1 downto 0) := (others => '1');
 constant four		: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(integer(4), DATA_WIDTH);
 
-signal data_rslt 	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
-signal data_rslt_mult 	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
-signal data_rslt_div 	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => '0');
-signal data_rslt_other 	: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
+--signal data_rslt 	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 
 signal mult	: std_logic := '0';
 signal div	: std_logic := '0';
@@ -44,6 +42,8 @@ signal alu_op	: std_logic := '0';
 signal HI	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 signal LO	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 signal HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
+
+signal rs,rt,rd : unsigned(4 downto 0) := (others => '0');
 
 signal multdivalu : std_logic_vector(2 downto 0) := "000";
 signal shamt 	: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
@@ -58,7 +58,9 @@ multdivalu <= mult & div & alu_op;
 imm <= IR_in(15 downto 0);
 PC_temp <= PC_in + four;
 jaddr <= PC_temp(DATA_WIDTH-1 downto 28) & IR_in(25 downto 0) & "00";
-
+rs <= IR_in(25 downto 21);
+rt <= IR_in(20 downto 16);
+rd <= IR_in(15 downto 11);
 --process(clk)
 --begin
 --if rising_edge(clk) then
@@ -86,24 +88,32 @@ begin
 		case operation is
 			when "000000" => --add
 				alu_result <= unsigned(signed(op1) + signed(op2));
+				branch_taken <= '0';
 				op2_out <= op2;
+				forw_reg <= rd;
 				mult <= '0';
 				div <= '0';
 				alu_op <= '1';
 			when "000001" => --sub
 				alu_result <= unsigned(signed(op1) - signed(op2));
+				branch_taken <= '0';
 				op2_out <= op2;
+				forw_reg <= rd;
 				mult <= '0';
 				div <= '0';
 				alu_op <= '1';
 			when "000010" => --addi
 				alu_result <= unsigned(signed(op1) + signed(IMM_in));
+				branch_taken <= '0';
 				op2_out <= op2;
+				forw_reg <= rt;
 				mult <= '0';
 				div <= '0';
 				alu_op <= '1';
 			when "000011" => --mult
 				HILO <= signed(op1) * signed(op2);
+				branch_taken <= '0';
+				forw_reg <= (others => 'Z');
 				op2_out <= op2;
 				mult <= '1';
 				div <= '0';			
@@ -113,6 +123,8 @@ begin
 			when "000100" => --div
 				LO <= signed(op1) / signed(op2);
 				HI <= signed(op1) MOD signed(op2);
+				branch_taken <= '0';
+				forw_reg <= (others => 'Z');
 				op2_out <= op2;
 				mult <= '0';
 				div <= '1';
@@ -123,6 +135,8 @@ begin
 				else
 					alu_result <= (others => '0');
 				end if;
+				branch_taken <= '0';
+				forw_reg <= rd;
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
@@ -133,6 +147,8 @@ begin
 				else
 					alu_result <= (others => '0');
 				end if;
+				branch_taken <= '0';
+				forw_reg <= rt;
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
@@ -140,6 +156,7 @@ begin
 			when "000111" => --and
 				alu_result <= op1 AND op2;
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -147,6 +164,7 @@ begin
 			when "001000" => --or
 				alu_result <= op1 OR op2;
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -154,6 +172,7 @@ begin
 			when "001001" => --nor
 				alu_result <= op1 NOR op2;
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -161,6 +180,7 @@ begin
 			when "001010" => --xor
 				alu_result <= op1 XOR op2;
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -168,6 +188,7 @@ begin
 			when "001011" => --andi
 				alu_result <= op1 AND IMM_in;
 				op2_out <= op2;
+				forw_reg <= rt;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -175,6 +196,7 @@ begin
 			when "001100" => --ori
 				alu_result <= op1 OR IMM_in;
 				op2_out <= op2;
+				forw_reg <= rt;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -182,6 +204,7 @@ begin
 			when "001101" => --xori
 				alu_result <= op1 XOR IMM_in;
 				op2_out <= op2;
+				forw_reg <= rt;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -189,6 +212,7 @@ begin
 			when "001110" => --mfhi
 				alu_result <= unsigned(HI);
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -196,6 +220,7 @@ begin
 			when "001111" => --mflo
 				alu_result <= unsigned(LO);
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -203,6 +228,7 @@ begin
 			when "010000" => --lui
 				alu_result <= IMM_in(DATA_WIDTH-1 downto DATA_WIDTH/2) & zeros((DATA_WIDTH/2)-1 downto 0);
 				op2_out <= op2;
+				forw_reg <= rt;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -210,6 +236,7 @@ begin
 			when "010001" => --sll
 				alu_result <= unsigned(shift_left(op2, to_integer(shamt)));
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -217,6 +244,7 @@ begin
 			when "010010" => --srl
 				alu_result <= unsigned(shift_right(op2, to_integer(shamt)));
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -224,6 +252,7 @@ begin
 			when "010011" => --sra
 				alu_result <= unsigned(shift_right(signed(op2), to_integer(shamt)));
 				op2_out <= op2;
+				forw_reg <= rd;
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -231,6 +260,7 @@ begin
 			when "010100" => --lw
 				alu_result <= op1 + IMM_in;
 				op2_out <= op2;
+				forw_reg <= (others => 'Z');
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -238,6 +268,7 @@ begin
 			when "010101" => --lb
 				alu_result <= op1 + IMM_in;
 				op2_out <= op2;
+				forw_reg <= (others => 'Z');
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -245,6 +276,7 @@ begin
 			when "010110" => --sw
 				alu_result <= op1 + IMM_in;
 				op2_out <= op2;
+				forw_reg <= (others => 'Z');
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -252,6 +284,7 @@ begin
 			when "010111" => --sb
 				alu_result <= op1 + IMM_in;
 				op2_out <= op2;
+				forw_reg <= (others => 'Z');
 				branch_taken <= '0';
 				mult <= '0';
 				div <= '0';
@@ -266,6 +299,7 @@ begin
 --					end if;
 --				end if;
 				alu_result <= to_unsigned(0, DATA_WIDTH);
+				forw_reg <= (others => 'Z');
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
@@ -280,6 +314,7 @@ begin
 --					end if;
 --				end if;
 				alu_result <= to_unsigned(0, DATA_WIDTH);
+				forw_reg <= (others => 'Z');
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
@@ -287,12 +322,14 @@ begin
 			when "011010" => --j
 				branch_taken <= '1';
 				alu_result <= jaddr;
+				forw_reg <= (others => 'Z');
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
 				alu_op <= '0';
 			when "011011" => --jr
 				branch_taken <= '1';
+				forw_reg <= (others => 'Z');
 				alu_result <=  op1;
 				op2_out <= op2;
 				mult <= '0';
@@ -300,6 +337,7 @@ begin
 				alu_op <= '0';
 			when "011100" => --jal
 				branch_taken <= '1';
+				forw_reg <= (others => 'Z');
 				alu_result <= jaddr;
 				op2_out <= op2;
 				mult <= '0';
@@ -308,6 +346,7 @@ begin
 			when others =>
 				branch_taken <= '0';
 				alu_result <= (others => 'Z');
+				forw_reg <= (others => 'Z');
 				op2_out <= op2;
 				mult <= '0';
 				div <= '0';
