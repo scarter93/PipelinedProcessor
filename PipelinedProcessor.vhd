@@ -75,7 +75,7 @@ signal IR_busy	: std_logic;
 
 -- Memory Port #2
 signal ID_addr	: natural;
-signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => 'Z');
 signal ID_re	: std_logic;
 signal ID_we	: std_logic;
 signal ID_busy	: std_logic;
@@ -186,7 +186,7 @@ end component;
 -- MISC --
 -- Memory Arbiter --
 component memory_arbiter is
-	generic ( File_Address_Read : string := "test_branch.dat"
+	generic ( File_Address_Read : string := "test_loadw.dat"
 		);
 	port(
 		clk	: in std_logic;

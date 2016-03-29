@@ -28,6 +28,8 @@ proc AddWaves {} {
   add wave -group "Write Back" -radix dec sim:/pipelinedprocessor/write_back_t/*
 
   add wave -group "Memory Arbiter" -radix bin sim:/pipelinedprocessor/memory_arbiter_t/*
+
+  add wave -group "Main Memory" sim:/pipelinedprocessor/memory_arbiter_t/main_memory/*
 }
 
 ;#Create the work library, which is the default library used by ModelSim
