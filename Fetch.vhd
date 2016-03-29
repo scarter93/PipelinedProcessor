@@ -88,7 +88,6 @@ begin
 end process;
 
 PC_update : process(reset, IR_busy, clk, hazard, branch_taken)
-
 begin
 	if reset = '1' then
 		PC <= to_unsigned(0, DATA_WIDTH);

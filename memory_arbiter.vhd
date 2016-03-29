@@ -91,19 +91,21 @@ begin
 
 		case state is
 		when idle =>
-		--wait for user command
-			if re1 = '1' then
-				current_port <= p1;
-				state <= reading;
-			elsif we1 = '1' then
-				current_port <= p1;
-				state <= writing;
-			elsif re2 = '1' then
-				current_port <= p2;
-				state <= reading;
-			elsif we2 = '1' then
-				current_port <= p2;
-				state <= writing;
+			if falling_edge(clk) then
+			--wait for user command
+				if re1 = '1' then
+					current_port <= p1;
+					state <= reading;
+				elsif we1 = '1' then
+					current_port <= p1;
+					state <= writing;
+				elsif re2 = '1' then
+					current_port <= p2;
+					state <= reading;
+				elsif we2 = '1' then
+					current_port <= p2;
+					state <= writing;
+				end if;
 			end if;
 		when reading =>
 		--wait for data to be put on data bus
@@ -147,6 +149,6 @@ mm_data <=  data1 when we1 = '1' else
 mm_re <= '1' when state = reading else '0';
 mm_we <= '1' when state = writing else '0';
 
-mm_address <= addr1 when re1 = '1' or we1 = '1' else addr2;
+mm_address <= addr1 when current_port = p1 else addr2;
 
 end behavioral;

@@ -44,7 +44,7 @@ operation <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
 ID_re <= reading;
 ID_we <= writing;
 
-with operation select rw_word <= 
+with operation select rw_word <=
 	'1' when LOAD_WORD,
 	'1' when STORE_WORD,
 	'0' when LOAD_BYTE,
@@ -58,7 +58,7 @@ begin
 		branch_taken_out <= branch_taken;
 	end if;
 end process;
-	
+
 process(writing, reading)
 begin
 	if (writing = '1' and operation = STORE_WORD) then
@@ -71,22 +71,20 @@ begin
 end process;
 
 
-update_values : process(clk, ID_busy)
+update_values : process(clk, ID_busy, writing, reading, operation)
 begin
-	if (falling_edge(clk)) then
-		if ((ID_busy = '0' and reading = '1')) then
-			reading <= '0';
-		elsif ((ID_busy = '0' and writing = '1')) then
-			writing <= '0';
-		elsif (operation = LOAD_WORD or operation = LOAD_BYTE) then
-			reading <= '1';
-			writing <= '0';
-			ID_addr <= to_integer(alu_result_in);
-		elsif (operation = STORE_WORD or operation = STORE_BYTE) then
-			reading <= '0';
-			writing <= '1';
-			ID_addr <= to_integer(alu_result_in);
-		end if;
+	if ((ID_busy = '0' and reading = '1')) then
+		reading <= '0';
+	elsif ((ID_busy = '0' and writing = '1')) then
+		writing <= '0';
+	elsif (operation = LOAD_WORD or operation = LOAD_BYTE) then
+		reading <= '1';
+		writing <= '0';
+		ID_addr <= to_integer(alu_result_in);
+	elsif (operation = STORE_WORD or operation = STORE_BYTE) then
+		reading <= '0';
+		writing <= '1';
+		ID_addr <= to_integer(alu_result_in);
 	end if;
 
 	if (falling_edge(ID_busy)) then
