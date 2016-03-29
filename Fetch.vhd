@@ -16,7 +16,8 @@ port(	clk	: in std_logic;
 	IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
 	IR_re	: out std_logic := '1';
 	IR_data	: in std_logic_vector(DATA_WIDTH-1 downto 0);
-	IR_busy : in std_logic := '0'
+	IR_busy : in std_logic := '0';
+	ID_busy : in std_logic
 	);
 
 end entity;
@@ -55,7 +56,7 @@ begin
 hazard_detect : HAZARD_DETECTION
 	port map (
 		IR_check => unsigned(IR_data),
-		IR1	=> IR_log(1),
+		IR1 => IR_log(1),
 		IR2 => IR_log(2),
 		IR3 => IR_log(3),
 		IR4 => IR_log(4),
@@ -67,6 +68,8 @@ IR_update : process(clk)
 begin
 	if falling_edge(clk) then --check for hazards
 		if hazard = '1' then
+			IR_check <= to_unsigned(0, DATA_WIDTH);
+		elsif ID_busy = '1' then
 			IR_check <= to_unsigned(0, DATA_WIDTH);
 		else
 			IR_check <= unsigned(IR_data);

@@ -100,7 +100,8 @@ component INSTRUCTION_FETCH is
 		IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_re	: out std_logic;
 		IR_data	: in std_logic_vector(DATA_WIDTH-1 downto 0);
-		IR_busy : in STD_LOGIC
+		IR_busy : in std_logic;
+		ID_busy : in std_logic
 		);
 
 end component;
@@ -242,7 +243,8 @@ fetch : INSTRUCTION_FETCH
 		IR_pc => IR_addr,
 		IR_re => IR_re,
 		IR_data => IR_data,
-		IR_busy => IR_busy
+		IR_busy => IR_busy,
+		ID_busy => ID_busy
 	);
 
 decode : INSTRUCTION_DECODE
