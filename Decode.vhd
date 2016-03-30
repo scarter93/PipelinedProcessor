@@ -26,6 +26,7 @@ end entity;
 
 architecture disc of INSTRUCTION_DECODE is
 
+-- opcodes of all our instructions
 constant ADD	: unsigned(5 downto 0) := "000000";
 constant SUB	: unsigned(5 downto 0) := "000001";
 constant ADDI	: unsigned(5 downto 0) := "000010";
@@ -56,7 +57,7 @@ constant J		: unsigned(5 downto 0) := "011010";
 constant JR		: unsigned(5 downto 0) := "011011";
 constant JAL	: unsigned(5 downto 0) := "011100";
 
--- used in branch resolution
+-- constants used in branch resolution
 constant zeros		: unsigned(DATA_WIDTH-1 downto 0) := (others => '0');
 constant ones		: unsigned(DATA_WIDTH-1 downto 0) := (others => '1');
 constant four		: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(integer(4), DATA_WIDTH);
@@ -66,6 +67,7 @@ signal reg :  REGISTERS;
 signal op1_addr, op2_addr, wb_addr : unsigned(4 downto 0);
 signal op1_tmp, op2_tmp : unsigned(DATA_WIDTH-1 downto 0);
 
+-- output from writeback stage
 signal wb_opcode : unsigned(5 downto 0);
 signal current_opcode : unsigned(5 downto 0);
 
@@ -80,15 +82,18 @@ op2_addr <= IR_in(20 downto 16);
 op1_tmp <= reg(to_integer(op1_addr));
 op2_tmp <= reg(to_integer(op2_addr));
 
+-- get operands, either from forwarding or register lookup
 operands : process (clk)
 begin
 	if rising_edge(clk) then
+		-- select op1 from reigster array or forward
 		if(op1_addr = forw_reg) then
 			op1 <= alu_res;
 		else
         		op1 <= op1_tmp;
 		end if;
 		if(op2_addr = forw_reg) then
+		-- select op1 from reigster array or forward
 			op2 <= alu_res;
 		else
 			op2 <= op2_tmp;
@@ -124,7 +129,7 @@ begin
 end process;
 
 
--- get_wb_addr
+-- determine if we need to store to RD or RT, if at all
 wb_addr <= WB_IR(15 downto 11) when --store to rd
 		wb_opcode = ADD or
 		wb_opcode = SUB or
@@ -167,11 +172,14 @@ begin
 	end if;
 end process;
 
+-- pass on PC and IR, depending on early branch resolution
 push_through : process(clk)
 begin
 	if rising_edge(clk) then
+		-- Early Branch Resolution
 		case current_opcode is
 		when "011000" => --beq
+			-- branch condition holds
 			if(op1_tmp = op2_tmp) then
 				branch_taken <= '1';
 				if(IR_in(15) = '1') then
@@ -183,6 +191,7 @@ begin
 				PC_out <= to_unsigned(0, DATA_WIDTH);
 			end if;
 		when "011001" => --bne
+			-- branch condition holds
 			if(op1_tmp /= op2_tmp) then
 				branch_taken <= '1';
 				if(IR_in(15) = '1') then
@@ -193,7 +202,9 @@ begin
 				IR_out <= to_unsigned(0, DATA_WIDTH);
 				PC_out <= to_unsigned(0, DATA_WIDTH);
 			end if;
+		-- not a branch
 		when others =>
+			-- disable branch_taken and push through IR and PC
 			branch_taken <= '0';
 			IR_out <= IR_in;
 			PC_out <= PC_in;
