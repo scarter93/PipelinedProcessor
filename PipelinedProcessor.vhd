@@ -194,7 +194,7 @@ end component;
 -- MISC --
 -- Memory Arbiter --
 component memory_arbiter is
-	generic ( File_Address_Read : string := "bitwise.dat"
+	generic ( File_Address_Read : string := "test_loadw.dat"
 		);
 	port(
 		clk	: in std_logic;
