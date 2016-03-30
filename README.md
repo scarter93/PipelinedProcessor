@@ -15,8 +15,9 @@ Prerequisites
 Run Your Code
 -------------
 
-1. Run `python compile.py INPUT.asm OUTPUT.dat`, which assembles INPUT.asm into
-   bytecode in `OUTPUT.dat`
+1. Run `python assembler.py INPUT.asm OUTPUT.dat`, which assembles INPUT.asm into
+   bytecode in `OUTPUT.dat`. If no inputs are specified, it defaults to `fib.asm`
+   and `fib.dat`
 2. Edit `File_Address_Read` in `PipelineProcessor.vhd` to `OUTPUT.dat`
 3. Enter `source tests/test_pipeline.tcl` in the ModelSim terminal
 4. The output waveform will open. We added all signals for all tests, but the 
