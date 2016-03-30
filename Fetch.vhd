@@ -97,6 +97,7 @@ end process;
 -- Update Hazard Counters
 IR_track : process(clk)
 begin
+	-- Update IR_log as follows
 	-- IR_log(1)` = IR_check
 	-- IR_log(i+1)` = IR_log(i)
 	if rising_edge(clk) then
