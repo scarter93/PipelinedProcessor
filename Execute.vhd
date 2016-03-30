@@ -84,6 +84,7 @@ begin
 
 	if rising_edge(clk) then
 		IR_out <= IR_in;
+	end if;
 		branch_taken <= '0';
 		case operation is
 			when "000000" => --add
@@ -352,7 +353,7 @@ begin
 				div <= '0';
 				alu_op <= '0';
 		end case;
-	end if;
+	--end if;
 
 end process;
 
