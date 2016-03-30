@@ -29,14 +29,14 @@ current_opcode <= IR_in(31 downto 26);
 
 process(clk)
 begin
-    if rising_edge(clk) then
-        IR_out <= IR_in;
-        if current_opcode = LW or current_opcode = LB then
-            WB <= memory;
+	if current_opcode = LW or current_opcode = LB then
+        	WB <= memory;
         else
-            WB <= alu_result;
+        	WB <= alu_result;
         end if;
-    end if;
+	if rising_edge(clk) then
+		IR_out <= IR_in;
+	end if;
 end process;
 
 end disc;
