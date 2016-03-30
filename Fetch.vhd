@@ -1,3 +1,8 @@
+-- Entity: FETCH
+-- Author: Stephen Carter, Jit Kanetkar, Auguste Lalande
+-- Date: 03/30/2016
+-- Description: Access Instructions to Run based off PC 
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -54,6 +59,7 @@ signal hazard_resume_delay : std_logic := '0';
 
 begin
 
+-- Detect Hazards
 hazard_detect : HAZARD_DETECTION
 	port map (
 		IR_check => unsigned(IR_data),
@@ -65,15 +71,20 @@ hazard_detect : HAZARD_DETECTION
 		cycles_to_wait => cycles_to_wait
 	);
 
+-- Update IR Based off hazards
 IR_update : process(clk)
 begin
 	if falling_edge(clk) then --check for hazards
+		-- stall if a hazard is present
 		if hazard = '1' then
 			IR_check <= to_unsigned(0, DATA_WIDTH);
+		-- stall if Memory Stage is accessing Memory
 		elsif ID_busy = '1' then
 			IR_check <= to_unsigned(0, DATA_WIDTH);
+		-- delay hazards to avoid issuing same instruction twice
 		elsif hazard_resume_delay = '1' then
 			IR_check <= to_unsigned(0, DATA_WIDTH);
+		-- otherwise, forward the IR
 		else
 			IR_check <= unsigned(IR_data);
 		end if;
@@ -83,8 +94,11 @@ begin
 	end if;
 end process;
 
+-- Update Hazard Counters
 IR_track : process(clk)
 begin
+	-- IR_log(1)` = IR_check
+	-- IR_log(i+1)` = IR_log(i)
 	if rising_edge(clk) then
 		IR_log(4) <= IR_log(3);
 		IR_log(3) <= IR_log(2);
@@ -93,38 +107,49 @@ begin
 	end if;
 end process;
 
+-- update the program counter when a new instruction is issued
 PC_update : process(reset, IR_busy, clk, hazard, branch_taken)
 begin
+	-- reset to instruction 1
 	if reset = '1' then
 		PC <= to_unsigned(0, DATA_WIDTH);
+	-- don't update if branching
 	elsif (branch_taken = '1') then
 		PC <= branch_pc - 4;
 		IR_pc <= branch_pc - 4;
+	-- run next instruction
 	elsif falling_edge(IR_busy) then
 		IR_pc <= PC + 4;
 		PC <= PC + 4;
 	end if;
 
+	-- unincrement on hazard
 	if rising_edge(hazard) then
 		IR_pc <= PC - 4;
 		PC <= PC - 4;
+	-- unincrement on end of hazard
 	elsif falling_edge(hazard) then
 		IR_pc <= PC + 4;
 		PC <= PC + 4;
 		hazard_resume_delay <= '1';
 	end if;
 
+	-- end hazard delay
 	if rising_edge(clk) then
 		hazard_resume_delay <= '0';
 	end if;
 end process;
 
+-- determine whether to read memory
 memory_read_update : process(reset, clk, hazard)
 begin
+	-- disable on reset
 	if reset = '1' then
 		IR_re <= '0';
+	-- disable on hazard
 	elsif hazard = '1' then
 		IR_re <= '0';
+	-- else read on a falling edge
 	elsif falling_edge(clk) then
 		IR_re <= '1';
 	end if ;
