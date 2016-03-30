@@ -15,6 +15,7 @@ architecture disc of PipelinedProcessor is
 -------------------------
 -- constant definition --
 -------------------------
+constant File_Address_Read : string := "fib.dat";
 
 -----------------------
 -- signal definition --
@@ -194,7 +195,7 @@ end component;
 -- MISC --
 -- Memory Arbiter --
 component memory_arbiter is
-	generic ( File_Address_Read : string := "test_branch.dat"
+	generic ( File_Address_Read : string := File_Address_Read
 		);
 	port(
 		clk	: in std_logic;

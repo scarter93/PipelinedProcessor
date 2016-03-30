@@ -91,15 +91,25 @@ op2_tmp <= reg(to_integer(op2_addr));
 operands : process (clk)
 begin
 	if rising_edge(clk) then
-		-- select op1 from reigster array or forward
-		if(op1_addr = forw_reg) then
+
+		-- force op1 to 0 on a noop
+		if (IR_in = "00000000000000000000000000000000") then
+			op1 <= (others => '0');
+		-- support for port forwarding
+		elsif(op1_addr = forw_reg) then
 			op1 <= alu_res;
+		-- default case - pass on op1
 		else
         		op1 <= op1_tmp;
 		end if;
-		if(op2_addr = forw_reg) then
-		-- select op1 from reigster array or forward
+
+		-- force op1 to 0 on a noop
+		if (IR_in = "00000000000000000000000000000000") then
+			op2 <= (others => '0');
+		-- support for port forwarding
+		elsif(op2_addr = forw_reg) then
 			op2 <= alu_res;
+		-- default case - pass on op1
 		else
 			op2 <= op2_tmp;
 		end if;
@@ -187,11 +197,12 @@ begin
 			-- branch condition holds
 			if(op1_tmp = op2_tmp) then
 				branch_taken <= '1';
-				if(IR_in(15) = '1') then
-					branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
-				else
-					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
-				end if;
+				branch_to <= (zeros(15 downto 0) & IR_in(15 downto 0));
+				--if(IR_in(15) = '1') then
+				--	branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
+				--else
+				--	branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
+				--end if;
 				IR_out <= to_unsigned(0, DATA_WIDTH);
 				PC_out <= to_unsigned(0, DATA_WIDTH);
 			end if;
@@ -199,11 +210,12 @@ begin
 			-- branch condition holds
 			if(op1_tmp /= op2_tmp) then
 				branch_taken <= '1';
-				if(IR_in(15) = '1') then
-					branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
-				else
-					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
-				end if;
+				branch_to <= (zeros(15 downto 0) & IR_in(15 downto 0));
+				--if(IR_in(15) = '1') then
+				--	branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
+				--else
+				--	branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
+				--end if;
 				IR_out <= to_unsigned(0, DATA_WIDTH);
 				PC_out <= to_unsigned(0, DATA_WIDTH);
 			end if;
