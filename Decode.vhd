@@ -1,3 +1,8 @@
+-- Entity: DECODE
+-- Author: Stephen Carter, Jit Kanetkar, Auguste Lalande
+-- Date: 03/30/2016
+-- Description: Access Instructions to Run based off PC 
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
