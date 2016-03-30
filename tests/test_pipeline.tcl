@@ -65,6 +65,6 @@ force -deposit /pipelinedprocessor/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
 
 force -deposit /pipelinedprocessor/reset 1 0ns, 0 2.25ns
 
-run 200 ns
+run 500 ns
 
 wave zoom full
