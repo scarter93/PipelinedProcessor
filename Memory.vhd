@@ -1,6 +1,7 @@
------------------------------------------
--- Memory Stage of Pipelined Processor --
------------------------------------------
+-- Entity: MEMORY
+-- Author: Stephen Carter, Jit Kanetkar, Auguste Lalande
+-- Date: 03/30/2016
+-- Description: Controls access to port 1 of the Memory Arbiter
 
 library ieee;
 use ieee.std_logic_1164.all;
