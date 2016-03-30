@@ -1,3 +1,7 @@
+-----------------------------------------
+-- Memory Stage of Pipelined Processor --
+-----------------------------------------
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -28,28 +32,38 @@ end entity;
 
 architecture disc of MEMORY is
 
+-- opcodes of LOAD and STORE instructions
 constant LOAD_WORD : unsigned(5 downto 0) := "010100";
 constant LOAD_BYTE : unsigned(5 downto 0) := "010101";
 
 constant STORE_WORD : unsigned(5 downto 0) := "010110";
 constant STORE_BYTE : unsigned(5 downto 0) := "010111";
 
-signal tmp_data : std_logic_vector(DATA_WIDTH-1 downto 0);
-
+-- input operation
+-- hardwired to top 6 bits or IR
 signal operation : unsigned(5 downto 0);
+
+-- stages for memory arbiter
+-- hardwired to ID_re and IR_we
 signal reading, writing : std_logic := '0';
+
+
 begin
 
+-- hardwire operation, reading, and writing
 operation <= IR_in(DATA_WIDTH-1 downto DATA_WIDTH-6);
 ID_re <= reading;
 ID_we <= writing;
 
+-- determine if reading a word or byte
 with operation select rw_word <=
 	'1' when LOAD_WORD,
 	'1' when STORE_WORD,
 	'0' when LOAD_BYTE,
 	'0' when STORE_BYTE,
 	'1' when others;
+
+-- set outputs on rising clock edge
 clocked : process(clk)
 begin
 	if (rising_edge(clk)) then
@@ -59,6 +73,10 @@ begin
 	end if;
 end process;
 
+-- setup data to memory arbiter according to documentation
+-- Write Word:	Word to Write
+-- Write Byte;	24 `Z` and Byte to Write
+-- Read Any:	All `Z`
 process(writing, reading)
 begin
 	if (writing = '1' and operation = STORE_WORD) then
@@ -70,7 +88,8 @@ begin
        end if;
 end process;
 
-
+-- set reading and writing signals as ID busy changed
+-- unclocked inorder to ensure that Memory Access overrides Fetch
 update_values : process(clk, ID_busy, writing, reading, operation)
 begin
 	if ((ID_busy = '0' and reading = '1')) then
@@ -93,6 +112,7 @@ begin
 	end if;
 end process;
 
+-- setup update output once done reading
 update_tmp_data : process(ID_busy)
 begin
 	if (falling_edge(ID_busy)) then
