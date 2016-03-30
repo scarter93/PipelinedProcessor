@@ -103,7 +103,6 @@ begin
 	if rising_edge(clk) then
 		-- updated IR
 		IR_out <= IR_in;
-	end if;
 		--update branch taken
 		branch_taken <= '0';
 		case operation is
@@ -400,7 +399,7 @@ begin
 				div <= '0';
 				alu_op <= '0';
 		end case;
-	--end if;
+	end if;
 
 end process;
 
