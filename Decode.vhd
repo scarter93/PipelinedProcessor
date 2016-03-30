@@ -174,22 +174,24 @@ begin
 		when "011000" => --beq
 			if(op1_tmp = op2_tmp) then
 				branch_taken <= '1';
-				if(IR_in(15) = '1') then
-					branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
-				else
-					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
-				end if;
+				branch_to <= (zeros(15 downto 0) & IR_in(15 downto 0));
+				--if(IR_in(15) = '1') then
+				--	branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
+				--else
+				--	branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
+				--end if;
 				IR_out <= to_unsigned(0, DATA_WIDTH);
 				PC_out <= to_unsigned(0, DATA_WIDTH);
 			end if;
 		when "011001" => --bne
 			if(op1_tmp /= op2_tmp) then
 				branch_taken <= '1';
-				if(IR_in(15) = '1') then
-					branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
-				else
-					branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
-				end if;
+				branch_to <= (zeros(15 downto 0) & IR_in(15 downto 0));
+				--if(IR_in(15) = '1') then
+				--	branch_to <=  PC_in + four + (ones(13 downto 0) & IR_in(15 downto 0) & "00");
+				--else
+				--	branch_to <=  PC_in + four + (zeros(13 downto 0) & IR_in(15 downto 0) & "00");
+				--end if;
 				IR_out <= to_unsigned(0, DATA_WIDTH);
 				PC_out <= to_unsigned(0, DATA_WIDTH);
 			end if;
