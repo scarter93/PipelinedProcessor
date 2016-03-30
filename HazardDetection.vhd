@@ -1,3 +1,8 @@
+-- Entity: HazardDetection
+-- Author: Stephen Carter, Jit Kanetkar, Auguste Lalande
+-- Date: 03/30/2016
+-- Description: Asynchronous hazard detection module which takes as input the 4 previous instuctions and checks it against the current instruction for data or branch hazards
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -20,6 +25,7 @@ end entity;
 
 architecture disc of HAZARD_DETECTION is
 
+--opcode constants
 constant ADD	: unsigned(5 downto 0) := "000000";
 constant SUB	: unsigned(5 downto 0) := "000001";
 constant ADDI	: unsigned(5 downto 0) := "000010";
@@ -68,6 +74,7 @@ signal op1_hazard, op2_hazard, branch_hazard : std_logic;
 
 begin
 
+-- get opcodes
 IR_check_opcode <= IR_check(31 downto 26);
 IR1_opcode <= IR1(31 downto 26);
 IR2_opcode <= IR2(31 downto 26);
@@ -207,6 +214,8 @@ op2_addr <= to_unsigned(0, 5) when --these instructions don't read from rt
 		IR_check_opcode = JAL
 	else IR_check(20 downto 16);
 
+
+--check for data hazards on op1 or op2
 op1_hazard <= '0' when
 		op1_addr = to_unsigned(0, 5) or
 		(op1_addr /= write1 and
@@ -223,14 +232,19 @@ op2_hazard <= '0' when
 		 op2_addr /= write4)
 	else '1';
 
+--check for branch hazard
 branch_hazard <= '1' when IR4_opcode = J or IR4_opcode = JR or IR4_opcode = JAL or IR4_opcode = BEQ or IR4_opcode = BNE or
 			IR3_opcode = J or IR3_opcode = JR or IR3_opcode = JAL or IR3_opcode = BEQ or IR3_opcode = BNE or
 			IR2_opcode = J or IR2_opcode = JR or IR2_opcode = JAL or IR2_opcode = BEQ or IR2_opcode = BNE or
 			IR1_opcode = J or IR1_opcode = JR or IR1_opcode = JAL or IR1_opcode = BEQ or IR1_opcode = BNE
 	else '0';
 
+--combine hazards into 1 signal
 HAZARD <= op1_hazard or op2_hazard or branch_hazard;
 
+
+--process to keep track of how many cycles are left before hazard is resolved
+--this is currently not being used to do anything
 process(op1_addr, op2_addr, write1, write2, write3, write4)
 begin
 	if (op1_addr = write1 and op1_addr /= to_unsigned(0, 5)) or
