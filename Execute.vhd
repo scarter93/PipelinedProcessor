@@ -51,7 +51,7 @@ signal alu_op	: std_logic := '0';
 -- HI, LO registers 
 signal HI	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 signal LO	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
-signal HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
+--signal HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
 
 -- curretn registers
 signal rs,rt,rd : unsigned(4 downto 0) := (others => '0');
@@ -98,6 +98,7 @@ rd <= IR_in(15 downto 11);
 --	LO when others;	
 -- process for ALU
 process(clk)
+variable HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
 begin
 
 	if rising_edge(clk) then
@@ -134,7 +135,7 @@ begin
 				div <= '0';
 				alu_op <= '1';
 			when "000011" => --mult
-				HILO <= signed(op1) * signed(op2);
+				HILO := signed(op1) * signed(op2);
 				-- update other signals
 				branch_taken <= '0';
 				forw_reg <= (others => 'Z');
