@@ -1,3 +1,11 @@
+-- Entity: EXECUTE
+-- Author: Stephen Carter, Jit Kanetkar, Auguste Lalande
+-- Date: 03/30/2016
+-- Description: Execute stage of the basic 5 stage RISC pipeline. ALU_result is used to hold the result of the operation,
+-- if the operation is invalid, then the result is all 'Z'. There is also a branch_taken is always zero (EARLY BRANCH RESOLUTION).
+-- The op2_out port forwards operand2 (RS). Forw_reg is used for port forwarding. The inputs come from the decode stage and are used
+-- in the calculation.
+
 library ieee;
 library lpm;
 use ieee.std_logic_1164.all;
@@ -8,10 +16,10 @@ entity EXECUTE is
 
 generic ( DATA_WIDTH : integer := 32
 	);
-port(	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);
-	PC_in	: in unsigned(DATA_WIDTH-1 downto 0);
-	IMM_in	: in unsigned(DATA_WIDTH-1 downto 0);
-	op1	: in unsigned(DATA_WIDTH-1 downto 0);
+port(	IR_in	: in unsigned(DATA_WIDTH-1 downto 0);	-- input IR
+	PC_in	: in unsigned(DATA_WIDTH-1 downto 0);	-- input PC
+	IMM_in	: in unsigned(DATA_WIDTH-1 downto 0);	-- Immediate (sign or zero extended)
+	op1	: in unsigned(DATA_WIDTH-1 downto 0);	-- rt
 	op2	: in unsigned(DATA_WIDTH-1 downto 0);
 	clk	: in std_logic;
 	branch_taken	: out std_logic;
