@@ -83,12 +83,16 @@ op2_tmp <= reg(to_integer(op2_addr));
 operands : process (clk)
 begin
 	if rising_edge(clk) then
-		if(op1_addr = forw_reg) then
+		if (IR_in = "00000000000000000000000000000000") then
+			op1 <= (others => '0');
+		elsif(op1_addr = forw_reg) then
 			op1 <= alu_res;
 		else
         		op1 <= op1_tmp;
 		end if;
-		if(op2_addr = forw_reg) then
+		if (IR_in = "00000000000000000000000000000000") then
+			op2 <= (others => '0');
+		elsif(op2_addr = forw_reg) then
 			op2 <= alu_res;
 		else
 			op2 <= op2_tmp;
