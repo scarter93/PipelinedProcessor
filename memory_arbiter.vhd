@@ -8,7 +8,7 @@ use work.memory_arbiter_lib.all;
 entity memory_arbiter is
 port (	clk 	: in STD_LOGIC;
 	reset	: in STD_LOGIC;
-	rw_word	: in STD_LOGIC;
+	rw_word	: in STD_LOGIC := '1';
 	--Memory port #1
 	addr1	: in NATURAL;
 	data1	: inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
