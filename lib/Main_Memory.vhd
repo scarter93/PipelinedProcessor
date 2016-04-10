@@ -4,7 +4,7 @@ use STD.textio.all; --Don't forget to include this library for file operations.
 
 ENTITY Main_Memory IS
 	generic (
-			File_Address_Read : string :="Init.dat";
+			File_Address_Read : string :="bitwise.dat";
 			File_Address_Write : string :="MemCon.dat";
 			Mem_Size_in_Word : integer:=4096;
 			Num_Bytes_in_Word: integer:=4;

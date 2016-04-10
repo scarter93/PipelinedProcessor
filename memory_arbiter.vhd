@@ -6,9 +6,13 @@ use work.memory_arbiter_lib.all;
 
 -- Do not modify the port map of this structure
 entity memory_arbiter is
+generic ( DATA_WIDTH : integer := 32;
+	File_Address_Read : string := "Init.dat"
+		);
+	
 port (clk 	: in STD_LOGIC;
       reset : in STD_LOGIC;
-      
+      rw_word : in STD_LOGIC := '1';
 			--Memory port #1
 			addr1	: in NATURAL;
 			data1	:	inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
@@ -48,6 +52,7 @@ begin
 	--Instantiation of the main memory component (DO NOT MODIFY)
 	main_memory : ENTITY work.Main_Memory
       GENERIC MAP (
+				File_Address_Read	=> File_Address_Read,
 				Num_Bytes_in_Word	=> NUM_BYTES_IN_WORD,
 				Num_Bits_in_Byte 	=> NUM_BITS_IN_BYTE,
         Read_Delay        => 3, 
@@ -56,7 +61,7 @@ begin
       PORT MAP (
         clk					=> clk,
         address     => mm_address,
-        Word_Byte   => '1',
+        Word_Byte   => rw_word,
         we          => mm_we,
         wr_done     => mm_wr_done,
         re          => mm_re,

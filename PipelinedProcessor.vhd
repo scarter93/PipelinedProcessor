@@ -15,7 +15,7 @@ architecture disc of PipelinedProcessor is
 -------------------------
 -- constant definition --
 -------------------------
-constant File_Address_Read : string := "test_loadw.dat";
+constant File_Address_Read : string := "fib.dat";
 
 -----------------------
 -- signal definition --
