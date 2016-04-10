@@ -61,7 +61,7 @@ component MEMORY is
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		ID_addr	: out NATURAL;
-		ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+		ID_data	: inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 		ID_re	: out STD_LOGIC;
 		ID_we	: out STD_LOGIC;
 		ID_busy	: in STD_LOGIC
