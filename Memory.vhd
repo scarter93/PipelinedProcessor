@@ -91,7 +91,7 @@ end process;
 
 -- set reading and writing signals as ID busy changed
 -- unclocked inorder to ensure that Memory Access overrides Fetch
-update_values : process(clk, ID_busy, writing, reading, operation)
+update_values : process(clk, ID_busy, operation)
 begin
 	if ((ID_busy = '0' and reading = '1')) then
 		reading <= '0';
