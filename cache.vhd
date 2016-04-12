@@ -76,9 +76,14 @@ if reset = '1' then
 	--mem <= 'Z';
 	--mem_addr <= (others => 'Z');
 elsif reset = '0' and rising_edge(clk) then
-	if(tag = cur_blk(cache_blk_sz-2 downto cache_blk_sz-2-tag_sz+1) and cur_blk(cache_blk_sz-1) = '1' and index /= index_update) then
-		data <= cur_blk(DATA_WIDTH-1 downto 0);
-		mem <= '0';
+	if(tag = cur_blk(cache_blk_sz-2 downto cache_blk_sz-2-tag_sz+1) and cur_blk(cache_blk_sz-1) = '1') then
+		if(index /= index_update) then
+			data <= cur_blk(DATA_WIDTH-1 downto 0);
+			mem <= '0';
+		else
+			data <= data_up;
+			mem <= '0';
+		end if;
 		--mem_addr <= (others => 'Z');
 	else
 		--data <= (others => 'Z');
@@ -102,7 +107,7 @@ if reset = '1' then
 	--offset_update <= 'Z';
 	--update_blk <= (others => '0');
 elsif reset = '0' and rising_edge(clk) then
-	cache_blks(to_integer(PC_up(DATA_WIDTH-tag_sz-1 downto DATA_WIDTH-tag_sz-index_sz))) <= '1' & tag_update & data_up;
+	cache_blks(to_integer(PC_up(DATA_WIDTH-tag_sz-1 downto DATA_WIDTH-tag_sz-index_sz))) <= '1' & PC_up(DATA_WIDTH-1 downto DATA_WIDTH-tag_sz) & data_up;
 --	cache_blks(to_integer(index_update))(cache_blk_sz-2 downto cache_blk_sz-2-tag_sz+1) <= tag_update;
 --	cache_blks(to_integer(index_update))(DATA_WIDTH-1 downto 0) <= data_up;
 --	cache_blks(to_integer(index_update))(cache_blk_sz-1) <= '1';	

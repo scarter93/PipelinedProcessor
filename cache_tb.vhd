@@ -77,20 +77,28 @@ REPORT "trying to read empty cache (location 0) and update other location (6) in
 PC_t <= "00000000000000000000000000000000";
 PC_up_t <= "00000000000000000000000000000110";
 data_up_t <= "11111111111111111111111111111111";
-wait for 1*clk_period;
+wait for 1.1*clk_period;
 --ASSERT(data_t = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")report "Data_t should be all 'Z'";
 ASSERT(mem_t = '1') report "Failed to detect invalid cache block";
 ASSERT(mem_addr_t = PC_t) report "Failed to update memory address";
-wait for 1*clk_period;
+
 REPORT "trying to read instr cache (location 6) updating previous bad data from last location (1)";
 PC_t <= "00000000000000000000000000000110";
 PC_up_t <= mem_addr_t;
 data_up_t <= "00011111111111111111111111111111"; --"11111111111111111111111111111111";
-wait for 1*clk_period;
-ASSERT(data_t = "11111111111111111111111111111111")report "Data_t should be all 'Z'";
+wait for 1.1*clk_period;
+ASSERT(data_t = "11111111111111111111111111111111")report "Data_t should be all '1'";
 ASSERT(mem_t = '0') report "cache block should be valid";
 --ASSERT(mem_addr_t = "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ") report "Failed to update memory address";
 
+REPORT "trying to read and update same block";
+PC_t <= "00000000000000000000000000000110";
+PC_up_t <= "00000000000000000000000000000110";
+data_up_t <= "11111111111111111111111111110000";
+wait for 1.1*clk_period;
+ASSERT(data_t = "11111111111111111111111111110000")report "Data_t should be all 'Z'";
+ASSERT(mem_t = '0') report "Failed to detect invalid cache block";
+--ASSERT(mem_addr_t = PC_t) report "Failed to update memory address";
 
 wait;
 
