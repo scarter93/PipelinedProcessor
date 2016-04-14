@@ -72,6 +72,11 @@ signal rw_word	: std_logic;
 -- conversions
 signal IR_addr_nat, ID_addr_nat : natural;
 
+-- cache
+signal cache_addr : unsigned(DATA_WIDTH-1 downto 0);
+signal cache_re	  : STD_LOGIC := '0';
+signal cache_data : std_logic_vector(DATA_WIDTH-1 downto 0) := (others => 'Z');
+
 -- Memory Port #1
 signal ID_addr	: natural;
 signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => 'Z');
@@ -81,7 +86,7 @@ signal ID_busy	: std_logic;
 
 -- Memory Port #2
 signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
-signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal IR_data	: unsigned(DATA_WIDTH-1 downto 0);
 signal IR_re	: std_logic := '0';
 signal IR_we	: std_logic := '0';
 signal IR_busy	: std_logic;
@@ -89,6 +94,22 @@ signal IR_busy	: std_logic;
 --------------------------
 -- component definition --
 --------------------------
+--CACHE--
+component INSTRUCTION_CACHE is
+generic ( DATA_WIDTH : integer := 32
+	);
+	
+port (	clk 	: in STD_LOGIC;
+      	reset 	: in STD_LOGIC;
+	PC	: in unsigned(DATA_WIDTH-1 downto 0);
+	PC_up	: in unsigned(DATA_WIDTH-1 downto 0);
+	data_up	: in unsigned(DATA_WIDTH-1 downto 0);
+	data	: out unsigned(DATA_WIDTH-1 downto 0);
+	mem 	: out STD_LOGIC;
+	mem_addr: out unsigned(DATA_WIDTH-1 downto 0)
+  );
+
+end component;
 
 -- PIPELINE --
 -- Stage 1 --
@@ -225,7 +246,7 @@ begin
 -----------------------
 -- hardwired signals --
 -----------------------
-IR_addr_nat <= to_integer(IR_addr);
+IR_addr_nat <= to_integer(cache_addr);
 
 branch_pc <= alu_result_4 when (branch_taken_4 = '1') else
 	branch_to_early when (branch_taken_early = '1') else
@@ -237,6 +258,20 @@ branch_taken <= (branch_taken_4 or branch_taken_early);
 ------------------------------
 -- component initialization --
 ------------------------------
+
+
+cache : INSTRUCTION_CACHE	
+port map(clk 	=> clk,
+      	reset 	=> reset,
+	PC	=> IR_addr,
+	PC_up	=> cache_addr,
+	data_up	=> unsigned(cache_data),
+	data	=> IR_data,
+	mem 	=> cache_re,
+	mem_addr => cache_addr
+ );
+
+
 fetch : INSTRUCTION_FETCH
 	port map (
 		clk => clk,
@@ -247,7 +282,7 @@ fetch : INSTRUCTION_FETCH
 		PC_out => PC_1,
 		IR_pc => IR_addr,
 		IR_re => IR_re,
-		IR_data => IR_data,
+		IR_data => std_logic_vector(IR_data),
 		IR_busy => IR_busy,
 		ID_busy => ID_busy
 	);
@@ -327,9 +362,9 @@ memory_arbiter_t : memory_arbiter
 		busy1 => ID_busy,
 		--Memory port #2
 		addr2 => IR_addr_nat,
-		data2 => IR_data,
-		re2 => IR_re,
-		we2 => IR_we,
+		data2 => cache_data,
+		re2 => cache_re,
+		we2 => '0',
 		busy2 => IR_busy
 	);
 end disc;

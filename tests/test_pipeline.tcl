@@ -8,6 +8,8 @@ proc AddWaves {} {
                                 -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block3/Memory\
                                 -radix dec /pipelinedprocessor/memory_arbiter_t/main_memory/*
 
+  add wave -group "Cache" -radix hex sim:/pipelinedprocessor/cache/*
+                       
   add wave -group "Fetch" -radix dec sim:/pipelinedprocessor/fetch/PC_out\
                           -radix dec sim:/pipelinedprocessor/fetch/PC\
                           -radix dec sim:/pipelinedprocessor/fetch/IR_pc\
@@ -49,6 +51,7 @@ vcom lib/Main_Memory.vhd
 vcom lib/memory_arbiter_lib.vhd
 vcom memory_arbiter.vhd
 vcom HazardDetection.vhd
+vcom cache.vhd
 vcom Fetch.vhd
 vcom Decode.vhd
 vcom Execute.vhd
