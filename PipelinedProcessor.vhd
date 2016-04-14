@@ -15,7 +15,7 @@ architecture disc of PipelinedProcessor is
 -------------------------
 -- constant definition --
 -------------------------
-constant File_Address_Read : string := "fib.dat";
+constant File_Address_Read : string := "bitwise.dat";
 
 -----------------------
 -- signal definition --
@@ -71,19 +71,20 @@ signal forward : unsigned(4 downto 0) := (OTHERS => 'Z');
 signal rw_word	: std_logic;
 -- conversions
 signal IR_addr_nat, ID_addr_nat : natural;
--- Memory Port #1
-signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
-signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
-signal IR_re	: std_logic := '0';
-signal IR_we	: std_logic := '0';
-signal IR_busy	: std_logic;
 
--- Memory Port #2
+-- Memory Port #1
 signal ID_addr	: natural;
 signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => 'Z');
 signal ID_re	: std_logic;
 signal ID_we	: std_logic;
 signal ID_busy	: std_logic;
+
+-- Memory Port #2
+signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
+signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal IR_re	: std_logic := '0';
+signal IR_we	: std_logic := '0';
+signal IR_busy	: std_logic;
 
 --------------------------
 -- component definition --
@@ -226,10 +227,6 @@ begin
 -----------------------
 IR_addr_nat <= to_integer(IR_addr);
 
---with ID_we select ID_data  <=
---	mem_data when '1',
---	(others => 'Z') when others;
-
 branch_pc <= alu_result_4 when (branch_taken_4 = '1') else
 	branch_to_early when (branch_taken_early = '1') else
 	(others => 'Z');
@@ -289,23 +286,23 @@ execute_t : EXECUTE
 	);
 
 memory_t : MEMORY
-		port map (
-			clk => clk,
-			branch_taken => branch_taken_3,
-			alu_result_in => alu_result_3,
-			op2_in => op2_3,
-			IR_in => IR_3,
-			memory => data_memory,
-			rw_word => rw_word,
-			branch_taken_out => branch_taken_4,
-			alu_result_out => alu_result_4,
-			IR_out => IR_4,
-			ID_addr => ID_addr,
-			ID_data => ID_data,
-			ID_re => ID_re,
-			ID_we => ID_we,
-			ID_busy => ID_busy
-		);
+	port map (
+		clk => clk,
+		branch_taken => branch_taken_3,
+		alu_result_in => alu_result_3,
+		op2_in => op2_3,
+		IR_in => IR_3,
+		memory => data_memory,
+		rw_word => rw_word,
+		branch_taken_out => branch_taken_4,
+		alu_result_out => alu_result_4,
+		IR_out => IR_4,
+		ID_addr => ID_addr,
+		ID_data => ID_data,
+		ID_re => ID_re,
+		ID_we => ID_we,
+		ID_busy => ID_busy
+	);
 
 write_back_t : WRITE_BACK
 	port map (

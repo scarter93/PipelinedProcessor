@@ -11,18 +11,19 @@ proc AddWaves {} {
   add wave -group "Fetch" -radix dec sim:/pipelinedprocessor/fetch/PC_out\
                           -radix dec sim:/pipelinedprocessor/fetch/PC\
                           -radix dec sim:/pipelinedprocessor/fetch/IR_pc\
+                          -radix dec sim:/pipelinedprocessor/fetch/PC_old\
                           -radix hex sim:/pipelinedprocessor/fetch/reset\
                           -radix hex sim:/pipelinedprocessor/fetch/IR\
                           -radix hex sim:/pipelinedprocessor/fetch/IR_data\
+                          -radix hex sim:/pipelinedprocessor/fetch/IR_checked\
                           -radix bin sim:/pipelinedprocessor/fetch/IR_busy\
                           -radix dec sim:/pipelinedprocessor/fetch/IR_re\
                           -radix dec sim:/pipelinedprocessor/fetch/branch_taken\
                           -radix dec sim:/pipelinedprocessor/fetch/branch_pc\
                           -radix dec sim:/pipelinedprocessor/fetch/hazard\
-                          -radix hex sim:/pipelinedprocessor/fetch/IR_check\
                           -radix hex sim:/pipelinedprocessor/fetch/IR_log\
                           -radix unsigned sim:/pipelinedprocessor/fetch/cycles_to_wait\
-			  -radix decimal sim:/pipelinedprocessor/fetch/hazard_resume_delay
+                          -radix unsigned sim:/pipelinedprocessor/fetch/hazard_resume_delay
 
   add wave -group "Fetch" -group "Hazard Detection" -radix dec sim:/pipelinedprocessor/fetch/hazard_detect/*
 
@@ -64,6 +65,8 @@ force -deposit /pipelinedprocessor/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
 # force -deposit /pipelinedprocessor/memory_arbiter_t/busy1 0 0
 
 force -deposit /pipelinedprocessor/reset 1 0ns, 0 2.25ns
+
+set NumericStdNoWarnings 1
 
 run 500 ns
 

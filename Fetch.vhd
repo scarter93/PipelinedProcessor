@@ -1,7 +1,7 @@
 -- Entity: FETCH
 -- Author: Stephen Carter, Jit Kanetkar, Auguste Lalande
 -- Date: 03/30/2016
--- Description: Access Instructions to Run based off PC 
+-- Description: Access Instructions to Run based off PC
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -49,8 +49,9 @@ type instruction_log is array (integer range <>) of unsigned(DATA_WIDTH-1 downto
 signal IR_log :  instruction_log(1 to 4);
 
 -- signals
-signal PC : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
-signal IR_check : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal PC, PC_old : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal IR_checked : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal IR_next : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
 --hazards
 signal hazard : std_logic;
@@ -77,19 +78,23 @@ begin
 	if falling_edge(clk) then --check for hazards
 		-- stall if a hazard is present
 		if hazard = '1' then
-			IR_check <= to_unsigned(0, DATA_WIDTH);
-		-- stall if Memory Stage is accessing Memory
-		elsif ID_busy = '1' then
-			IR_check <= to_unsigned(0, DATA_WIDTH);
+			IR_checked <= to_unsigned(0, DATA_WIDTH);
+		---- stall if Memory Stage is accessing Memory
+		--elsif ID_busy = '1' then
+		--	IR_checked <= to_unsigned(0, DATA_WIDTH);
 		-- delay hazards to avoid issuing same instruction twice
 		elsif hazard_resume_delay = '1' then
-			IR_check <= to_unsigned(0, DATA_WIDTH);
+			IR_checked <= to_unsigned(0, DATA_WIDTH);
+		-- stall if no new instruction has been fetched
+		elsif PC_old = PC then
+			IR_checked <= to_unsigned(0, DATA_WIDTH);
 		-- otherwise, forward the IR
 		else
-			IR_check <= unsigned(IR_data);
+			IR_checked <= unsigned(IR_data);
+			PC_old <= PC;
 		end if;
 	elsif rising_edge(clk) then --pass new instruction
-		IR <= IR_check;
+		IR <= IR_checked;
 		PC_out <= PC - 4;
 	end if;
 end process;
@@ -98,13 +103,13 @@ end process;
 IR_track : process(clk)
 begin
 	-- Update IR_log as follows
-	-- IR_log(1)` = IR_check
+	-- IR_log(1)` = IR_checked
 	-- IR_log(i+1)` = IR_log(i)
 	if rising_edge(clk) then
 		IR_log(4) <= IR_log(3);
 		IR_log(3) <= IR_log(2);
 		IR_log(2) <= IR_log(1);
-		IR_log(1) <= IR_check;
+		IR_log(1) <= IR_checked;
 	end if;
 end process;
 

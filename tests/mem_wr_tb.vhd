@@ -1,5 +1,5 @@
 -- To get address from line x:
--- addr = (x-1) * 4                
+-- addr = (x-1) * 4
 
 library ieee;
 
@@ -29,7 +29,7 @@ signal IR_out	: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 -- MEMORY ARBITER
 signal rw_word : std_logic;
 -- conversions
-signal IR_addr_nat, ID_addr_nat : natural; 
+signal IR_addr_nat, ID_addr_nat : natural;
 -- Memory Port #1
 signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
 signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -61,7 +61,7 @@ component MEMORY is
 		alu_result_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_out	: out unsigned(DATA_WIDTH-1 downto 0);
 		ID_addr	: out NATURAL;
-		ID_data	: out STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
+		ID_data	: inout STD_LOGIC_VECTOR(DATA_WIDTH-1 downto 0);
 		ID_re	: out STD_LOGIC;
 		ID_we	: out STD_LOGIC;
 		ID_busy	: in STD_LOGIC
@@ -82,7 +82,7 @@ component memory_arbiter is
 		re1	: in std_logic;
 		we1	: in std_logic;
 		busy1 : out std_logic;
-	
+
 		--Memory port #2
 		addr2	: in natural;
 		data2	: inout std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -94,7 +94,7 @@ component memory_arbiter is
 
 end component;
 
-begin 
+begin
 	dut : MEMORY
 		port map (
 			clk => clk,
@@ -133,7 +133,7 @@ begin
 			busy2 => IR_busy
 		);
 
-with ID_we select ID_data  <= 
+with ID_we select ID_data  <=
 	mem_data when '1',
 	(others => 'Z') when others;
 
@@ -155,23 +155,23 @@ begin
 	alu_result <= x"00000000";
 	IR <= "01010000000000000000000000000000";
 
-	wait for 1 * clk_period;
+	wait for 6 * clk_period;
 	wait for 0.1 * clk_period;
 	ASSERT (ID_data = x"00000800") REPORT "Read Improperly: ";
 ------------------------------------------------------------------------
 -----------------------Read More Words----------------------------------
 ------------------------------------------------------------------------
 	REPORT "READING FROM 0x00000010";
-	alu_result <= x"00000016";
+	alu_result <= x"00000010";
 	IR <= "01010000000000000000000000000000";
-	wait for 2 * clk_period;
+	wait for 6 * clk_period;
 
 	ASSERT (ID_data = x"CAFED00D") REPORT "Read 0x00000010 Improperly";
 
 	REPORT "READING FROM 0x00000100";
 	alu_result <= x"00000100";
 	IR <= "01010000000000000000000000000000";
-	wait for 2 * clk_period;
+	wait for 6 * clk_period;
 
 
 	ASSERT (ID_data = x"00000100") REPORT "Read 0x00000100 Improperly: ";
@@ -180,7 +180,7 @@ begin
 	alu_result <= x"000000F4";
 	IR <= "01010000000000000000000000000000";
 
-	wait for 2 * clk_period;
+	wait for 6 * clk_period;
 
 	ASSERT (ID_data = x"000000F4") REPORT "Read Improperly: ";
 
@@ -193,7 +193,7 @@ begin
 	--op2 <= x"00000000";
 	IR <= "01011000000000000000000000000000";
 
-	wait for 2 * clk_period;
+	wait for 6 * clk_period;
 
 ------------------------------------------------------------------------
 ------------------------Read Back Words---------------------------------
@@ -202,7 +202,7 @@ begin
 	alu_result <= x"0000002C";
 	IR <= "01010000000000000000000000000000";
 
-	wait for 2 * clk_period;
+	wait for 6 * clk_period;
 
 	ASSERT (ID_data = x"0000002C") REPORT "Read 0000002C Improperly: ";
 
@@ -210,7 +210,7 @@ begin
 	alu_result <= x"00000000";
 	IR <= "01010000000000000000000000000000";
 
-	wait for 2 * clk_period;
+	wait for 6 * clk_period;
 
 	ASSERT (ID_data = x"8BADF00D") REPORT "Read 00000000 Improperly: ";
 
@@ -235,7 +235,7 @@ begin
 	REPORT "Reading Byte 0x00000009";
 	alu_result <= x"00000009";
 	IR <= "01010100000000000000000000000000";
-	
+
 	wait for 2 * clk_period;
 
 	ASSERT (ID_data(7 downto 0) = x"BE") REPORT "Read 0x00000009 Improperly: ";

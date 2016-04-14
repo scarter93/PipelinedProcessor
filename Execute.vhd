@@ -48,7 +48,7 @@ constant four		: unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(integer(4), DATA
 signal mult	: std_logic := '0';
 signal div	: std_logic := '0';
 signal alu_op	: std_logic := '0';
--- HI, LO registers 
+-- HI, LO registers
 signal HI	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 signal LO	: signed(DATA_WIDTH-1 downto 0) := (others => '0');
 --signal HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
@@ -74,7 +74,8 @@ imm <= IR_in(15 downto 0);
 -- temp PC updated by 4
 PC_temp <= PC_in + four;
 -- address for jumps
-jaddr <= PC_temp(DATA_WIDTH-1 downto 28) & IR_in(25 downto 0) & "00";
+--jaddr <= PC_temp(DATA_WIDTH-1 downto 28) & IR_in(25 downto 0) & "00";
+jaddr <= "000000" & IR_in(25 downto 0);
 -- get registers from IR
 rs <= IR_in(25 downto 21);
 rt <= IR_in(20 downto 16);
@@ -95,7 +96,7 @@ rd <= IR_in(15 downto 11);
 
 --with mult select LO <=
 --	HILO(DATA_WIDTH-1 downto 0) when '1',
---	LO when others;	
+--	LO when others;
 -- process for ALU
 process(clk)
 variable HILO	: signed((2*DATA_WIDTH)-1 downto 0) := (others => '0');
@@ -141,7 +142,7 @@ begin
 				forw_reg <= (others => 'Z');
 				op2_out <= op2;
 				mult <= '1';
-				div <= '0';			
+				div <= '0';
 				alu_op <= '0';
 				HI <= HILO(2*DATA_WIDTH-1 downto DATA_WIDTH);
 				LO <= HILO(DATA_WIDTH-1 downto 0);

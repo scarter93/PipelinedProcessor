@@ -48,6 +48,8 @@ signal operation : unsigned(5 downto 0);
 -- hardwired to ID_re and IR_we
 signal reading, writing : std_logic := '0';
 
+signal IR_tmp : unsigned(DATA_WIDTH-1 downto 0);
+signal alu_result_tmp : unsigned(DATA_WIDTH-1 downto 0);
 
 begin
 
@@ -68,9 +70,28 @@ with operation select rw_word <=
 clocked : process(clk)
 begin
 	if (rising_edge(clk)) then
+		if ID_busy = '0' then
+			IR_tmp <= IR_in;
+			alu_result_tmp <= alu_result_in;
+		end if;
+		branch_taken_out <= branch_taken;
+	end if;
+end process;
+
+process(ID_busy, clk)
+begin
+	if falling_edge(ID_busy) then
+		IR_out <= IR_tmp;
+		alu_result_out <= alu_result_tmp;
+	elsif rising_edge(ID_busy) then
+		IR_out <= (others => '0');
+		alu_result_out <= (others => '0');
+	elsif rising_edge(clk) and ID_busy = '0' then
 		IR_out <= IR_in;
 		alu_result_out <= alu_result_in;
-		branch_taken_out <= branch_taken;
+	--else
+	--	IR_out <= (others => '0');
+	--	alu_result_out <= (others => '0');
 	end if;
 end process;
 
@@ -78,6 +99,7 @@ end process;
 -- Write Word:	Word to Write
 -- Write Byte;	24 `Z` and Byte to Write
 -- Read Any:	All `Z`
+
 process(writing, reading)
 begin
 	if (writing = '1' and operation = STORE_WORD) then
@@ -85,13 +107,14 @@ begin
 	elsif (writing = '1' and operation = STORE_BYTE) then
 		ID_data <= "ZZZZZZZZZZZZZZZZZZZZZZZZ" & std_logic_vector(op2_in(7 downto 0));
 	else
-               ID_data <= (others=>'Z');
-       end if;
+		ID_data <= (others=>'Z');
+	end if;
+	ID_addr <= to_integer(alu_result_in);
 end process;
 
 -- set reading and writing signals as ID busy changed
 -- unclocked inorder to ensure that Memory Access overrides Fetch
-update_values : process(clk, ID_busy, writing, reading, operation)
+update_values : process(ID_busy, operation)
 begin
 	if ((ID_busy = '0' and reading = '1')) then
 		reading <= '0';
@@ -100,11 +123,9 @@ begin
 	elsif (operation = LOAD_WORD or operation = LOAD_BYTE) then
 		reading <= '1';
 		writing <= '0';
-		ID_addr <= to_integer(alu_result_in);
 	elsif (operation = STORE_WORD or operation = STORE_BYTE) then
 		reading <= '0';
 		writing <= '1';
-		ID_addr <= to_integer(alu_result_in);
 	end if;
 
 	if (falling_edge(ID_busy)) then

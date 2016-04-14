@@ -14,23 +14,26 @@ proc AddWaves {} {
 
     add wave -position end -radix hex sim:/mem_wr_tb/mem_data
 }
-  ;#Create the work library, which is the default library used by ModelSim
-  vlib work
 
-  ;#Compile the memory arbiter and its subcomponents
-  vcom lib/Memory_in_Byte.vhd
-  vcom lib/Main_Memory.vhd
-  vcom lib/memory_arbiter_lib.vhd
-  vcom memory_arbiter.vhd
-  vcom Memory.vhd
-  vcom -check_synthesis tests/mem_wr_tb.vhd
-  ;#Start a simulation session with the memory_arbiter component
-  vsim mem_wr_tb
-  AddWaves
-  force -deposit {/mem_wr_tb/clk} 0 0 ns, 1 0.5 ns -repeat 1 ns
-  ;#Add the memory_arbiter's input and ouput signals to the waves window
-  ;#to allow inspecting the module's behavior
-  force -deposit /mem_wr_tb/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
-  force -deposit /mem_wr_tb/memory_arbiter_t/busy1 0 0
+;#Create the work library, which is the default library used by ModelSim
+vlib work
 
-  run 40ns
+;#Compile the memory arbiter and its subcomponents
+vcom lib/Memory_in_Byte.vhd
+vcom lib/Main_Memory.vhd
+vcom lib/memory_arbiter_lib.vhd
+vcom memory_arbiter.vhd
+vcom Memory.vhd
+vcom -check_synthesis tests/mem_wr_tb.vhd
+;#Start a simulation session with the memory_arbiter component
+vsim mem_wr_tb
+AddWaves
+force -deposit {/mem_wr_tb/clk} 0 0 ns, 1 0.5 ns -repeat 1 ns
+;#Add the memory_arbiter's input and ouput signals to the waves window
+;#to allow inspecting the module's behavior
+force -deposit /mem_wr_tb/memory_arbiter_t/mm_initialize 1 0ns, 0 1ns
+force -deposit /mem_wr_tb/memory_arbiter_t/busy1 0 0
+
+run 40ns
+
+wave zoom full
