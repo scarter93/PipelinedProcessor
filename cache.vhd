@@ -27,7 +27,7 @@ architecture controller of INSTRUCTION_CACHE is
 
 constant blk_sz : integer := 32;
 constant offset_sz : integer := 0;
-constant tag_sz : integer := 22;
+constant tag_sz : integer := 20;
 constant index_sz : integer := 10;
 constant num_blks : integer := 1024;
 
