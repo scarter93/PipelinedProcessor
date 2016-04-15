@@ -87,7 +87,6 @@ elsif rising_edge(clk) then
 			mem <= '0';
 		end if;
 		data_ready <= '1';
-		--mem_addr <= (others => 'Z');
 	else
 		data <= to_unsigned(integer(3), DATA_WIDTH);
 		mem <= '1';
@@ -98,26 +97,17 @@ elsif rising_edge(clk) then
 end if;
 end process;
 
---data_ready <= '1' when tag = cur_blk(cache_blk_sz-2 downto cache_blk_sz-2-tag_sz+1) and cur_blk(cache_blk_sz-1) = '1' else '0';
 
 update_data : process(reset, update)
 begin
-
---update_blk <= cache_blks(to_integer(index));
-
-if reset = '1' then
-	--tag_update <= (others => '0');
-	--index_update <= (others => '0');
-	--offset_update <= 'Z';
-	--update_blk <= (others => '0');
-elsif rising_edge(update) then
---	cache_blks(to_integer(PC_up(DATA_WIDTH-tag_sz-1 downto DATA_WIDTH-tag_sz-index_sz))) <= '1' & PC_up(DATA_WIDTH-1 downto DATA_WIDTH-tag_sz) & data_up;
-	cache_blks(to_integer(index_update)) <= '1' & PC_up(DATA_WIDTH-1 downto DATA_WIDTH-tag_sz) & data_up;
---	cache_blks(to_integer(index_update))(cache_blk_sz-2 downto cache_blk_sz-2-tag_sz+1) <= tag_update;
---	cache_blks(to_integer(index_update))(DATA_WIDTH-1 downto 0) <= data_up;
---	cache_blks(to_integer(index_update))(cache_blk_sz-1) <= '1';
-end if;
-
+	if reset = '1' then
+		--tag_update <= (others => '0');
+		--index_update <= (others => '0');
+		--offset_update <= 'Z';
+		--update_blk <= (others => '0');
+	elsif rising_edge(update) then
+		cache_blks(to_integer(index_update)) <= '1' & PC_up(DATA_WIDTH-1 downto DATA_WIDTH-tag_sz) & data_up;
+	end if;
 end process;
 
 end architecture;

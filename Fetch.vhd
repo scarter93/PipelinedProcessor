@@ -127,25 +127,8 @@ begin
 		cache_update <= '0';
 		reset_memory_controller <= '0';
 
-		--special case for cached instructions when hazard
-		--if cycles_to_wait > cycles_to_wait_old and cache_data_ready = '1' then
-		--	IR <= data_tmp;
-		--	IR_checked <= data_tmp;
-		--	PC_old <= PC;
-		--	reset_memory_controller <= '1';
-		--elsif cycles_to_wait < cycles_to_wait_old and cache_data_ready = '1' then
-		--	IR <= to_unsigned(0, DATA_WIDTH);
-		--	IR_checked <= to_unsigned(0, DATA_WIDTH);
-		-- stall if a hazard is present
 		if hazard = '1' then
 			IR_checked <= to_unsigned(0, DATA_WIDTH);
-		---- stall if Memory Stage is accessing Memory
-		--elsif ID_busy = '1' then
-		--	IR_checked <= to_unsigned(0, DATA_WIDTH);
-		-- delay hazards to avoid issuing same instruction twice
-		--elsif hazard_resume_delay = '1' then
-		--	IR_checked <= to_unsigned(0, DATA_WIDTH);
-		-- stall if no new instruction has been fetched
 		elsif cache_data_ready = '1' then
 			IR <= data_tmp;
 			IR_checked <= data_tmp;
@@ -153,10 +136,6 @@ begin
 			reset_memory_controller <= '1';
 		elsif PC_old = PC then
 			IR_checked <= to_unsigned(0, DATA_WIDTH);
-		-- otherwise, forward the IR
---		elsif mem_chk = '0' then
---			IR_checked <= data_tmp;
---			PC_old <= PC;
 		else
 			cache_update <= '1';
 			IR_checked <= unsigned(IR_data);
@@ -200,7 +179,7 @@ begin
 		end if;
 	-- run next instruction
 	elsif falling_edge(clk) then
-		if cache_data_ready = '1' and hazard = '0' then --and hazard_resume_delay = '0' then
+		if cache_data_ready = '1' and hazard = '0' then
 			IR_pc <= PC + 4;
 			PC <= PC + 4;
 		end if;
