@@ -85,7 +85,7 @@ begin
 			current_port <= none;
 			busy1 <= '0';
 			busy2 <= '0';
-		elsif fetch_reset = '1' then
+		elsif fetch_reset = '1' and current_port = p2 then
 			state <= idle;
 			current_port <= none;
 		elsif rising_edge(rw1) then

@@ -70,7 +70,8 @@ signal IR3_opcode : unsigned(5 downto 0);
 signal IR4_opcode : unsigned(5 downto 0);
 
 --HAZARDS
-signal op1_hazard, op2_hazard, branch_hazard : std_logic;
+signal op1_hazard, op2_hazard : std_logic;
+signal branch_hazard, structural_hazard : std_logic;
 
 begin
 
@@ -239,8 +240,15 @@ branch_hazard <= '1' when IR4_opcode = J or IR4_opcode = JR or IR4_opcode = JAL 
 			IR1_opcode = J or IR1_opcode = JR or IR1_opcode = JAL or IR1_opcode = BEQ or IR1_opcode = BNE
 	else '0';
 
+--check for structural hazard
+structural_hazard <= '1' when IR4_opcode = SW or IR4_opcode = SB or IR4_opcode = LW or IR4_opcode = LB or
+			IR3_opcode = SW or IR3_opcode = SB or IR3_opcode = LW or IR3_opcode = LB or
+			IR2_opcode = SW or IR2_opcode = SB or IR2_opcode = LW or IR2_opcode = LB or
+			IR1_opcode = SW or IR1_opcode = SB or IR1_opcode = LW or IR1_opcode = LB
+	else '0';
+
 --combine hazards into 1 signal
-HAZARD <= op1_hazard or op2_hazard or branch_hazard;
+HAZARD <= op1_hazard or op2_hazard or branch_hazard or structural_hazard;
 
 
 --process to keep track of how many cycles are left before hazard is resolved

@@ -33,7 +33,7 @@ architecture disc of INSTRUCTION_FETCH is
 component INSTRUCTION_CACHE is
 generic ( DATA_WIDTH : integer := 32
 	);
-	
+
 port (	clk 	: in STD_LOGIC;
       	reset 	: in STD_LOGIC;
 	PC	: in unsigned(DATA_WIDTH-1 downto 0);
@@ -76,18 +76,22 @@ signal mem_chk : std_logic;
 signal PC, PC_old : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 signal IR_checked : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 signal IR_next : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
+signal instruction_to_check : unsigned(DATA_WIDTH-1 downto 0) := to_unsigned(0, DATA_WIDTH);
 
 --hazards
 signal hazard : std_logic;
 signal cycles_to_wait : unsigned(2 downto 0);
+signal cycles_to_wait_old : unsigned(2 downto 0);
 signal hazard_resume_delay : std_logic := '0';
 
 signal cache_data_ready : std_logic;
 signal cache_update : std_logic;
 
+signal decremented : std_logic;
+
 begin
 
-cache : INSTRUCTION_CACHE	
+cache : INSTRUCTION_CACHE
 port map(clk 	=> clk,
       	reset 	=> reset,
 	PC	=> PC,
@@ -105,7 +109,7 @@ PC_update <= PC - 4;
 -- Detect Hazards
 hazard_detect : HAZARD_DETECTION
 	port map (
-		IR_check => unsigned(IR_data),
+		IR_check => instruction_to_check,
 		IR1 => IR_log(1),
 		IR2 => IR_log(2),
 		IR3 => IR_log(3),
@@ -114,6 +118,8 @@ hazard_detect : HAZARD_DETECTION
 		cycles_to_wait => cycles_to_wait
 	);
 
+instruction_to_check <= data_tmp when cache_data_ready = '1' else unsigned(IR_data);
+
 -- Update IR Based off hazards
 IR_update : process(clk)
 begin
@@ -121,6 +127,15 @@ begin
 		cache_update <= '0';
 		reset_memory_controller <= '0';
 
+		--special case for cached instructions when hazard
+		--if cycles_to_wait > cycles_to_wait_old and cache_data_ready = '1' then
+		--	IR <= data_tmp;
+		--	IR_checked <= data_tmp;
+		--	PC_old <= PC;
+		--	reset_memory_controller <= '1';
+		--elsif cycles_to_wait < cycles_to_wait_old and cache_data_ready = '1' then
+		--	IR <= to_unsigned(0, DATA_WIDTH);
+		--	IR_checked <= to_unsigned(0, DATA_WIDTH);
 		-- stall if a hazard is present
 		if hazard = '1' then
 			IR_checked <= to_unsigned(0, DATA_WIDTH);
@@ -128,8 +143,8 @@ begin
 		--elsif ID_busy = '1' then
 		--	IR_checked <= to_unsigned(0, DATA_WIDTH);
 		-- delay hazards to avoid issuing same instruction twice
-		elsif hazard_resume_delay = '1' then
-			IR_checked <= to_unsigned(0, DATA_WIDTH);
+		--elsif hazard_resume_delay = '1' then
+		--	IR_checked <= to_unsigned(0, DATA_WIDTH);
 		-- stall if no new instruction has been fetched
 		elsif cache_data_ready = '1' then
 			IR <= data_tmp;
@@ -150,6 +165,7 @@ begin
 	elsif rising_edge(clk) then --pass new instruction
 		IR <= IR_checked;
 		PC_out <= PC - 4;
+		cycles_to_wait_old <= cycles_to_wait;
 	end if;
 end process;
 
@@ -174,34 +190,36 @@ begin
 	if reset = '1' then
 		PC <= to_unsigned(0, DATA_WIDTH);
 	-- don't update if branching
-	elsif (branch_taken = '1') then
+	elsif branch_taken = '1' then
 		PC <= branch_pc - 4;
 		IR_pc <= branch_pc - 4;
 	-- run next instruction
---	elsif data_tmp /= to_unsigned(integer(3), DATA_WIDTH) then
---		IR_pc <= PC + 4;
---		PC <= PC + 4;
---	elsif falling_edge(mem_chk) then
---		IR_pc <= PC + 4;
---		PC <= PC + 4;
 	elsif falling_edge(clk) then
-		if cache_data_ready = '1' and hazard = '0' then
+		if cache_data_ready = '1' and hazard = '0' then --and hazard_resume_delay = '0' then
 			IR_pc <= PC + 4;
 			PC <= PC + 4;
 		end if;
 	elsif falling_edge(IR_busy) then
-		IR_pc <= PC + 4;
-		PC <= PC + 4;
+		if cache_data_ready = '0' and hazard = '0' then
+			IR_pc <= PC + 4;
+			PC <= PC + 4;
+		end if;
 	end if;
 
 	-- unincrement on hazard
 	if rising_edge(hazard) then
-		IR_pc <= PC - 4;
-		PC <= PC - 4;
+		if cache_data_ready = '1' then
+			IR_pc <= PC - 4;
+			PC <= PC - 4;
+			decremented <= '1';
+		end if;
 	-- reincrement on end of hazard
 	elsif falling_edge(hazard) then
-		IR_pc <= PC + 4;
-		PC <= PC + 4;
+		if decremented = '1' then
+			IR_pc <= PC + 4;
+			PC <= PC + 4;
+			decremented <= '0';
+		end if;
 		hazard_resume_delay <= '1';
 	end if;
 

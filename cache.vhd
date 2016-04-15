@@ -8,7 +8,7 @@ use ieee.numeric_std.all;
 entity INSTRUCTION_CACHE is
 generic ( DATA_WIDTH : integer := 32
 	);
-	
+
 port (	clk 	: in STD_LOGIC;
       	reset 	: in STD_LOGIC;
 	PC	: in unsigned(DATA_WIDTH-1 downto 0);
@@ -77,7 +77,7 @@ if reset = '1' then
 	--data <= (others => 'Z');
 	--mem <= 'Z';
 	--mem_addr <= (others => 'Z');
-elsif reset = '0' and rising_edge(clk) then
+elsif rising_edge(clk) then
 	if(tag = cur_blk(cache_blk_sz-2 downto cache_blk_sz-2-tag_sz+1) and cur_blk(cache_blk_sz-1) = '1') then
 		if(index /= index_update) then
 			data <= cur_blk(DATA_WIDTH-1 downto 0);
@@ -96,8 +96,9 @@ elsif reset = '0' and rising_edge(clk) then
 		data_ready <= '0';
 	end if;
 end if;
-
 end process;
+
+--data_ready <= '1' when tag = cur_blk(cache_blk_sz-2 downto cache_blk_sz-2-tag_sz+1) and cur_blk(cache_blk_sz-1) = '1' else '0';
 
 update_data : process(reset, update)
 begin
@@ -114,7 +115,7 @@ elsif rising_edge(update) then
 	cache_blks(to_integer(index_update)) <= '1' & PC_up(DATA_WIDTH-1 downto DATA_WIDTH-tag_sz) & data_up;
 --	cache_blks(to_integer(index_update))(cache_blk_sz-2 downto cache_blk_sz-2-tag_sz+1) <= tag_update;
 --	cache_blks(to_integer(index_update))(DATA_WIDTH-1 downto 0) <= data_up;
---	cache_blks(to_integer(index_update))(cache_blk_sz-1) <= '1';	
+--	cache_blks(to_integer(index_update))(cache_blk_sz-1) <= '1';
 end if;
 
 end process;

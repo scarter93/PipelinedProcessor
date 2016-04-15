@@ -7,7 +7,7 @@ proc AddWaves {} {
                                 -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block2/Memory\
                                 -radix hex /pipelinedprocessor/memory_arbiter_t/main_memory/Block3/Memory\
                                 -radix dec /pipelinedprocessor/memory_arbiter_t/main_memory/*
-                       
+
   add wave -group "Fetch" -radix dec sim:/pipelinedprocessor/fetch/PC_out\
                           -radix dec sim:/pipelinedprocessor/fetch/PC\
                           -radix dec sim:/pipelinedprocessor/fetch/IR_pc\
@@ -23,9 +23,10 @@ proc AddWaves {} {
                           -radix dec sim:/pipelinedprocessor/fetch/hazard\
                           -radix hex sim:/pipelinedprocessor/fetch/IR_log\
                           -radix unsigned sim:/pipelinedprocessor/fetch/cycles_to_wait\
+                          -radix unsigned sim:/pipelinedprocessor/fetch/cycles_to_wait_old\
                           -radix unsigned sim:/pipelinedprocessor/fetch/hazard_resume_delay\
-			  -radix unsigned sim:/pipelinedprocessor/fetch/data_tmp
-			  
+			                    -radix unsigned sim:/pipelinedprocessor/fetch/data_tmp
+
   add wave -group "Fetch" -group "Cache" -radix hex sim:/pipelinedprocessor/fetch/cache/cache_blks\
 					 -radix dec sim:/pipelinedprocessor/fetch/cache/*
 
