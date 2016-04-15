@@ -15,7 +15,7 @@ architecture disc of PipelinedProcessor is
 -------------------------
 -- constant definition --
 -------------------------
-constant File_Address_Read : string := "bitwise.dat";
+constant File_Address_Read : string := "fib.dat";
 
 -----------------------
 -- signal definition --
@@ -29,6 +29,7 @@ signal reset	: std_logic;
 -- branch_taken
 signal branch_pc	: unsigned(DATA_WIDTH-1 downto 0);
 signal branch_taken	: std_logic;
+signal reset_memory_controller : std_logic;
 -- STAGE 2 IN
 -- inputs from stage 1
 -- IR, PC
@@ -69,47 +70,26 @@ signal forward : unsigned(4 downto 0) := (OTHERS => 'Z');
 
 -- MEMORY ARBITER
 signal rw_word	: std_logic;
+
 -- conversions
 signal IR_addr_nat, ID_addr_nat : natural;
-
--- cache
-signal cache_addr : unsigned(DATA_WIDTH-1 downto 0);
-signal cache_re	  : STD_LOGIC := '0';
-signal cache_data : std_logic_vector(DATA_WIDTH-1 downto 0) := (others => 'Z');
-
 -- Memory Port #1
+signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
+signal IR_data	: std_logic_vector(DATA_WIDTH-1 downto 0);
+signal IR_re	: std_logic := '0';
+signal IR_we	: std_logic := '0';
+signal IR_busy	: std_logic;
+
+-- Memory Port #2
 signal ID_addr	: natural;
 signal ID_data	: std_logic_vector(DATA_WIDTH-1 downto 0) := (others => 'Z');
 signal ID_re	: std_logic;
 signal ID_we	: std_logic;
 signal ID_busy	: std_logic;
 
--- Memory Port #2
-signal IR_addr	: unsigned(DATA_WIDTH-1 downto 0);
-signal IR_data	: unsigned(DATA_WIDTH-1 downto 0);
-signal IR_re	: std_logic := '0';
-signal IR_we	: std_logic := '0';
-signal IR_busy	: std_logic;
-
 --------------------------
 -- component definition --
 --------------------------
---CACHE--
-component INSTRUCTION_CACHE is
-generic ( DATA_WIDTH : integer := 32
-	);
-	
-port (	clk 	: in STD_LOGIC;
-      	reset 	: in STD_LOGIC;
-	PC	: in unsigned(DATA_WIDTH-1 downto 0);
-	PC_up	: in unsigned(DATA_WIDTH-1 downto 0);
-	data_up	: in unsigned(DATA_WIDTH-1 downto 0);
-	data	: out unsigned(DATA_WIDTH-1 downto 0);
-	mem 	: out STD_LOGIC;
-	mem_addr: out unsigned(DATA_WIDTH-1 downto 0)
-  );
-
-end component;
 
 -- PIPELINE --
 -- Stage 1 --
@@ -126,6 +106,7 @@ component INSTRUCTION_FETCH is
 		-- memory access
 		IR_pc	: out unsigned(DATA_WIDTH-1 downto 0);
 		IR_re	: out std_logic;
+		reset_memory_controller : out std_logic;
 		IR_data	: in std_logic_vector(DATA_WIDTH-1 downto 0);
 		IR_busy : in std_logic;
 		ID_busy : in std_logic
@@ -222,6 +203,7 @@ component memory_arbiter is
 	port(
 		clk	: in std_logic;
 		reset	: in std_logic;
+		fetch_reset : in std_logic;
 		rw_word : in std_logic;
 		--Memory port #1
 		addr1	: in natural;
@@ -246,7 +228,11 @@ begin
 -----------------------
 -- hardwired signals --
 -----------------------
-IR_addr_nat <= to_integer(cache_addr);
+IR_addr_nat <= to_integer(IR_addr);
+
+--with ID_we select ID_data  <=
+--	mem_data when '1',
+--	(others => 'Z') when others;
 
 branch_pc <= alu_result_4 when (branch_taken_4 = '1') else
 	branch_to_early when (branch_taken_early = '1') else
@@ -258,20 +244,6 @@ branch_taken <= (branch_taken_4 or branch_taken_early);
 ------------------------------
 -- component initialization --
 ------------------------------
-
-
-cache : INSTRUCTION_CACHE	
-port map(clk 	=> clk,
-      	reset 	=> reset,
-	PC	=> IR_addr,
-	PC_up	=> cache_addr,
-	data_up	=> unsigned(cache_data),
-	data	=> IR_data,
-	mem 	=> cache_re,
-	mem_addr => cache_addr
- );
-
-
 fetch : INSTRUCTION_FETCH
 	port map (
 		clk => clk,
@@ -282,7 +254,8 @@ fetch : INSTRUCTION_FETCH
 		PC_out => PC_1,
 		IR_pc => IR_addr,
 		IR_re => IR_re,
-		IR_data => std_logic_vector(IR_data),
+		reset_memory_controller => reset_memory_controller,
+		IR_data => IR_data,
 		IR_busy => IR_busy,
 		ID_busy => ID_busy
 	);
@@ -321,23 +294,23 @@ execute_t : EXECUTE
 	);
 
 memory_t : MEMORY
-	port map (
-		clk => clk,
-		branch_taken => branch_taken_3,
-		alu_result_in => alu_result_3,
-		op2_in => op2_3,
-		IR_in => IR_3,
-		memory => data_memory,
-		rw_word => rw_word,
-		branch_taken_out => branch_taken_4,
-		alu_result_out => alu_result_4,
-		IR_out => IR_4,
-		ID_addr => ID_addr,
-		ID_data => ID_data,
-		ID_re => ID_re,
-		ID_we => ID_we,
-		ID_busy => ID_busy
-	);
+		port map (
+			clk => clk,
+			branch_taken => branch_taken_3,
+			alu_result_in => alu_result_3,
+			op2_in => op2_3,
+			IR_in => IR_3,
+			memory => data_memory,
+			rw_word => rw_word,
+			branch_taken_out => branch_taken_4,
+			alu_result_out => alu_result_4,
+			IR_out => IR_4,
+			ID_addr => ID_addr,
+			ID_data => ID_data,
+			ID_re => ID_re,
+			ID_we => ID_we,
+			ID_busy => ID_busy
+		);
 
 write_back_t : WRITE_BACK
 	port map (
@@ -353,6 +326,7 @@ memory_arbiter_t : memory_arbiter
 	port map (
 		clk => clk,
 		reset => reset,
+		fetch_reset => reset_memory_controller,
 		rw_word => rw_word,
 		--Memory port #1
 		addr1 => ID_addr,
@@ -362,9 +336,9 @@ memory_arbiter_t : memory_arbiter
 		busy1 => ID_busy,
 		--Memory port #2
 		addr2 => IR_addr_nat,
-		data2 => cache_data,
-		re2 => cache_re,
-		we2 => '0',
+		data2 => IR_data,
+		re2 => IR_re,
+		we2 => IR_we,
 		busy2 => IR_busy
 	);
 end disc;

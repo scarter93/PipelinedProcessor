@@ -13,6 +13,7 @@ entity memory_arbiter is
 	port(
 			clk	: in STD_LOGIC;
 			reset	: in STD_LOGIC;
+			fetch_reset : in std_logic;
 			rw_word	: in STD_LOGIC;
 
 			--Memory port #1
@@ -77,13 +78,16 @@ begin
 
 	rw1 <= re1 or we1;
 
-	process (clk, reset, rw1)
+	process (clk, reset, fetch_reset, rw1)
 	begin
 		if reset = '1' then
 			state <= idle;
 			current_port <= none;
 			busy1 <= '0';
 			busy2 <= '0';
+		elsif fetch_reset = '1' then
+			state <= idle;
+			current_port <= none;
 		elsif rising_edge(rw1) then
 			if re1 = '1' then
 				current_port <= p1;
