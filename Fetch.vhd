@@ -191,8 +191,13 @@ begin
 		PC <= to_unsigned(0, DATA_WIDTH);
 	-- don't update if branching
 	elsif branch_taken = '1' then
-		PC <= branch_pc - 4;
-		IR_pc <= branch_pc - 4;
+		if decremented = '1' then
+			PC <= branch_pc - 4;
+			IR_pc <= branch_pc - 4;
+		else
+			PC <= branch_pc;
+			IR_pc <= branch_pc;
+		end if;
 	-- run next instruction
 	elsif falling_edge(clk) then
 		if cache_data_ready = '1' and hazard = '0' then --and hazard_resume_delay = '0' then
